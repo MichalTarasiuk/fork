@@ -6,9 +6,44 @@
   "types": "./@types/index.d.ts",
   "repository": "https://github.com/MichalTarasiuk/remind.git",
   "author": "Michał Tarasiuk",
+  "contributors": [
+    "Michał Tarasiuk (https://github.com/MichalTarasiuk)"
+  ],
+  "keywords": [
+    "react",
+    "state",
+    "manager",
+    "management",
+    "redux",
+    "store"
+  ],
+  "bugs": {
+    "url": "https://github.com/MichalTarasiuk/remind/issues"
+  },
   "license": "MIT",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test": "jest --watch"
+  },
+  "prettier": {
+    "semi": false,
+    "trailingComma": "es5",
+    "singleQuote": true,
+    "bracketSameLine": true,
+    "tabWidth": 2,
+    "printWidth": 80
+  },
+  "jest": {
+    "rootDir": ".",
+    "verbose": true,
+    "bail": 5,
+    "automock": true,
+    "clearMocks": true,
+    "testRegex": "test.(js|ts|tsx)$",
+    "notify": true,
+    "moduleNameMapper": {
+      "^remind$": "<rootDir>/src/index.ts"
+    }
   },
   "husky": {
     "hooks": {
@@ -19,6 +54,7 @@
     "*": "prettier --write"
   },
   "devDependencies": {
+    "@testing-library/react": "^12.1.2",
     "@types/jest": "^27.4.0",
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
@@ -28,6 +64,6 @@
     "prettier": "^2.5.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
-    "typescript": "^4.5.5" 
+    "typescript": "^4.5.5"
   }
 }
