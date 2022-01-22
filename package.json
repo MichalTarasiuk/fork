@@ -40,7 +40,6 @@
     "automock": true,
     "clearMocks": true,
     "testRegex": "test.(js|ts|tsx)$",
-    "notify": true,
     "moduleNameMapper": {
       "^remind$": "<rootDir>/src/index.ts"
     }
