@@ -1,4 +1,4 @@
-import { createObserver, noop } from 'src/utils'
+import { createObserver, noop } from '../../src/utils'
 
 describe('observer', () => {
   it('should subscribe observer', () => {
@@ -6,9 +6,7 @@ describe('observer', () => {
     const observer = createObserver<string>()
 
     // when
-    observer.subscribe({
-      call: noop,
-    })
+    observer.subscribe(observer.create(noop))
 
     // then
     expect(observer.observers).toHaveLength(1)
@@ -19,12 +17,8 @@ describe('observer', () => {
     const observer = createObserver<string>()
 
     // when
-    observer.subscribe({
-      call: noop,
-    })
-    observer.subscribe({
-      call: noop,
-    })
+    observer.subscribe(observer.create(noop))
+    observer.subscribe(observer.create(noop))
 
     // then
     expect(observer.observers).toHaveLength(2)
@@ -43,9 +37,7 @@ describe('observer', () => {
     const spy = jest.fn()
 
     // when
-    observer.subscribe({
-      call: spy,
-    })
+    observer.subscribe(observer.create(spy))
 
     // then
     expect(observer.observers).toHaveLength(1)
@@ -56,7 +48,6 @@ describe('observer', () => {
     })
 
     // then
-    expect(spy).toHaveBeenCalledTimes(4)
-    expect(spy).toHaveBeenCalledWith(fruits)
+    expect(spy).toHaveBeenCalledTimes(fruits.length)
   })
 })

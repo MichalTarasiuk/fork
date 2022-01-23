@@ -25,10 +25,13 @@ const createObserver = <TValue>() => {
     }
   }
 
+  const create = (callback: (value: TValue) => void) => ({ call: callback })
+
   return {
     get observers() {
       return _observers
     },
+    create,
     notify,
     destroy,
     subscribe,
