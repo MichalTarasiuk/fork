@@ -6,10 +6,10 @@ describe('observer', () => {
     const observer = createObserver<string>()
 
     // when
-    observer.subscribe(observer.create(noop))
+    observer.subscribe(noop)
 
     // then
-    expect(observer.observers).toHaveLength(1)
+    expect(observer.listeners).toHaveLength(1)
   })
 
   it('should destroy all subscribers', () => {
@@ -17,17 +17,17 @@ describe('observer', () => {
     const observer = createObserver<string>()
 
     // when
-    observer.subscribe(observer.create(noop))
-    observer.subscribe(observer.create(noop))
+    observer.subscribe(noop)
+    observer.subscribe(noop)
 
     // then
-    expect(observer.observers).toHaveLength(2)
+    expect(observer.listeners).toHaveLength(1)
 
     // when
     observer.destroy()
 
     // then
-    expect(observer.observers).toHaveLength(0)
+    expect(observer.listeners).toHaveLength(0)
   })
 
   it('should notify all subscribers', () => {
@@ -37,11 +37,11 @@ describe('observer', () => {
     const spy = jest.fn()
 
     // when
-    observer.subscribe(observer.create(spy))
+    observer.subscribe(spy)
 
     // then
-    expect(observer.observers).toHaveLength(1)
-
+    expect(observer.listeners).toHaveLength(1)
+    
     // when
     fruits.forEach((fruit) => {
       observer.notify(fruit)

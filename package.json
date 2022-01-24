@@ -35,6 +35,10 @@
   },
   "jest": {
     "rootDir": ".",
+    "moduleDirectories": [
+      "node_modules",
+      "src"
+    ],
     "verbose": true,
     "bail": 5,
     "clearMocks": true,

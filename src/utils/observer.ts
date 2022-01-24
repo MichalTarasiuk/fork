@@ -1,37 +1,30 @@
-type Observer<TValue> = {
-  call: (value: TValue) => void
-}
+type Listener<TState> = (state: TState, prevState?: TState) => void
 
-const createObserver = <TValue>() => {
-  const _observers: Observer<TValue>[] = []
+const createObserver = <TState>() => {
+  const _listeners: Set<Listener<TState>> = new Set()
 
-  const subscribe = (observer: Observer<TValue>) => {
-    _observers.push(observer)
+  const subscribe = (observer: Listener<TState>) => {
+    _listeners.add(observer)
 
-    return () => ({
+    return {
       unsubscribe() {
-        _observers.filter((currentObserver) => currentObserver !== observer)
+        _listeners.delete(observer)
       },
-    })
-  }
-
-  const destroy = () => {
-    _observers.length = 0
-  }
-
-  const notify = (value: TValue) => {
-    for (const observer of _observers) {
-      observer.call(value)
     }
   }
 
-  const create = (callback: (value: TValue) => void) => ({ call: callback })
+  const destroy = () => _listeners.clear()
+
+  const notify = (state: TState, prevState?: TState) => {
+    for (const listener of _listeners) {
+      listener(state, prevState)
+    }
+  }
 
   return {
-    get observers() {
-      return _observers
+    get listeners() {
+      return Array.from(_listeners)
     },
-    create,
     notify,
     destroy,
     subscribe,
