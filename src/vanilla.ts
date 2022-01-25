@@ -4,15 +4,15 @@ import {
   resolveHookState,
   equals,
   isFunction,
-} from '../src/utils'
+} from 'src/utils'
 
 type Patch<TState> =
   | DeepPartial<TState>
   | ((prevState: TState) => DeepPartial<TState>)
 type SetState<TState> = (patch: Patch<TState>, replace?: boolean) => void
 // FIXME
-type StateCreator<TState> = ((set: SetState<TState>) => TState) | TState
-type Selector<TState extends Record<string, any>> = (
+export type StateCreator<TState> = ((set: SetState<TState>) => TState) | TState
+export type Selector<TState extends Record<string, any>> = (
   state: TState
 ) => TState[keyof TState]
 

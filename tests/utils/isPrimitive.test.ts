@@ -1,4 +1,4 @@
-import { isPrimitive } from '../../src/utils'
+import { isPrimitive } from 'src/utils'
 
 describe('isPrimitive', () => {
   it('should return true when value is a string', () => {

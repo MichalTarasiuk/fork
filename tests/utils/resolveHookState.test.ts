@@ -1,4 +1,4 @@
-import { resolveHookState } from '../../src/utils'
+import { resolveHookState } from 'src/utils'
 
 describe('resolveHookState', () => {
   it('should resolve state which is function', () => {

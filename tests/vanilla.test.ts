@@ -1,4 +1,4 @@
-import { create } from '../src'
+import { create } from 'src'
 
 describe('vanilla', () => {
   it('should subscriber invoke after state change', () => {

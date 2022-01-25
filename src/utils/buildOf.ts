@@ -1,4 +1,4 @@
-import { isPrimitive } from '../../src/utils'
+import { isPrimitive } from 'src/utils'
 
 export const buildOf = <TValue extends Record<string, any>>(
   value: TValue,
