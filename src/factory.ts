@@ -6,8 +6,7 @@ import type { Selector, StateCreator } from 'src/vanilla'
 
 export const factory = <TState>(stateCreator: StateCreator<TState>) => {
   const store = create(stateCreator)
-
-  return (selector?: Selector<TState>) => {
+  const hook = (selector?: Selector<TState>) => {
     const [state, listener] = useState(store.getState)
 
     useDidMount(() => {
@@ -20,4 +19,9 @@ export const factory = <TState>(stateCreator: StateCreator<TState>) => {
 
     return [state, store.setState] as const
   }
+
+  hook.listeners = store.listeners
+  hook.destroy = store.destroy
+
+  return hook
 }

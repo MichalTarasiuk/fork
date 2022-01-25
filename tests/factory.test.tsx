@@ -1,11 +1,14 @@
-import React from 'react'
-import { render } from '@testing-library/react'
+import React, { useState } from 'react'
+import { render, fireEvent } from '@testing-library/react'
 
 import { useDidMount } from '../src/hooks'
 import { factory } from '../src/factory'
 
+const random = (arr: any[]) => arr[Math.floor(Math.random() * arr.length)]
+
 describe.skip('factory', () => {
   it('should rerender component', async () => {
+    // arrange
     const useGlobalState = factory({
       counter: 0,
     })
@@ -24,10 +27,12 @@ describe.skip('factory', () => {
 
     const { findByText } = await render(<Counter />)
 
+    // assert
     await findByText('counter 1')
   })
 
-  it('should not rerender component', async () => {
+  it('should not rerender component when use selector', async () => {
+    // arrange
     const useGlobalState = factory({
       counter: 0,
       darkMode: false,
@@ -49,8 +54,121 @@ describe.skip('factory', () => {
 
     const { findByText } = await render(<Counter />)
 
+    // asserts
     await findByText('counter 0')
   })
 
-  it('it', () => {})
+  it('should not rerender component when use deep selector', async () => {
+    // given
+    const initialName = 'you can count, count on yourself'
+    const additionalNames = [
+      'keep counting!!!',
+      "you're doing better and better",
+    ]
+    const useGlobalState = factory({
+      counter: {
+        name: initialName,
+        value: 0,
+      },
+      dakrMode: false,
+    })
+
+    const Component = () => {
+      const [globalState, setGlobalState] = useGlobalState(
+        (state) => state.counter.name
+      )
+
+      const increase = () => {
+        setGlobalState((prevState) => ({
+          counter: {
+            value: prevState.counter.value + 1,
+          },
+        }))
+      }
+
+      const changeName = (newName: string) => {
+        setGlobalState({
+          counter: {
+            name: newName,
+          },
+        })
+      }
+
+      return (
+        <div>
+          <p>name {globalState.counter.name}</p>
+          <button onClick={() => changeName(random(additionalNames))}>
+            change name
+          </button>
+          <p>counter {globalState.counter.value}</p>
+          <button onClick={increase}>increse</button>
+        </div>
+      )
+    }
+
+    const { getByText } = await render(<Component />)
+
+    // when
+    fireEvent.click(getByText('increse'))
+
+    // then
+    getByText('counter 0')
+
+    // when
+    const nameElement = getByText(`name ${initialName}`)
+    fireEvent.click(getByText('change name'))
+
+    // then
+    expect(nameElement.nodeValue).not.toBe(initialName)
+  })
+
+  it('should remove listener from component which is not mounted', async () => {
+    // given
+    const useGlobalState = factory({
+      counter: 0,
+    })
+    const Root = {
+      Parent() {
+        const [isMounted, setIsMounted] = useState(false)
+
+        const unmount = () => setIsMounted(true)
+
+        return (
+          <>
+            {isMounted && <Root.Child1 />}
+            <Root.Child2 />
+            <button onClick={unmount}>unmount child 1</button>
+          </>
+        )
+      },
+      Child1() {
+        const [globalState] = useGlobalState()
+
+        return (
+          <div>
+            <p>component: Child1</p>
+            <p>counter {globalState.counter}</p>
+          </div>
+        )
+      },
+      Child2() {
+        const [globalState] = useGlobalState()
+
+        return (
+          <div>
+            <p>component: Child2</p>
+            <p>counter {globalState.counter}</p>
+          </div>
+        )
+      },
+    }
+
+    const { getByText } = await render(<Root.Parent />)
+
+    // when
+    fireEvent.click(getByText('unmount child 1'))
+
+    // then
+    expect(useGlobalState.listeners).toHaveLength(1)
+  })
 })

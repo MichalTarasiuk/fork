@@ -14,7 +14,7 @@ type SetState<TState> = (patch: Patch<TState>, replace?: boolean) => void
 export type StateCreator<TState> = ((set: SetState<TState>) => TState) | TState
 export type Selector<TState extends Record<string, any>> = (
   state: TState
-) => TState[keyof TState]
+) => any
 
 const create = <TState>(stateCreator: StateCreator<TState>) => {
   let state: TState
