@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
 import { render, fireEvent } from '@testing-library/react'
 
-import { useDidMount } from '../src/hooks'
-import { factory } from '../src/factory'
+import { useDidMount } from 'src/hooks'
+import { factory } from 'src/factory'
+import { random } from 'src/utils'
 
-const random = (arr: any[]) => arr[Math.floor(Math.random() * arr.length)]
-
-describe.skip('factory', () => {
+describe('factory', () => {
   it('should rerender component', async () => {
     // arrange
     const useGlobalState = factory({

@@ -4,13 +4,13 @@ import {
   resolveHookState,
   equals,
   isFunction,
+  cloneObject,
 } from 'src/utils'
 
 type Patch<TState> =
   | DeepPartial<TState>
   | ((prevState: TState) => DeepPartial<TState>)
 type SetState<TState> = (patch: Patch<TState>, replace?: boolean) => void
-// FIXME
 export type StateCreator<TState> = ((set: SetState<TState>) => TState) | TState
 export type Selector<TState extends Record<string, any>> = (
   state: TState
@@ -45,7 +45,7 @@ const create = <TState>(stateCreator: StateCreator<TState>) => {
 
   const setState: SetState<TState> = (patch, replace = false) => {
     patch = resolveHookState(patch, state)
-    const prevState = { ...state }
+    const prevState = cloneObject(state)
     const newState = replace ? (patch as TState) : buildOf(state, patch)
 
     state = newState
