@@ -1,4 +1,4 @@
-import { isPrimitive, isFunction } from 'src/utils'
+import { isPrimitive } from 'src/utils'
 
 function cloneObject<TValue>(value: TValue): TValue {
   let clone: any
@@ -16,11 +16,6 @@ function cloneObject<TValue>(value: TValue): TValue {
   clone = Object.assign({}, value)
 
   for (const key in clone) {
-    if (isFunction(clone[key])) {
-      clone = value
-      break
-    }
-
     clone[key] =
       typeof clone[key] === 'object' ? cloneObject(clone[key]) : clone[key]
   }

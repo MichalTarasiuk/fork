@@ -37,14 +37,15 @@
     "rootDir": ".",
     "moduleDirectories": [
       "node_modules",
-      "."
+      "src"
     ],
     "verbose": true,
     "bail": 5,
     "clearMocks": true,
     "testRegex": "test.(js|ts|tsx)$",
-    "moduleNameMapper": {
-      "^remind$": "<rootDir>/src/index.ts"
+    "transformIgnorePatterns": ["node_modules/(?!(react)/)"],
+    "transform": {
+      "^.+\\.(js|jsx|ts|tsx|mjs)$": "babel-jest"
     }
 },
   "husky": {
