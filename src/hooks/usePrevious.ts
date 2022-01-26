@@ -1,7 +1,13 @@
 import { useRef, useEffect } from 'react'
 
-export const usePrevious = <TValue>(value: TValue) => {
-  const savedValue = useRef<TValue | undefined>(undefined)
+type Config<TValue> = {
+  mock?: TValue
+}
+
+export const usePrevious = <TValue>(value: TValue, config?: Config<TValue>) => {
+  const { mock } = config || {}
+
+  const savedValue = useRef<TValue | undefined>(mock || undefined)
 
   useEffect(() => {
     savedValue.current = value
