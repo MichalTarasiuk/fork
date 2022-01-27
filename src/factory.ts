@@ -24,5 +24,20 @@ export const factory = <TState>(stateCreator: StateCreator<TState>) => {
   hook.listeners = store.listeners
   hook.destroy = store.destroy
 
-  return hook
+  const {
+    destroy: destorySubscribers,
+    reset: resetToInitial,
+    ...restStore
+  } = store
+
+  const handler = {
+    init() {
+      return {
+        useRemind: hook,
+        ...restStore,
+      }
+    },
+  }
+
+  return handler
 }

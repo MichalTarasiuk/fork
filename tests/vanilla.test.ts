@@ -1,4 +1,4 @@
-import { create } from 'src'
+import { create } from 'src/remind'
 
 describe('vanilla', () => {
   it('should subscriber invoke after state change', () => {
@@ -147,9 +147,9 @@ describe('vanilla', () => {
 
   it('should subscriber invoke after state change by inner setState', () => {
     // given
+    type State = { counter: number; increase: Noop }
     const ingredient = 1
-    // FIXME
-    const store = create<{ counter: number; increase: () => void }>((set) => ({
+    const store = create<State>((set) => ({
       counter: 0,
       increase: () =>
         set((prevState) => ({ counter: prevState.counter + ingredient })),
@@ -202,5 +202,36 @@ describe('vanilla', () => {
         },
       },
     })
+  })
+
+  it('should reset to initial value', () => {
+    // given
+    type State = {
+      counter: number
+      increase: Noop
+    }
+
+    const ingredient = 1
+    const store = create<State>((set) => ({
+      counter: 0,
+      increase: () =>
+        set((prevState) => ({
+          counter: prevState.counter + ingredient,
+        })),
+    }))
+    const state = store.getState
+
+    // when
+    const oldState = { ...state }
+    state.increase()
+
+    // then
+    expect(state.counter).toEqual(oldState.counter + ingredient)
+
+    // when
+    store.reset()
+
+    // then
+    expect(store.getState.counter).toEqual(oldState.counter)
   })
 })

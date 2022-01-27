@@ -10,3 +10,5 @@ declare type Primitive =
 declare type DeepPartial<TValue> = {
   [key in keyof TValue]?: DeepPartial<TValue[key]>
 }
+
+declare type Noop = () => void

@@ -54,6 +54,12 @@ const create = <TState>(stateCreator: StateCreator<TState>) => {
 
   const destroy = () => observer.destroy()
 
+  const reset = () => {
+    state = isFunction(stateCreator) ? stateCreator(setState) : stateCreator
+
+    return state
+  }
+
   state = isFunction(stateCreator) ? stateCreator(setState) : stateCreator
 
   return {
@@ -63,6 +69,7 @@ const create = <TState>(stateCreator: StateCreator<TState>) => {
     get listeners() {
       return observer.listeners
     },
+    reset,
     setState,
     destroy,
     subscribe,

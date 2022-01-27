@@ -2,18 +2,18 @@ import React, { useState } from 'react'
 import { render, fireEvent } from '@testing-library/react'
 
 import { useDidMount } from 'src/hooks'
-import { factory } from 'src/factory'
+import { remind } from 'src/remind'
 import { random } from 'src/utils'
 
 describe('factory', () => {
   it('should rerender component', async () => {
     // arrange
-    const useGlobalState = factory({
+    const { useRemind } = remind({
       counter: 0,
-    })
+    }).init()
 
     const Counter = () => {
-      const [globalState, setGlobalState] = useGlobalState()
+      const [globalState, setGlobalState] = useRemind()
 
       useDidMount(() => {
         setGlobalState((prevState) => ({
@@ -32,15 +32,13 @@ describe('factory', () => {
 
   it('should not rerender component when use selector', async () => {
     // arrange
-    const useGlobalState = factory({
+    const { useRemind } = remind({
       counter: 0,
       darkMode: false,
-    })
+    }).init()
 
     const Counter = () => {
-      const [globalState, setGlobalState] = useGlobalState(
-        (state) => state.darkMode
-      )
+      const [globalState, setGlobalState] = useRemind((state) => state.darkMode)
 
       useDidMount(() => {
         setGlobalState((prevState) => ({
@@ -64,16 +62,16 @@ describe('factory', () => {
       'keep counting!!!',
       "you're doing better and better",
     ]
-    const useGlobalState = factory({
+    const { useRemind } = remind({
       counter: {
         name: initialName,
         value: 0,
       },
       dakrMode: false,
-    })
+    }).init()
 
     const Component = () => {
-      const [globalState, setGlobalState] = useGlobalState(
+      const [globalState, setGlobalState] = useRemind(
         (state) => state.counter.name
       )
 
@@ -123,9 +121,9 @@ describe('factory', () => {
 
   it('should remove listener from component which is not mounted', async () => {
     // given
-    const useGlobalState = factory({
+    const { useRemind } = remind({
       counter: 0,
-    })
+    }).init()
     const Root = {
       Parent() {
         const [isMounted, setIsMounted] = useState(false)
@@ -141,7 +139,7 @@ describe('factory', () => {
         )
       },
       Child1() {
-        const [globalState] = useGlobalState()
+        const [globalState] = useRemind()
 
         return (
           <div>
@@ -151,7 +149,7 @@ describe('factory', () => {
         )
       },
       Child2() {
-        const [globalState] = useGlobalState()
+        const [globalState] = useRemind()
 
         return (
           <div>
@@ -168,6 +166,6 @@ describe('factory', () => {
     fireEvent.click(getByText('unmount child 1'))
 
     // then
-    expect(useGlobalState.listeners).toHaveLength(1)
+    expect(useRemind.listeners).toHaveLength(1)
   })
 })
