@@ -34,7 +34,20 @@ export const factory = <TState>(stateCreator: StateCreator<TState>) => {
     init() {
       return {
         useRemind: hook,
+        destory: this.destory,
         ...restStore,
+      }
+    },
+    destory() {
+      console.warn(
+        'WARN - destroy store may have unexpected effects on your application'
+      )
+
+      resetToInitial()
+      destorySubscribers()
+
+      return {
+        init: this.init,
       }
     },
   }

@@ -56,6 +56,7 @@ const create = <TState>(stateCreator: StateCreator<TState>) => {
 
   const reset = () => {
     state = isFunction(stateCreator) ? stateCreator(setState) : stateCreator
+    observer.notify(state)
 
     return state
   }

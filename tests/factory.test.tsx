@@ -13,15 +13,15 @@ describe('factory', () => {
     }).init()
 
     const Counter = () => {
-      const [globalState, setGlobalState] = useRemind()
+      const [mind, setMind] = useRemind()
 
       useDidMount(() => {
-        setGlobalState((prevState) => ({
+        setMind((prevState) => ({
           counter: prevState.counter + 1,
         }))
       })
 
-      return <p>counter {globalState.counter}</p>
+      return <p>counter {mind.counter}</p>
     }
 
     const { findByText } = await render(<Counter />)
@@ -38,15 +38,15 @@ describe('factory', () => {
     }).init()
 
     const Counter = () => {
-      const [globalState, setGlobalState] = useRemind((state) => state.darkMode)
+      const [mind, setMind] = useRemind((state) => state.darkMode)
 
       useDidMount(() => {
-        setGlobalState((prevState) => ({
+        setMind((prevState) => ({
           counter: prevState.counter + 1,
         }))
       })
 
-      return <p>counter {globalState.counter}</p>
+      return <p>counter {mind.counter}</p>
     }
 
     const { findByText } = await render(<Counter />)
@@ -71,12 +71,10 @@ describe('factory', () => {
     }).init()
 
     const Component = () => {
-      const [globalState, setGlobalState] = useRemind(
-        (state) => state.counter.name
-      )
+      const [mind, setMind] = useRemind((state) => state.counter.name)
 
       const increase = () => {
-        setGlobalState((prevState) => ({
+        setMind((prevState) => ({
           counter: {
             value: prevState.counter.value + 1,
           },
@@ -84,7 +82,7 @@ describe('factory', () => {
       }
 
       const changeName = (newName: string) => {
-        setGlobalState({
+        setMind({
           counter: {
             name: newName,
           },
@@ -93,11 +91,11 @@ describe('factory', () => {
 
       return (
         <div>
-          <p>name {globalState.counter.name}</p>
+          <p>name {mind.counter.name}</p>
           <button onClick={() => changeName(random(additionalNames))}>
             change name
           </button>
-          <p>counter {globalState.counter.value}</p>
+          <p>counter {mind.counter.value}</p>
           <button onClick={increase}>increse</button>
         </div>
       )
@@ -139,22 +137,22 @@ describe('factory', () => {
         )
       },
       Child1() {
-        const [globalState] = useRemind()
+        const [mind] = useRemind()
 
         return (
           <div>
             <p>component: Child1</p>
-            <p>counter {globalState.counter}</p>
+            <p>counter {mind.counter}</p>
           </div>
         )
       },
       Child2() {
-        const [globalState] = useRemind()
+        const [mind] = useRemind()
 
         return (
           <div>
             <p>component: Child2</p>
-            <p>counter {globalState.counter}</p>
+            <p>counter {mind.counter}</p>
           </div>
         )
       },
