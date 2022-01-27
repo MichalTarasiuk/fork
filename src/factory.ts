@@ -21,16 +21,13 @@ export const factory = <TState>(stateCreator: StateCreator<TState>) => {
     return [state, store.setState, history] as const
   }
 
-  hook.listeners = store.listeners
-  hook.destroy = store.destroy
-
   const {
     destroy: destorySubscribers,
-    reset: resetToInitial,
+    reset: resetToInitialState,
     ...restStore
   } = store
 
-  const handler = {
+  return {
     init() {
       return {
         useRemind: hook,
@@ -43,7 +40,7 @@ export const factory = <TState>(stateCreator: StateCreator<TState>) => {
         'WARN - destroy store may have unexpected effects on your application'
       )
 
-      resetToInitial()
+      resetToInitialState()
       destorySubscribers()
 
       return {
@@ -51,6 +48,4 @@ export const factory = <TState>(stateCreator: StateCreator<TState>) => {
       }
     },
   }
-
-  return handler
 }

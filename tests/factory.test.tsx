@@ -119,9 +119,10 @@ describe('factory', () => {
 
   it('should remove listener from component which is not mounted', async () => {
     // given
-    const { useRemind } = remind({
+    const store = remind({
       counter: 0,
     }).init()
+    const { useRemind } = store
     const Root = {
       Parent() {
         const [isMounted, setIsMounted] = useState(false)
@@ -164,6 +165,96 @@ describe('factory', () => {
     fireEvent.click(getByText('unmount child 1'))
 
     // then
-    expect(useRemind.listeners).toHaveLength(1)
+    expect(store.listeners).toHaveLength(1)
+  })
+
+  it('should remove listeners and back to initial state', async () => {
+    // given
+    const initialValue = {
+      counter: 0,
+    }
+    const store = remind(initialValue).init()
+    const { useRemind } = store
+
+    const Counter = () => {
+      const [mind, setMind] = useRemind()
+
+      const increase = () => {
+        setMind((prevState) => ({
+          counter: prevState.counter + 1,
+        }))
+      }
+
+      return (
+        <div>
+          <p>counter {mind.counter}</p>
+          <button onClick={increase}>increase</button>
+        </div>
+      )
+    }
+    const { getByText, findByText } = await render(<Counter />)
+
+    // when
+    fireEvent.click(getByText('increase'))
+
+    // then
+    await findByText('counter 1')
+
+    // when
+    store.destory()
+
+    // then
+    expect(store.getState).toEqual(initialValue)
+    expect(store.listeners).toHaveLength(0)
+  })
+
+  it('subscriber with selector should not rerender after invoke setState function outside component', async () => {
+    // given
+    const store = remind({
+      counter: 0,
+      darkMode: false,
+    }).init()
+    const { useRemind, setState } = store
+
+    const Counter = () => {
+      const [mind] = useRemind((state) => state.darkMode)
+
+      return <p>counter {mind.counter}</p>
+    }
+
+    const { findByText } = await render(<Counter />)
+
+    // when
+    setState((prevState) => ({
+      counter: prevState.counter + 1,
+    }))
+
+    // then
+    await findByText('counter 0')
+  })
+
+  it('subscriber should rerender after invoke setState function outside component', async () => {
+    // given
+    const store = remind({
+      counter: 0,
+      darkMode: false,
+    }).init()
+    const { useRemind, setState } = store
+
+    const Counter = () => {
+      const [mind] = useRemind()
+
+      return <p>counter {mind.counter}</p>
+    }
+
+    const { findByText } = await render(<Counter />)
+
+    // when
+    setState((prevState) => ({
+      counter: prevState.counter + 1,
+    }))
+
+    // then
+    await findByText('counter 0')
   })
 })
