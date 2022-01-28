@@ -14,7 +14,7 @@ export const useHistoryOf = <TState>(
 ) => {
   const { capacity = 10, initialState, initialHistory = [] } = config || {}
 
-  const previousState = usePrevious(state, { mock: initialState })
+  const previousState = usePrevious(state, initialState)
   const isFirstMount = useFirstMountState()
 
   const savedHistory = useRef<TState[]>(initialHistory)
