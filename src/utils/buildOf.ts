@@ -1,4 +1,4 @@
-import { isPrimitive } from 'src/utils'
+import { isPrimitive, cloneObject } from 'src/utils'
 
 export const buildOf = <TValue extends Record<string, any>>(
   value: TValue,
@@ -15,4 +15,4 @@ export const buildOf = <TValue extends Record<string, any>>(
     }
 
     return accumulator
-  }, value)
+  }, cloneObject(value))

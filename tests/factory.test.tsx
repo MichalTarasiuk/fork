@@ -10,7 +10,7 @@ describe('factory', () => {
     // arrange
     const { useRemind } = remind({
       counter: 0,
-    }).init()
+    })
 
     const Counter = () => {
       const [mind, setMind] = useRemind()
@@ -35,7 +35,7 @@ describe('factory', () => {
     const { useRemind } = remind({
       counter: 0,
       darkMode: false,
-    }).init()
+    })
 
     const Counter = () => {
       const [mind, setMind] = useRemind((state) => state.darkMode)
@@ -68,7 +68,7 @@ describe('factory', () => {
         value: 0,
       },
       dakrMode: false,
-    }).init()
+    })
 
     const Component = () => {
       const [mind, setMind] = useRemind((state) => state.counter.name)
@@ -121,7 +121,7 @@ describe('factory', () => {
     // given
     const store = remind({
       counter: 0,
-    }).init()
+    })
     const { useRemind } = store
     const Root = {
       Parent() {
@@ -173,7 +173,7 @@ describe('factory', () => {
     const initialValue = {
       counter: 0,
     }
-    const store = remind(initialValue).init()
+    const store = remind(initialValue)
     const { useRemind } = store
 
     const Counter = () => {
@@ -213,7 +213,7 @@ describe('factory', () => {
     const store = remind({
       counter: 0,
       darkMode: false,
-    }).init()
+    })
     const { useRemind, setState } = store
 
     const Counter = () => {
@@ -238,7 +238,7 @@ describe('factory', () => {
     const store = remind({
       counter: 0,
       darkMode: false,
-    }).init()
+    })
     const { useRemind, setState } = store
 
     const Counter = () => {

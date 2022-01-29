@@ -147,11 +147,11 @@ describe('vanilla', () => {
 
   it('should subscriber invoke after state change by inner setState', () => {
     // given
-    type State = { counter: number; increase: Noop }
+    type State = { counter: number; setCounter: Noop }
     const ingredient = 1
     const store = create<State>((set) => ({
       counter: 0,
-      increase: () =>
+      setCounter: () =>
         set((prevState) => ({ counter: prevState.counter + ingredient })),
     }))
     const state = store.getState
@@ -165,7 +165,7 @@ describe('vanilla', () => {
     expect(store.listeners).toHaveLength(1)
 
     // when
-    state.increase()
+    state.setCounter()
 
     // then
     expect(state.counter).toBe(prevState.counter + ingredient)
@@ -182,7 +182,6 @@ describe('vanilla', () => {
         },
       },
     })
-    const state = store.getState
 
     // when
     store.setState({
@@ -194,7 +193,7 @@ describe('vanilla', () => {
     })
 
     // then
-    expect(state).toEqual({
+    expect(store.getState).toEqual({
       a: {
         b: {
           c: 'C',
@@ -208,25 +207,23 @@ describe('vanilla', () => {
     // given
     type State = {
       counter: number
-      increase: Noop
+      setCounter: Noop
     }
-
     const ingredient = 1
     const store = create<State>((set) => ({
       counter: 0,
-      increase: () =>
+      setCounter: () =>
         set((prevState) => ({
           counter: prevState.counter + ingredient,
         })),
     }))
-    const state = store.getState
 
     // when
-    const oldState = { ...state }
-    state.increase()
+    const oldState = { ...store.getState }
+    store.getState.setCounter()
 
     // then
-    expect(state.counter).toEqual(oldState.counter + ingredient)
+    expect(store.getState.counter).toEqual(oldState.counter + ingredient)
 
     // when
     store.reset()

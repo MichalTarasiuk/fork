@@ -5,19 +5,29 @@ import {
   equals,
   isFunction,
   cloneObject,
+  isMiddleware,
 } from 'src/utils'
 
 type Patch<TState> =
   | DeepPartial<TState>
   | ((prevState: TState) => DeepPartial<TState>)
 type SetState<TState> = (patch: Patch<TState>, replace?: boolean) => void
+type Modifier<TState> = (state: TState) => TState
+type SetUpStore<TState> = (
+  stateCreator: StateCreator<TState>,
+  setState: SetState<TState>
+) => {
+  state: TState
+  apply: (modifier: Modifier<TState>) => ReturnType<SetUpStore<TState>>
+}
+
 export type StateCreator<TState> = ((set: SetState<TState>) => TState) | TState
 export type Selector<TState extends Record<string, any>> = (
   state: TState
 ) => any
 
 const create = <TState>(stateCreator: StateCreator<TState>) => {
-  let state: TState
+  let store: ReturnType<SetUpStore<TState>>
   const observer = createObserver<TState>()
   type Listener = Parameters<typeof observer.subscribe>[0]
 
@@ -44,28 +54,34 @@ const create = <TState>(stateCreator: StateCreator<TState>) => {
   }
 
   const setState: SetState<TState> = (patch, replace = false) => {
-    patch = resolveHookState(patch, state)
+    patch = resolveHookState(patch, store.state)
+
+    const state = store.state
     const prevState = cloneObject(state)
     const newState = replace ? (patch as TState) : buildOf(state, patch)
 
-    state = newState
-    observer.notify(state, prevState)
+    store.apply(() => newState)
+    observer.notify(newState, prevState)
   }
 
   const destroy = () => observer.destroy()
 
   const reset = () => {
-    state = isFunction(stateCreator) ? stateCreator(setState) : stateCreator
-    observer.notify(state)
+    const restoredStore = setUpStore(stateCreator, setState)
+    const restoredState = restoredStore.state
+    store = restoredStore
 
-    return state
+    observer.notify(restoredState)
+
+    return restoredState
   }
 
-  state = isFunction(stateCreator) ? stateCreator(setState) : stateCreator
+  const initializedStore = setUpStore(stateCreator, setState)
+  store = initializedStore
 
   return {
     get getState() {
-      return state
+      return store.state
     },
     get listeners() {
       return observer.listeners
@@ -75,6 +91,65 @@ const create = <TState>(stateCreator: StateCreator<TState>) => {
     destroy,
     subscribe,
   }
+}
+
+const invokeMiddleweres = <TState>(
+  stateWithMiddleweres: TState,
+  prevState?: TState,
+  newState?: TState
+): TState => {
+  const cloneState = cloneObject(prevState || stateWithMiddleweres)
+  const initial = !prevState && !newState
+
+  for (const [key, value] of Object.entries(stateWithMiddleweres)) {
+    if (isMiddleware(key, value)) {
+      const middleware = value
+      const prevValue = prevState && (prevState as any)[key]
+      const newValue = newState && (newState as any)[key]
+
+      const { value: middlewareValue, next } = middleware(newValue)
+      const condition = next || initial
+
+      ;(cloneState as any)[key] = condition ? middlewareValue : prevValue
+    } else if (prevState && newState) {
+      const newValue = (newState as any)[key]
+      ;(cloneState as any)[key] = newValue
+    }
+  }
+
+  return cloneState
+}
+
+const setUpStore = <TState>(
+  stateCreator: StateCreator<TState>,
+  setState: SetState<TState>
+) => {
+  const stateWithMiddleweres = isFunction(stateCreator)
+    ? stateCreator(setState)
+    : stateCreator
+  let state = invokeMiddleweres(stateWithMiddleweres)
+
+  const handler = {
+    state,
+    apply(modifier: Modifier<TState>) {
+      const prevState = cloneObject(state)
+      const newState = modifier(state)
+      const outputState = invokeMiddleweres(
+        stateWithMiddleweres,
+        prevState,
+        newState
+      )
+
+      this.state = Object.assign(this.state, outputState)
+
+      return {
+        apply: this.apply,
+        state: outputState,
+      }
+    },
+  }
+
+  return handler
 }
 
 export { create }

@@ -27,7 +27,7 @@ export const factory = <TState>(stateCreator: StateCreator<TState>) => {
     ...restStore
   } = store
 
-  return {
+  const handler = {
     init() {
       return {
         useRemind: hook,
@@ -48,4 +48,6 @@ export const factory = <TState>(stateCreator: StateCreator<TState>) => {
       }
     },
   }
+
+  return handler.init()
 }
