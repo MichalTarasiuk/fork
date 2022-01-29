@@ -32,14 +32,11 @@ const create = <TState>(stateCreator: StateCreator<TState>) => {
   type Listener = Parameters<typeof observer.subscribe>[0]
 
   const customListener = (listener: Listener, selector: Selector<TState>) => {
-    return (state: TState, prevState?: TState) => {
-      const newSlice = selector(state)
+    return (newState: TState, prevState: TState) => {
+      const newSlice = selector(newState)
+      const oldSlice = selector(prevState)
 
-      if (prevState) {
-        const oldSlice = selector(prevState)
-
-        !equals(newSlice, oldSlice) && listener(state)
-      }
+      !equals(newSlice, oldSlice) && listener(newState, prevState)
     }
   }
 
@@ -56,9 +53,8 @@ const create = <TState>(stateCreator: StateCreator<TState>) => {
   const setState: SetState<TState> = (patch, replace = false) => {
     patch = resolveHookState(patch, store.state)
 
-    const state = store.state
-    const prevState = cloneObject(state)
-    const newState = replace ? (patch as TState) : buildOf(state, patch)
+    const prevState = cloneObject(store.state)
+    const newState = replace ? (patch as TState) : buildOf(prevState, patch)
 
     store.apply(() => newState)
     observer.notify(newState, prevState)
@@ -68,10 +64,11 @@ const create = <TState>(stateCreator: StateCreator<TState>) => {
 
   const reset = () => {
     const restoredStore = setUpStore(stateCreator, setState)
+    const prevState = store.state
     const restoredState = restoredStore.state
     store = restoredStore
 
-    observer.notify(restoredState)
+    observer.notify(restoredState, prevState)
 
     return restoredState
   }
@@ -98,22 +95,21 @@ const invokeMiddleweres = <TState>(
   prevState?: TState,
   newState?: TState
 ): TState => {
-  const cloneState = cloneObject(prevState || stateWithMiddleweres)
+  const cloneState: any = cloneObject(prevState || stateWithMiddleweres)
   const initial = !prevState && !newState
 
   for (const [key, value] of Object.entries(stateWithMiddleweres)) {
+    const prevValue = prevState && (prevState as any)[key]
+    const newValue = newState && (newState as any)[key]
+
     if (isMiddleware(key, value)) {
       const middleware = value
-      const prevValue = prevState && (prevState as any)[key]
-      const newValue = newState && (newState as any)[key]
-
       const { value: middlewareValue, next } = middleware(newValue)
       const condition = next || initial
 
-      ;(cloneState as any)[key] = condition ? middlewareValue : prevValue
+      cloneState[key] = condition ? middlewareValue : prevValue
     } else if (prevState && newState) {
-      const newValue = (newState as any)[key]
-      ;(cloneState as any)[key] = newValue
+      cloneState[key] = newValue
     }
   }
 
