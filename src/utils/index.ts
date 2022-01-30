@@ -1,7 +1,7 @@
 export { createObserver } from './observer'
 export { isPrimitive } from './isPrimitive'
 export { buildOf } from './buildOf'
-export { resolveHookState } from './resolveHookState'
+export * from './resolveState'
 export { equals } from './equals'
 export { cloneObject } from './cloneObject'
 

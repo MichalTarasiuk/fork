@@ -1,24 +1,27 @@
 import {
   createObserver,
   buildOf,
-  resolveHookState,
+  resolveState,
   equals,
   isFunction,
   cloneObject,
   isMiddleware,
 } from 'src/utils'
+import type { StateResolvable } from 'src/utils'
 
 type Patch<TState> =
   | DeepPartial<TState>
   | ((prevState: TState) => DeepPartial<TState>)
 type SetState<TState> = (patch: Patch<TState>, replace?: boolean) => void
-type Modifier<TState> = (state: TState) => TState
 type SetUpStore<TState> = (
   stateCreator: StateCreator<TState>,
   setState: SetState<TState>
 ) => {
   state: TState
-  apply: (modifier: Modifier<TState>) => ReturnType<SetUpStore<TState>>
+  prevState: TState | undefined
+  apply: (
+    stateResolvable: StateResolvable<TState>
+  ) => ReturnType<SetUpStore<TState>>
 }
 
 export type StateCreator<TState> = ((set: SetState<TState>) => TState) | TState
@@ -32,11 +35,14 @@ const create = <TState>(stateCreator: StateCreator<TState>) => {
   type Listener = Parameters<typeof observer.subscribe>[0]
 
   const customListener = (listener: Listener, selector: Selector<TState>) => {
-    return (newState: TState, prevState: TState) => {
+    return (newState: TState, prevState?: TState) => {
       const newSlice = selector(newState)
-      const oldSlice = selector(prevState)
 
-      !equals(newSlice, oldSlice) && listener(newState, prevState)
+      if (prevState) {
+        const oldSlice = selector(prevState)
+
+        !equals(newSlice, oldSlice) && listener(newState, prevState)
+      }
     }
   }
 
@@ -51,12 +57,16 @@ const create = <TState>(stateCreator: StateCreator<TState>) => {
   }
 
   const setState: SetState<TState> = (patch, replace = false) => {
-    patch = resolveHookState(patch, store.state)
+    patch = isFunction(patch) ? patch(store.state) : patch
 
-    const prevState = cloneObject(store.state)
-    const newState = replace ? (patch as TState) : buildOf(prevState, patch)
+    const { state: newState, prevState } = store.apply((prevState) => {
+      const newState = replace
+        ? (patch as TState)
+        : buildOf(prevState, patch as DeepPartial<TState>)
 
-    store.apply(() => newState)
+      return newState
+    })
+
     observer.notify(newState, prevState)
   }
 
@@ -127,9 +137,10 @@ const setUpStore = <TState>(
 
   const handler = {
     state,
-    apply(modifier: Modifier<TState>) {
+    prevState: undefined,
+    apply(stateResolvable: StateResolvable<TState>) {
       const prevState = cloneObject(state)
-      const newState = modifier(state)
+      const newState = resolveState(stateResolvable, prevState)
       const outputState = invokeMiddleweres(
         stateWithMiddleweres,
         prevState,
@@ -139,8 +150,9 @@ const setUpStore = <TState>(
       this.state = Object.assign(this.state, outputState)
 
       return {
-        apply: this.apply,
         state: outputState,
+        prevState,
+        apply: this.apply,
       }
     },
   }
