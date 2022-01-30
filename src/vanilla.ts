@@ -105,7 +105,7 @@ const invokeMiddleweres = <TState>(
   prevState?: TState,
   newState?: TState
 ): TState => {
-  const cloneState: any = cloneObject(prevState || stateWithMiddleweres)
+  const cloneState: any = cloneObject(newState || stateWithMiddleweres)
   const initial = !prevState && !newState
 
   for (const [key, value] of Object.entries(stateWithMiddleweres)) {
@@ -118,8 +118,6 @@ const invokeMiddleweres = <TState>(
       const condition = next || initial
 
       cloneState[key] = condition ? middlewareValue : prevValue
-    } else if (prevState && newState) {
-      cloneState[key] = newValue
     }
   }
 

@@ -1,12 +1,12 @@
-import { resolveHookState } from 'src/utils'
+import { resolveState } from 'src/utils'
 
-describe('resolveHookState', () => {
+describe('resolveState', () => {
   it('should resolve state which is function', () => {
     // arrange
     const initialState = {
       counter: 0,
     }
-    const resolvedState = resolveHookState(() => initialState)
+    const resolvedState = resolveState(() => initialState)
 
     // assert
     expect(resolvedState).toEqual(resolvedState)
@@ -17,7 +17,7 @@ describe('resolveHookState', () => {
     const initialState = {
       counter: 0,
     }
-    const resolvedState = resolveHookState(initialState)
+    const resolvedState = resolveState(initialState)
 
     // assert
     expect(resolvedState).toEqual(resolvedState)
