@@ -231,4 +231,95 @@ describe('vanilla', () => {
     // then
     expect(store.getState.counter).toEqual(oldState.counter)
   })
+
+  it('should resolve middlewere', () => {
+    // arrange
+    type State = {
+      counter: any
+    }
+    const authMiddlewere = (value: number) => ({ next: true, value })
+    const store = create<State>({
+      counter: (value = 0) => authMiddlewere(value),
+    })
+
+    expect(store.getState.counter).toBe(0)
+  })
+
+  it('middlewere should block setState action', () => {
+    // given
+    type State = {
+      counter: any
+    }
+    const authMiddlewere = (value: number) => ({ next: false, value })
+    const store = create<State>({
+      counter: (value = 0) => authMiddlewere(value),
+    })
+
+    // when
+    store.setState((prevState) => ({
+      counter: prevState.counter + 1,
+    }))
+
+    // then
+    expect(store.getState.counter).toBe(0)
+  })
+
+  it('middlewere should not block the setState action', () => {
+    // given
+    type State = {
+      counter: any
+    }
+    const authMiddlewere = (value: number) => ({ next: false, value })
+    const store = create<State>({
+      counter: (value = 0) => authMiddlewere(value),
+    })
+
+    // when
+    store.setState((prevState) => ({
+      counter: prevState.counter + 1,
+    }))
+
+    // then
+    expect(store.getState.counter).toBe(0)
+  })
+
+  it('middlewere should block the inner setState action', () => {
+    // given
+    type State = {
+      counter: any
+      setCounter: Noop
+    }
+    const authMiddlewere = (value: number) => ({ next: false, value })
+    const store = create<State>((set) => ({
+      counter: (value = 0) => authMiddlewere(value),
+      setCounter: () =>
+        set((prevState) => ({ counter: prevState.counter + 1 })),
+    }))
+
+    // when
+    store.getState.setCounter()
+
+    // then
+    expect(store.getState.counter).toBe(0)
+  })
+
+  it('middlewere should not block the inner setState action', () => {
+    // given
+    type State = {
+      counter: any
+      setCounter: Noop
+    }
+    const authMiddlewere = (value: number) => ({ next: true, value })
+    const store = create<State>((set) => ({
+      counter: (value = 0) => authMiddlewere(value),
+      setCounter: () =>
+        set((prevState) => ({ counter: prevState.counter + 1 })),
+    }))
+
+    // when
+    store.getState.setCounter()
+
+    // then
+    expect(store.getState.counter).toBe(1)
+  })
 })

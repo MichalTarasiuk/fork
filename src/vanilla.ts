@@ -123,7 +123,7 @@ const setUpStore = <TState>(
   const stateWithMiddleweres = isFunction(stateCreator)
     ? stateCreator(setState)
     : stateCreator
-  let state = invokeMiddleweres(stateWithMiddleweres)
+  const state = invokeMiddleweres(stateWithMiddleweres)
 
   const handler = {
     state,
