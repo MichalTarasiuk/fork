@@ -19,7 +19,7 @@ type SetUpStore<TState> = (
 ) => {
   state: TState
   prevState: TState | undefined
-  apply: (
+  setState: (
     stateResolvable: StateResolvable<TState>
   ) => ReturnType<SetUpStore<TState>>
 }
@@ -59,7 +59,7 @@ const create = <TState>(stateCreator: StateCreator<TState>) => {
   const setState: SetState<TState> = (patch, replace = false) => {
     patch = isFunction(patch) ? patch(store.state) : patch
 
-    const { state: newState, prevState } = store.apply((prevState) => {
+    const { state: newState, prevState } = store.setState((prevState) => {
       const newState = replace
         ? (patch as TState)
         : buildOf(prevState, patch as DeepPartial<TState>)
@@ -136,7 +136,7 @@ const setUpStore = <TState>(
   const handler = {
     state,
     prevState: undefined,
-    apply(stateResolvable: StateResolvable<TState>) {
+    setState(stateResolvable: StateResolvable<TState>) {
       const prevState = cloneObject(state)
       const newState = resolveState(stateResolvable, prevState)
       const outputState = invokeMiddleweres(
@@ -150,7 +150,7 @@ const setUpStore = <TState>(
       return {
         state: outputState,
         prevState,
-        apply: this.apply,
+        setState: this.setState,
       }
     },
   }
