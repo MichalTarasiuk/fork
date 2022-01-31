@@ -43,28 +43,31 @@ export const useHistoryOf = <TState>(
     },
     go(index: number) {
       if (savedHistory.current.length >= index) {
-        savedIndex.current = index
+        savedIndex.current = Math.round(index)
       }
 
-      return this.position
+      return handler.position
     },
     forward() {
       if (savedIndex.current !== savedHistory.current.length) {
         savedIndex.current = savedIndex.current + 1
       }
 
-      return this.position
+      return handler.position
     },
     back() {
       if (savedIndex.current !== 0) {
         savedIndex.current = savedIndex.current - 1
       }
 
-      return this.position
+      return handler.position
     },
   }
 
-  const value = [savedHistory.current, handler]
+  const value = {
+    savedHistory: savedHistory.current,
+    handler,
+  }
 
-  return Object.assign({}, value)
+  return Object.assign([], value)
 }
