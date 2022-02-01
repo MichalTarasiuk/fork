@@ -16,7 +16,13 @@ export const factory = <TState>(stateCreator: StateCreator<TState>) => {
       }
     })
 
-    return [state, store.setState, history] as const
+    const handler = {
+      mind: state,
+      setMind: store.setState,
+      history,
+    }
+
+    return Object.assign([state, store.setState, history] as const, handler)
   }
 
   const {

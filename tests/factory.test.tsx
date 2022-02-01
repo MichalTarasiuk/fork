@@ -217,7 +217,7 @@ describe('factory', () => {
     const { useRemind, setState } = store
 
     const Counter = () => {
-      const [mind] = useRemind((state) => state.darkMode)
+      const { mind } = useRemind((state) => state.darkMode)
 
       return <p>counter {mind.counter}</p>
     }

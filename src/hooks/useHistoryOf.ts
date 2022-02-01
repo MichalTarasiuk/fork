@@ -64,10 +64,8 @@ export const useHistoryOf = <TState>(
     },
   }
 
-  const value = {
+  return {
     savedHistory: savedHistory.current,
     handler,
   }
-
-  return Object.assign([], value)
 }
