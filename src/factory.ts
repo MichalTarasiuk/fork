@@ -1,13 +1,11 @@
-import { useState } from 'react'
-
 import { create } from 'src/vanilla'
-import { useDidMount, useHistoryOf } from 'src/hooks'
+import { useDidMount, useHistoryOf, useListener } from 'src/hooks'
 import type { Selector, StateCreator } from 'src/vanilla'
 
 export const factory = <TState>(stateCreator: StateCreator<TState>) => {
   const store = create(stateCreator)
   const hook = (selector?: Selector<TState>) => {
-    const [state, listener] = useState(store.getState)
+    const [state, listener] = useListener(store.getState)
     const history = useHistoryOf(state)
 
     useDidMount(() => {
