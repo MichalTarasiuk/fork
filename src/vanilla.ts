@@ -8,7 +8,12 @@ import {
   isMiddleware,
 } from 'src/utils'
 import type { StateResolvable, Listener } from 'src/utils'
-import type { SetState, StateCreator, SetUpStore, Selector } from 'src/types'
+import type {
+  SetState,
+  StateCreator,
+  SetUpStore,
+  Selector,
+} from 'src/vanilla.types'
 
 const create = <TState>(stateCreator: StateCreator<TState>) => {
   let store: ReturnType<SetUpStore<TState>>
