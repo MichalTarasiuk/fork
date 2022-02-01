@@ -34,20 +34,22 @@
     "printWidth": 80
   },
   "jest": {
-    "rootDir": ".",
-    "moduleDirectories": [
-      "node_modules",
-      "."
-    ],
-    "verbose": true,
-    "bail": 5,
-    "clearMocks": true,
-    "testRegex": "test.(js|ts|tsx)$",
-    "transformIgnorePatterns": ["node_modules/(?!(react)/)"],
+    "preset": "ts-jest",
+    "testEnvironment": "jsdom",
+    "globals": {
+      "ts-jest": {
+        "isolatedModules": true
+      }
+    },
     "transform": {
-      "^.+\\.(js|jsx|ts|tsx|mjs)$": "babel-jest"
-    }
-},
+      "^.+\\.jsx?$": "babel-jest"
+    },
+    "moduleNameMapper": {},
+    "moduleDirectories": [
+      ".",
+      "node_modules"
+    ]
+  },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged"
@@ -71,6 +73,7 @@
     "prettier": "^2.5.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
+    "ts-jest": "^27.1.3",
     "typescript": "^4.5.5"
   }
 }

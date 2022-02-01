@@ -1,26 +1,14 @@
 {
   "compilerOptions": {
-    "alwaysStrict": true,
-    "baseUrl": ".",
-    "target": "es2016",
-    "module": "commonjs",
-    "declaration": true,
-    "declarationDir": "./@types",
-    "outDir": "./dist",
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
+    "target": "esnext",
     "strict": true,
-    "skipLibCheck": true,
-    "allowUnreachableCode": false,
-    "allowUnusedLabels": false,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitOverride": true,
-    "noPropertyAccessFromIndexSignature": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "resolveJsonModule": true,
-    "keyofStringsOnly": true,
-    "jsx": "preserve"
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "baseUrl": "."
   },
-  "exclude": ["node_modules"]
+  "include": ["src/**/*", "tests/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
