@@ -1,4 +1,4 @@
-type Listener<TState> = (newState: TState, prevState?: TState) => void
+export type Listener<TState> = (newState: TState, prevState?: TState) => void
 
 const createObserver = <TState>() => {
   const _listeners: Set<Listener<TState>> = new Set()

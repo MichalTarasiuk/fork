@@ -7,34 +7,17 @@ import {
   cloneObject,
   isMiddleware,
 } from 'src/utils'
-import type { StateResolvable } from 'src/utils'
-
-type Patch<TState> =
-  | DeepPartial<TState>
-  | ((prevState: TState) => DeepPartial<TState>)
-type SetState<TState> = (patch: Patch<TState>, replace?: boolean) => void
-type SetUpStore<TState> = (
-  stateCreator: StateCreator<TState>,
-  setState: SetState<TState>
-) => {
-  state: TState
-  prevState: TState | undefined
-  setState: (
-    stateResolvable: StateResolvable<TState>
-  ) => ReturnType<SetUpStore<TState>>
-}
-
-export type StateCreator<TState> = ((set: SetState<TState>) => TState) | TState
-export type Selector<TState extends Record<string, any>> = (
-  state: TState
-) => any
+import type { StateResolvable, Listener } from 'src/utils'
+import type { SetState, StateCreator, SetUpStore, Selector } from 'src/types'
 
 const create = <TState>(stateCreator: StateCreator<TState>) => {
   let store: ReturnType<SetUpStore<TState>>
   const observer = createObserver<TState>()
-  type Listener = Parameters<typeof observer.subscribe>[0]
 
-  const customListener = (listener: Listener, selector: Selector<TState>) => {
+  const customListener = (
+    listener: Listener<TState>,
+    selector: Selector<TState>
+  ) => {
     return (newState: TState, prevState?: TState) => {
       const newSlice = selector(newState)
 
@@ -46,7 +29,10 @@ const create = <TState>(stateCreator: StateCreator<TState>) => {
     }
   }
 
-  const subscribe = (listener: Listener, selector?: Selector<TState>) => {
+  const subscribe = (
+    listener: Listener<TState>,
+    selector?: Selector<TState>
+  ) => {
     listener = selector ? customListener(listener, selector) : listener
 
     const subscriber = observer.subscribe(listener)

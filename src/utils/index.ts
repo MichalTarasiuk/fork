@@ -1,4 +1,4 @@
-export { createObserver } from './observer'
+export * from './observer'
 export { isPrimitive } from './isPrimitive'
 export { buildOf } from './buildOf'
 export * from './resolveState'
