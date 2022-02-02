@@ -22,7 +22,7 @@ const createObserver = <TState>() => {
   }
 
   return {
-    get listeners() {
+    get getListeners() {
       return Array.from(_listeners)
     },
     notify,

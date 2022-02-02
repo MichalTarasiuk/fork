@@ -78,11 +78,13 @@ const create = <TState>(stateCreator: StateCreator<TState>) => {
   store = initializedStore
 
   return {
-    get getState() {
-      return store.state
-    },
-    get listeners() {
-      return observer.listeners
+    get: {
+      get state() {
+        return store.state
+      },
+      get listeners() {
+        return observer.getListeners
+      },
     },
     reset,
     setState,

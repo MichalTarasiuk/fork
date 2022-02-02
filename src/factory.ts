@@ -5,7 +5,7 @@ import type { Selector, StateCreator } from 'src/vanilla.types'
 export const factory = <TState>(stateCreator: StateCreator<TState>) => {
   const store = create(stateCreator)
   const hook = (selector?: Selector<TState>) => {
-    const [state, listener] = useListener(store.getState)
+    const [state, listener] = useListener(store.get.state)
     const history = useHistoryOf(state)
 
     useDidMount(() => {

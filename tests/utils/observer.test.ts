@@ -9,7 +9,7 @@ describe('observer', () => {
     observer.subscribe(noop)
 
     // then
-    expect(observer.listeners).toHaveLength(1)
+    expect(observer.getListeners).toHaveLength(1)
   })
 
   it('should destroy all subscribers', () => {
@@ -21,13 +21,13 @@ describe('observer', () => {
     observer.subscribe(noop)
 
     // then
-    expect(observer.listeners).toHaveLength(1)
+    expect(observer.getListeners).toHaveLength(1)
 
     // when
     observer.destroy()
 
     // then
-    expect(observer.listeners).toHaveLength(0)
+    expect(observer.getListeners).toHaveLength(0)
   })
 
   it('should notify all subscribers', () => {
@@ -40,8 +40,8 @@ describe('observer', () => {
     observer.subscribe(spy)
 
     // then
-    expect(observer.listeners).toHaveLength(1)
-    
+    expect(observer.getListeners).toHaveLength(1)
+
     // when
     fruits.forEach((fruit) => {
       observer.notify(fruit)

@@ -13,7 +13,7 @@ describe('vanilla', () => {
     store.subscribe(spy)
 
     // then
-    expect(store.listeners).toHaveLength(1)
+    expect(store.getListeners).toHaveLength(1)
 
     // when
     const ingredient = 1
@@ -39,7 +39,7 @@ describe('vanilla', () => {
     store.subscribe(spy, (state) => state.darkMode)
 
     // then
-    expect(store.listeners).toHaveLength(1)
+    expect(store.getListeners).toHaveLength(1)
 
     // when
     const ingredient = 1
@@ -66,7 +66,7 @@ describe('vanilla', () => {
     store.subscribe(spy, (state) => state.darkMode)
 
     // then
-    expect(store.listeners).toHaveLength(1)
+    expect(store.getListeners).toHaveLength(1)
 
     // when
     store.setState({
@@ -90,13 +90,13 @@ describe('vanilla', () => {
     store.subscribe(spy)
 
     // then
-    expect(store.listeners).toHaveLength(1)
+    expect(store.getListeners).toHaveLength(1)
 
     // when
     store.destroy()
 
     // then
-    expect(store.listeners).toHaveLength(0)
+    expect(store.getListeners).toHaveLength(0)
 
     // when
     store.setState({
@@ -125,13 +125,13 @@ describe('vanilla', () => {
     store.subscribe(counterSpy, (state) => state.counter)
 
     // then
-    expect(store.listeners).toHaveLength(2)
+    expect(store.getListeners).toHaveLength(2)
 
     // when
     dorkModeListener.unsubscribe()
 
     // then
-    expect(store.listeners).toHaveLength(1)
+    expect(store.getListeners).toHaveLength(1)
   })
 
   it('should resolve initial state', () => {
@@ -162,7 +162,7 @@ describe('vanilla', () => {
     store.subscribe(spy, (state) => state.counter)
 
     // then
-    expect(store.listeners).toHaveLength(1)
+    expect(store.getListeners).toHaveLength(1)
 
     // when
     state.setCounter()
