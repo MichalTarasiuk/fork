@@ -2,23 +2,29 @@ import { useRef } from 'react'
 
 import { usePrevious, useFirstMountState } from 'src/hooks'
 
-type Config<TState> = {
+export type Config<TState> = {
   capacity?: number
-  initialState: TState
-  initialHistory: any
+  initialHistory?: TState[]
+  initialIndex?: number
+}
+
+const getInitialIndex = (initialIndex: number, initialHistory: any[]) => {
+  const fallbackIndex = initialHistory.length - 1
+
+  return initialIndex !== -1 ? initialIndex : fallbackIndex
 }
 
 export const useHistoryOf = <TState>(
   state: TState,
   config?: Config<TState>
 ) => {
-  const { capacity = 10, initialState, initialHistory = [] } = config || {}
+  const { capacity = 10, initialHistory = [], initialIndex = -1 } = config || {}
 
-  const previousState = usePrevious(state, initialState)
+  const previousState = usePrevious(state)
   const isFirstMount = useFirstMountState()
 
-  const savedHistory = useRef<TState[]>(initialHistory)
-  const savedIndex = useRef(-1)
+  const savedHistory = useRef<TState[]>(initialHistory.slice(0, capacity))
+  const savedIndex = useRef(getInitialIndex(initialIndex, savedHistory.current))
 
   if (!isFirstMount) {
     if (previousState !== undefined) {
@@ -30,7 +36,9 @@ export const useHistoryOf = <TState>(
         savedHistory.current.push(previousState)
       }
 
-      savedIndex.current = savedHistory.current.length - 1
+      if (savedHistory.current.length === -1) {
+        savedIndex.current = savedHistory.current.length - 1
+      }
     }
   }
 
@@ -49,7 +57,7 @@ export const useHistoryOf = <TState>(
       return handler.position
     },
     forward() {
-      if (savedIndex.current !== savedHistory.current.length) {
+      if (savedIndex.current + 1 !== savedHistory.current.length) {
         savedIndex.current = savedIndex.current + 1
       }
 

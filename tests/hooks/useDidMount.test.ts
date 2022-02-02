@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks'
+import { renderHook, act } from '@testing-library/react-hooks'
 
 import { useDidMount } from 'src/hooks'
 
@@ -17,12 +17,14 @@ describe('useDidMount', () => {
     expect(mockEffectCallback).toHaveBeenCalledTimes(1)
   })
 
-  it.skip('should run clean-up provided on unmount', () => {
+  it('should run clean-up provided on unmount', () => {
     // given
     const { unmount } = renderHook(() => useDidMount(mockEffectCallback))
 
     // when
-    unmount()
+    act(() => {
+      unmount()
+    })
 
     // then
     expect(mockEffectCleanup).toHaveBeenCalled()

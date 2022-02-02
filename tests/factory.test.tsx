@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { render, fireEvent } from '@testing-library/react'
+import { render, fireEvent, act } from '@testing-library/react'
 
 import { useDidMount } from 'src/hooks'
 import { remind } from 'src/remind'
@@ -169,7 +169,7 @@ describe('factory', () => {
     expect(store.get.listeners).toHaveLength(1)
   })
 
-  it.skip('should remove listeners and back to initial state', async () => {
+  it('should remove listeners and back to initial state', async () => {
     // given
     const initialValue = {
       counter: 0,
@@ -196,13 +196,17 @@ describe('factory', () => {
     const { getByText, findByText } = await render(<Counter />)
 
     // when
-    fireEvent.click(getByText('increase'))
+    act(() => {
+      fireEvent.click(getByText('increase'))
+    })
 
     // then
     await findByText('counter 1')
 
     // when
-    store.destory()
+    act(() => {
+      store.destory()
+    })
 
     // then
     expect(store.get.state).toEqual(initialValue)
@@ -234,7 +238,7 @@ describe('factory', () => {
     await findByText('counter 0')
   })
 
-  it.skip('subscriber should rerender after invoke setState function outside component', async () => {
+  it('subscriber should rerender after invoke setState function outside component', async () => {
     // given
     const store = remind({
       counter: 0,
@@ -251,9 +255,11 @@ describe('factory', () => {
     const { findByText } = await render(<Counter />)
 
     // when
-    setState((prevState) => ({
-      counter: prevState.counter + 1,
-    }))
+    act(() => {
+      setState((prevState) => ({
+        counter: prevState.counter + 1,
+      }))
+    })
 
     // then
     await findByText('counter 1')
@@ -407,7 +413,7 @@ describe('factory', () => {
     await findByText('counter 1')
   })
 
-  it.skip('should reset store', async () => {
+  it('should reset store', async () => {
     // given
     const store = remind({
       counter: 0,
@@ -434,13 +440,17 @@ describe('factory', () => {
     const { getByText, findByText } = render(<Counter />)
 
     // when
-    fireEvent.click(getByText('increase'))
+    act(() => {
+      fireEvent.click(getByText('increase'))
+    })
 
     // then
     await findByText('counter 1')
 
     // when
-    store.destory()
+    act(() => {
+      store.destory()
+    })
 
     // then
     await findByText('counter 0')
