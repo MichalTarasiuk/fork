@@ -123,6 +123,7 @@ describe('factory', () => {
       counter: 0,
     })
     const { useRemind } = store
+
     const Root = {
       Parent() {
         const [isMounted, setIsMounted] = useState(true)
@@ -253,6 +254,154 @@ describe('factory', () => {
     setState((prevState) => ({
       counter: prevState.counter + 1,
     }))
+
+    // then
+    await findByText('counter 1')
+  })
+
+  it('should resolve middlewere', async () => {
+    // arrange
+    const { useRemind } = remind<any>({
+      counter: (value = 0) => {
+        return { next: false, value }
+      },
+    })
+
+    const Counter = () => {
+      const [{ counter }] = useRemind()
+
+      return <p>counter {counter}</p>
+    }
+
+    const { findByText } = render(<Counter />)
+
+    // assert
+    await findByText('counter 0')
+  })
+
+  it('middlewere should block setState action', async () => {
+    // given
+    const { useRemind } = remind({
+      counter: (value = 0) => {
+        return { next: false, value }
+      },
+    })
+
+    const Counter = () => {
+      const [{ counter }, setMind]: any = useRemind()
+
+      const increase = () => {
+        setMind((prevState: any) => ({
+          counter: prevState.counter + 1,
+        }))
+      }
+
+      return (
+        <div>
+          <p>counter {counter}</p>
+          <button onClick={increase}>increase</button>
+        </div>
+      )
+    }
+
+    const { getByText, findByText } = render(<Counter />)
+
+    // when
+    fireEvent.click(getByText('increase'))
+
+    // then
+    await findByText('counter 0')
+  })
+
+  it('middlewere should not block setState action', async () => {
+    // given
+    const { useRemind } = remind({
+      counter: (value = 0) => {
+        return { next: true, value }
+      },
+    })
+
+    const Counter = () => {
+      const [{ counter }, setMind]: any = useRemind()
+
+      const increase = () => {
+        setMind((prevState: any) => ({
+          counter: prevState.counter + 1,
+        }))
+      }
+
+      return (
+        <div>
+          <p>counter {counter}</p>
+          <button onClick={increase}>increase</button>
+        </div>
+      )
+    }
+
+    const { getByText, findByText } = render(<Counter />)
+
+    // when
+    fireEvent.click(getByText('increase'))
+
+    // then
+    await findByText('counter 1')
+  })
+
+  it('middlewere should block inner setState action', async () => {
+    // given
+    const { useRemind } = remind((set) => ({
+      counter: (value = 0) => {
+        return { next: false, value }
+      },
+      setCounter: () =>
+        set((prevState: any) => ({ counter: prevState.counter + 1 })),
+    }))
+
+    const Counter = () => {
+      const [{ counter, setCounter }]: any = useRemind()
+
+      return (
+        <div>
+          <p>counter {counter}</p>
+          <button onClick={setCounter}>increase</button>
+        </div>
+      )
+    }
+
+    const { getByText, findByText } = render(<Counter />)
+
+    // when
+    fireEvent.click(getByText('increase'))
+
+    // then
+    await findByText('counter 0')
+  })
+
+  it('middlewere should not block inner setState action', async () => {
+    // given
+    const { useRemind } = remind((set) => ({
+      counter: (value = 0) => {
+        return { next: true, value }
+      },
+      setCounter: () =>
+        set((prevState: any) => ({ counter: prevState.counter + 1 })),
+    }))
+
+    const Counter = () => {
+      const [{ counter, setCounter }]: any = useRemind()
+
+      return (
+        <div>
+          <p>counter {counter}</p>
+          <button onClick={setCounter}>increase</button>
+        </div>
+      )
+    }
+
+    const { getByText, findByText } = render(<Counter />)
+
+    // when
+    fireEvent.click(getByText('increase'))
 
     // then
     await findByText('counter 1')

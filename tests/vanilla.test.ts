@@ -6,14 +6,14 @@ describe('vanilla', () => {
     const store = create({
       counter: 0,
     })
-    const state = store.getState
+    const state = store.get.state
     const spy = jest.fn()
 
     // when
     store.subscribe(spy)
 
     // then
-    expect(store.getListeners).toHaveLength(1)
+    expect(store.get.listeners).toHaveLength(1)
 
     // when
     const ingredient = 1
@@ -32,14 +32,14 @@ describe('vanilla', () => {
       counter: 0,
       darkMode: false,
     })
-    const state = store.getState
+    const state = store.get.state
     const spy = jest.fn()
 
     // when
     store.subscribe(spy, (state) => state.darkMode)
 
     // then
-    expect(store.getListeners).toHaveLength(1)
+    expect(store.get.listeners).toHaveLength(1)
 
     // when
     const ingredient = 1
@@ -59,14 +59,14 @@ describe('vanilla', () => {
       counter: 0,
       darkMode: false,
     })
-    const state = store.getState
+    const state = store.get.state
     const spy = jest.fn()
 
     // when
     store.subscribe(spy, (state) => state.darkMode)
 
     // then
-    expect(store.getListeners).toHaveLength(1)
+    expect(store.get.listeners).toHaveLength(1)
 
     // when
     store.setState({
@@ -83,20 +83,20 @@ describe('vanilla', () => {
     const store = create({
       darkMode: false,
     })
-    const state = store.getState
+    const state = store.get.state
     const spy = jest.fn()
 
     // when
     store.subscribe(spy)
 
     // then
-    expect(store.getListeners).toHaveLength(1)
+    expect(store.get.listeners).toHaveLength(1)
 
     // when
     store.destroy()
 
     // then
-    expect(store.getListeners).toHaveLength(0)
+    expect(store.get.listeners).toHaveLength(0)
 
     // when
     store.setState({
@@ -125,13 +125,13 @@ describe('vanilla', () => {
     store.subscribe(counterSpy, (state) => state.counter)
 
     // then
-    expect(store.getListeners).toHaveLength(2)
+    expect(store.get.listeners).toHaveLength(2)
 
     // when
     dorkModeListener.unsubscribe()
 
     // then
-    expect(store.getListeners).toHaveLength(1)
+    expect(store.get.listeners).toHaveLength(1)
   })
 
   it('should resolve initial state', () => {
@@ -142,7 +142,7 @@ describe('vanilla', () => {
     const store = create(() => initialState)
 
     // assert
-    expect(store.getState).toEqual(initialState)
+    expect(store.get.state).toEqual(initialState)
   })
 
   it('should subscriber invoke after state change by inner setState', () => {
@@ -154,7 +154,7 @@ describe('vanilla', () => {
       setCounter: () =>
         set((prevState) => ({ counter: prevState.counter + ingredient })),
     }))
-    const state = store.getState
+    const state = store.get.state
     const spy = jest.fn()
 
     // when
@@ -162,7 +162,7 @@ describe('vanilla', () => {
     store.subscribe(spy, (state) => state.counter)
 
     // then
-    expect(store.getListeners).toHaveLength(1)
+    expect(store.get.listeners).toHaveLength(1)
 
     // when
     state.setCounter()
@@ -193,7 +193,7 @@ describe('vanilla', () => {
     })
 
     // then
-    expect(store.getState).toEqual({
+    expect(store.get.state).toEqual({
       a: {
         b: {
           c: 'C',
@@ -219,17 +219,17 @@ describe('vanilla', () => {
     }))
 
     // when
-    const oldState = { ...store.getState }
-    store.getState.setCounter()
+    const oldState = { ...store.get.state }
+    store.get.state.setCounter()
 
     // then
-    expect(store.getState.counter).toEqual(oldState.counter + ingredient)
+    expect(store.get.state.counter).toEqual(oldState.counter + ingredient)
 
     // when
     store.reset()
 
     // then
-    expect(store.getState.counter).toEqual(oldState.counter)
+    expect(store.get.state.counter).toEqual(oldState.counter)
   })
 
   it('should resolve middlewere', () => {
@@ -242,7 +242,7 @@ describe('vanilla', () => {
       counter: (value = 0) => authMiddlewere(value),
     })
 
-    expect(store.getState.counter).toBe(0)
+    expect(store.get.state.counter).toBe(0)
   })
 
   it('middlewere should block setState action', () => {
@@ -261,7 +261,7 @@ describe('vanilla', () => {
     }))
 
     // then
-    expect(store.getState.counter).toBe(0)
+    expect(store.get.state.counter).toBe(0)
   })
 
   it('middlewere should not block the setState action', () => {
@@ -280,7 +280,7 @@ describe('vanilla', () => {
     }))
 
     // then
-    expect(store.getState.counter).toBe(0)
+    expect(store.get.state.counter).toBe(0)
   })
 
   it('middlewere should block the inner setState action', () => {
@@ -297,10 +297,10 @@ describe('vanilla', () => {
     }))
 
     // when
-    store.getState.setCounter()
+    store.get.state.setCounter()
 
     // then
-    expect(store.getState.counter).toBe(0)
+    expect(store.get.state.counter).toBe(0)
   })
 
   it('middlewere should not block the inner setState action', () => {
@@ -317,9 +317,9 @@ describe('vanilla', () => {
     }))
 
     // when
-    store.getState.setCounter()
+    store.get.state.setCounter()
 
     // then
-    expect(store.getState.counter).toBe(1)
+    expect(store.get.state.counter).toBe(1)
   })
 })
