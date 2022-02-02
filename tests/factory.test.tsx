@@ -406,4 +406,45 @@ describe('factory', () => {
     // then
     await findByText('counter 1')
   })
+
+  it.skip('should reset store', async () => {
+    // given
+    const store = remind({
+      counter: 0,
+    })
+    const { useRemind } = store
+
+    const Counter = () => {
+      const [{ counter }, setMind] = useRemind()
+
+      const increase = () => {
+        setMind((prevState) => ({
+          counter: prevState.counter + 1,
+        }))
+      }
+
+      return (
+        <div>
+          <p>counter {counter}</p>
+          <button onClick={increase}>increase</button>
+        </div>
+      )
+    }
+
+    const { getByText, findByText } = render(<Counter />)
+
+    // when
+    fireEvent.click(getByText('increase'))
+
+    // then
+    await findByText('counter 1')
+
+    // when
+    store.destory()
+
+    // then
+    await findByText('counter 0')
+    expect(store.get.state.counter).toBe(0)
+    expect(store.get.listeners).toHaveLength(0)
+  })
 })
