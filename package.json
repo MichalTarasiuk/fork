@@ -23,39 +23,8 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "test": "jest --watch"
-  },
-  "prettier": {
-    "semi": false,
-    "trailingComma": "es5",
-    "singleQuote": true,
-    "bracketSameLine": true,
-    "tabWidth": 2,
-    "printWidth": 80
-  },
-  "jest": {
-    "preset": "ts-jest",
-    "testEnvironment": "jsdom",
-    "globals": {
-      "ts-jest": {
-        "isolatedModules": true
-      }
-    },
-    "transform": {
-      "^.+\\.jsx?$": "babel-jest"
-    },
-    "moduleDirectories": [
-      ".",
-      "node_modules"
-    ],
-    "moduleNameMapper": {
-      "^react(.*)$": "<rootDir>/node_modules/react$1"
-    }
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
+    "test": "jest --watch",
+    "lint": "eslint ."
   },
   "lint-staged": {
     "*": "prettier --write"
@@ -65,10 +34,16 @@
     "@babel/preset-env": "^7.16.11",
     "@babel/preset-typescript": "^7.16.7",
     "@testing-library/react": "^12.1.2",
+    "@testing-library/react-hooks": "^7.0.2",
     "@types/jest": "^27.4.0",
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
+    "@typescript-eslint/eslint-plugin": "^5.10.2",
+    "@typescript-eslint/parser": "^5.10.2",
     "babel-jest": "^27.4.6",
+    "eslint": "^8.8.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
     "husky": "^7.0.4",
     "jest": "^27.4.7",
     "lint-staged": "^12.2.2",
