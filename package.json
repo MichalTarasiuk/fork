@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "🧠 Remind is library for state management in React",
   "main": "./dist/remind.js",
-  "types": "./@types/index.d.ts",
+  "types": "./@types/remind.d.ts",
   "repository": "https://github.com/MichalTarasiuk/remind.git",
   "author": "Michał Tarasiuk",
   "contributors": [
