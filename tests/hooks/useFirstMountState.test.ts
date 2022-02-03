@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks'
 
-import { useFirstMountState } from "src/hooks"
+import { useFirstMountState } from "../../src/hooks"
 
 describe('useFirstMountState', () => {
   it('should return boolean', () => {

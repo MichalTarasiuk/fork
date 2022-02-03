@@ -1,4 +1,5 @@
-import { create } from 'src/remind'
+import { create } from '../src/remind'
+import type { Noop } from './test.types'
 
 describe('vanilla', () => {
   it('should subscriber invoke after state change', () => {

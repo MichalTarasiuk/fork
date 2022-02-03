@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react-hooks'
 
-import { useDidMount } from 'src/hooks'
+import { useDidMount } from '../../src/hooks'
 
 const mockEffectCleanup = jest.fn()
 const mockEffectCallback = jest.fn().mockReturnValue(mockEffectCleanup)

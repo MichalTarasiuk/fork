@@ -1,4 +1,4 @@
-import { resolveState } from 'src/utils'
+import { resolveState } from '../../src/utils'
 
 describe('resolveState', () => {
   it('should resolve state which is function', () => {

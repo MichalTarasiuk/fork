@@ -1,4 +1,4 @@
-import { cloneObject } from 'src/utils'
+import { cloneObject } from '../../src/utils'
 
 describe('cloneObject', () => {
   it('should clone object and not mutate the original object', () => {
@@ -30,7 +30,6 @@ describe('cloneObject', () => {
     // @ts-expect-error
     copy.test.what = '1243'
     copy.test.date = new Date('2020-10-16')
-    // @ts-expect-error
     copy.items[0] = 2
 
     expect(data).toEqual({
@@ -55,7 +54,6 @@ describe('cloneObject', () => {
       ]),
     })
 
-    // @ts-expect-error
     data.items = [1, 2, 3]
 
     expect(copy.items).toEqual([2])

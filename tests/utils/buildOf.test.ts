@@ -1,4 +1,4 @@
-import { buildOf } from 'src/utils'
+import { buildOf } from '../../src/utils'
 
 describe('buildOf', () => {
   it('should build value on empty object', () => {

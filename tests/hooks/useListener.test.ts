@@ -1,8 +1,8 @@
 import { renderHook } from '@testing-library/react-hooks'
 import { act } from '@testing-library/react'
 
-import { useListener } from 'src/hooks'
-import { createObserver } from 'src/utils'
+import { useListener } from '../../src/hooks'
+import { createObserver } from '../../src/utils'
 
 describe('useListener', () => {
   it('should update state', () => {

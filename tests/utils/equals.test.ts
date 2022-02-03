@@ -1,4 +1,4 @@
-import { equals } from 'src/utils'
+import { equals } from '../../src/utils'
 
 describe.only('equals', () => {
   it('should return false when two sets not match', () => {

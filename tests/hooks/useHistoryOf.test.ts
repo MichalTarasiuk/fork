@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { renderHook, act } from '@testing-library/react-hooks'
 
-import { useHistoryOf } from 'src/hooks'
-import type { Config } from 'src/hooks/useHistoryOf'
+import { useHistoryOf } from '../../src/hooks'
+import type { Config } from '../../src/hooks/useHistoryOf'
 
 const renderUseHistoryOf = (config?: Config<number>) =>
   renderHook(() => {
