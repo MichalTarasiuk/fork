@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { render, fireEvent, act } from '@testing-library/react'
 
 import { useDidMount } from '../src/hooks'
-import { remind } from '../src/remind'
+import remind from '../src/remind'
 import { random } from '../src/utils'
 
 describe('factory', () => {

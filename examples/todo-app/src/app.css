@@ -1,0 +1,27 @@
+.main-content {
+  height: 100vh;
+  display: flex;
+}
+
+.form-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-basis: 50%;
+}
+
+.list-section {
+  background-color: hsl(210 79% 46% / 0.04);
+  flex-basis: 50%;
+  overflow-y: scroll;
+}
+
+.list {
+  margin: 30px;
+}
+
+.list-element {
+  border: 3px blue dotted;
+  margin: 10px;
+  padding: 10px 20px;
+}

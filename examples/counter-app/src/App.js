@@ -1,4 +1,4 @@
-import { remind } from 'remind'
+import remind from 'remind'
 
 const { useRemind } = remind((set) => ({
   counter: (value = 0) => {

@@ -1,0 +1,38 @@
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 250px;
+}
+
+.text-input {
+  background: hsl(210 79% 46% / 0.04);
+  border: 1px solid blue;
+  border-radius: 5px;
+  outline: none;
+  transition: border 240ms ease 0ms, box-shadow 240ms ease 0ms;
+  height: 45px;
+  color: black;
+  margin-top: 8px;
+  font-size: 0.9rem;
+  padding: 10px;
+}
+
+.input-label {
+  font-size: 1.1rem;
+  margin-top: 5px;
+}
+
+.text-input:focus {
+  border: 1px solid blue;
+  box-shadow: rgb(155 112 255 / 18%) 0px 0px 0px 4px;
+}
+
+.submit-button {
+  background-color: blue;
+  border: none;
+  border-radius: 5px;
+  height: 40px;
+  margin-top: 15px;
+  cursor: pointer;
+  color: white;
+}

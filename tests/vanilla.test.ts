@@ -1,4 +1,4 @@
-import { create } from '../src/remind'
+import { create } from '../src/vanilla'
 import type { Noop } from './test.types'
 
 describe('vanilla', () => {

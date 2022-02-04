@@ -1,2 +1,1 @@
-export { create } from './vanilla'
-export { factory as remind } from './factory'
+export { factory as default } from './factory'
