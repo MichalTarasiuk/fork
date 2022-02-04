@@ -1,18 +1,27 @@
-import { isPrimitive, cloneObject } from 'src/utils'
+import { isPrimitive, cloneObject, isEmpty } from 'src/utils'
 
 export const buildOf = <TValue extends Record<string, any>>(
   value: TValue,
   source: DeepPartial<TValue>
-): TValue =>
-  Object.keys(value).reduce((accumulator, key) => {
-    const nestedSource = source[key]
-    const nestedAcc = accumulator[key]
+): TValue => {
+  const copy = cloneObject(value)
+  const shallowSource = { ...source }
 
-    if (key in source && nestedSource) {
-      ;(accumulator[key] as any) = isPrimitive(nestedAcc)
-        ? nestedSource
-        : buildOf(nestedAcc, nestedSource)
+  for (const [key, copyValue] of Object.entries(copy)) {
+    if (isEmpty(source)) {
+      return copy
     }
 
-    return accumulator
-  }, cloneObject(value))
+    const sourceValue = shallowSource[key]
+
+    if (key in shallowSource) {
+      (copy[key] as any) = isPrimitive(sourceValue)
+        ? sourceValue
+        : buildOf(copyValue, sourceValue)
+
+      delete shallowSource[key]
+    }
+  }
+
+  return copy
+}
