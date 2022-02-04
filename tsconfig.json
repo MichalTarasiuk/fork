@@ -9,8 +9,17 @@
     "baseUrl": ".",
     "outDir": "./dist",
     "declaration": true,
-    "declarationDir": "./@types"
+    "declarationDir": "./@types",
+    "rootDir": ".",
+    "allowUnusedLabels": false,
+    "allowUnreachableCode": false,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "resolveJsonModule": true
   },
-  "include": ["src/**/*", "tests/**/*"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "tests"]
 }
