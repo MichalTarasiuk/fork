@@ -2,13 +2,15 @@
   "name": "remind",
   "version": "1.0.0",
   "description": "🧠 Remind is library for state management in React",
-  "main": "./dist/remind.js",
-  "types": "./@types/remind.d.ts",
+  "main": "./dist/src/remind.js",
+  "types": "./@types/src/remind.d.ts",
   "repository": "https://github.com/MichalTarasiuk/remind.git",
   "author": "Michał Tarasiuk",
   "contributors": [
     "Michał Tarasiuk (https://github.com/MichalTarasiuk)"
   ],
+  "private": true,
+  "workspaces": [".", "examples/*"],
   "keywords": [
     "react",
     "state",
@@ -23,8 +25,7 @@
   "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "test": "jest --watch",
-    "lint": "eslint ."
+    "test": "jest --watch"
   },
   "lint-staged": {
     "*": "prettier --write"
@@ -38,9 +39,7 @@
     "@types/jest": "^27.4.0",
     "@types/react": "^17.0.38",
     "@types/react-dom": "^17.0.11",
-    "@typescript-eslint/parser": "^5.10.2",
     "babel-jest": "^27.4.6",
-    "eslint": "^8.8.0",
     "husky": "^7.0.4",
     "jest": "^27.4.7",
     "lint-staged": "^12.2.2",
