@@ -8,16 +8,18 @@ export const buildOf = <TValue extends Record<string, any>>(
   const shallowSource = { ...source }
 
   for (const [key, copyValue] of Object.entries(copy)) {
-    if (isEmpty(source)) {
+    if (isEmpty(shallowSource)) {
       return copy
     }
 
     const sourceValue = shallowSource[key]
 
     if (key in shallowSource) {
-      (copy[key] as any) = isPrimitive(sourceValue)
-        ? sourceValue
-        : buildOf(copyValue, sourceValue)
+      if(isPrimitive(sourceValue)) {
+        (copy[key] as any) = sourceValue
+      } else {
+        (copy[key] as any) = buildOf(copyValue, sourceValue)
+      }
 
       delete shallowSource[key]
     }
