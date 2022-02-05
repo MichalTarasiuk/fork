@@ -105,6 +105,7 @@ const invokeMiddleweres = <TState>(
     const prevValue = prevState && (prevState as any)[key]
     const newValue = newState && (newState as any)[key]
 
+    // FIXME
     if (isMiddleware(key, value)) {
       const middleware = value
       const { value: middlewareValue, next } = middleware(newValue)
@@ -138,7 +139,7 @@ const setUpStore = <TState>(
         newState
       )
 
-      this.state = Object.assign(this.state, outputState)
+      Object.assign(this.state, outputState)
 
       return {
         state: outputState,

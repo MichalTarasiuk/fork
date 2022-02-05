@@ -9,18 +9,20 @@ const Form = () => {
   const { setMind } = useRemind()
 
   const submit = (formValues: typeof values) => {
-    const { title, content } = formValues
-    const newNote = {
-      title,
-      content,
-      id: Math.random(),
+    if (handler.isFilled()) {
+      const { title, content } = formValues
+      const newNote = {
+        title,
+        content,
+        id: Math.random(),
+      }
+
+      setMind(({ notes: prevNotes }: any) => ({
+        notes: [...prevNotes, newNote],
+      }))
+
+      handler.reset()
     }
-
-    setMind(({ notes: prevNotes }: any) => ({
-      notes: [...prevNotes, newNote],
-    }))
-
-    handler.reset()
   }
 
   return (

@@ -19,6 +19,3 @@ export const isNotSetter = (key: string) => !key.startsWith('set')
 type Middleware = (value?: any) => { next: boolean; value: any }
 export const isMiddleware = (key: string, value: any): value is Middleware =>
   isNotSetter(key) && isFunction(value)
-
-export const isEmpty = (value: any) =>
-  value == null || !(Object.keys(value) || value).length

@@ -1,4 +1,4 @@
-import { isPrimitive, cloneObject, isEmpty } from 'src/utils'
+import { isPrimitive, cloneObject } from 'src/utils'
 
 export const buildOf = <TValue extends Record<string, any>>(
   value: TValue,
@@ -7,22 +7,11 @@ export const buildOf = <TValue extends Record<string, any>>(
   const copy = cloneObject(value)
   const shallowSource = { ...source }
 
-  for (const [key, copyValue] of Object.entries(copy)) {
-    if (isEmpty(shallowSource)) {
-      return copy
-    }
-
-    const sourceValue = shallowSource[key]
-
-    if (key in shallowSource) {
-      if(isPrimitive(sourceValue)) {
-        (copy[key] as any) = sourceValue
-      } else {
-        (copy[key] as any) = buildOf(copyValue, sourceValue)
-      }
-
-      delete shallowSource[key]
-    }
+  for (const [key, sourceValue] of Object.entries(shallowSource)) {
+    (copy[key] as any) =
+      isPrimitive(sourceValue) || Array.isArray(sourceValue)
+        ? sourceValue
+        : buildOf(copy[key], sourceValue)
   }
 
   return copy

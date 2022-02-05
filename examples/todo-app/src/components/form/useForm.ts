@@ -7,6 +7,7 @@ type Handler<TValues> = {
   onChange: ChangeEventHandler<HTMLInputElement>
   onSubmit: (submit: Submit<TValues>) => FormEventHandler
   reset: Noop
+  isFilled: () => boolean
 }
 
 export const useForm = <TInitialValues>(initialValue: TInitialValues) => {
@@ -29,6 +30,11 @@ export const useForm = <TInitialValues>(initialValue: TInitialValues) => {
     },
     reset() {
       setValues(initialValue)
+    },
+    isFilled() {
+      const numberOfFields = Object.keys(Boolean).length
+
+      return Object.values(Boolean).length === numberOfFields
     },
   }
 

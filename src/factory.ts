@@ -2,6 +2,7 @@ import { create } from 'src/vanilla'
 import { useDidMount, useHistoryOf, useListener } from 'src/hooks'
 import type { Selector, StateCreator } from 'src/vanilla.types'
 
+// FIXME
 export const factory = <TState>(stateCreator: StateCreator<TState>) => {
   const store = create(stateCreator)
   const hook = (selector?: Selector<TState>) => {
