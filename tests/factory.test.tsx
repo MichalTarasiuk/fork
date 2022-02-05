@@ -24,7 +24,7 @@ describe('factory', () => {
       return <p>counter {mind.counter}</p>
     }
 
-    const { findByText } = await render(<Counter />)
+    const { findByText } = render(<Counter />)
 
     // assert
     await findByText('counter 1')
@@ -49,13 +49,13 @@ describe('factory', () => {
       return <p>counter {mind.counter}</p>
     }
 
-    const { findByText } = await render(<Counter />)
+    const { findByText } = render(<Counter />)
 
     // asserts
     await findByText('counter 0')
   })
 
-  it('should not rerender component when use deep selector', async () => {
+  it('should not rerender component when use deep selector', () => {
     // given
     const initialName = 'you can count, count on yourself'
     const additionalNames = [
@@ -101,7 +101,7 @@ describe('factory', () => {
       )
     }
 
-    const { getByText } = await render(<Component />)
+    const { getByText } = render(<Component />)
 
     // when
     fireEvent.click(getByText('increse'))
@@ -117,7 +117,7 @@ describe('factory', () => {
     expect(nameElement.nodeValue).not.toBe(initialName)
   })
 
-  it('should remove listener from component which is not mounted', async () => {
+  it('should remove listener from component which is not mounted', () => {
     // given
     const store = remind({
       counter: 0,
@@ -160,7 +160,7 @@ describe('factory', () => {
       },
     }
 
-    const { getByText } = await render(<Root.Parent />)
+    const { getByText } = render(<Root.Parent />)
 
     // when
     fireEvent.click(getByText('unmount child 1'))
@@ -193,7 +193,7 @@ describe('factory', () => {
         </div>
       )
     }
-    const { getByText, findByText } = await render(<Counter />)
+    const { getByText, findByText } = render(<Counter />)
 
     // when
     act(() => {
@@ -227,7 +227,7 @@ describe('factory', () => {
       return <p>counter {mind.counter}</p>
     }
 
-    const { findByText } = await render(<Counter />)
+    const { findByText } = render(<Counter />)
 
     // when
     setState((prevState) => ({
@@ -252,7 +252,7 @@ describe('factory', () => {
       return <p>counter {mind.counter}</p>
     }
 
-    const { findByText } = await render(<Counter />)
+    const { findByText } = render(<Counter />)
 
     // when
     act(() => {

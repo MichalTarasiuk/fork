@@ -1,9 +1,14 @@
 import { create } from 'src/vanilla'
 import { useDidMount, useHistoryOf, useListener } from 'src/hooks'
-import type { Selector, StateCreator } from 'src/vanilla.types'
 
-// FIXME
-export const factory = <TState>(stateCreator: StateCreator<TState>) => {
+type Patch<TState> =
+  | DeepPartial<TState>
+  | ((prevState: TState) => DeepPartial<TState>)
+type SetState<TState> = (patch: Patch<TState>, replace?: boolean) => void
+type StateCreator<TState> = ((set: SetState<any>) => TState) | TState
+type Selector<TState> = (state: TState) => any
+
+const factory = <TState>(stateCreator: StateCreator<TState>) => {
   const store = create(stateCreator)
   const hook = (selector?: Selector<TState>) => {
     const [state, listener] = useListener(store.get.state)
@@ -41,9 +46,11 @@ export const factory = <TState>(stateCreator: StateCreator<TState>) => {
       }
     },
     destory() {
-      console.warn(
-        'WARN - destroy store may have unexpected effects on your application'
-      )
+      if (process.env.NODE_ENV === 'development') {
+        console.warn(
+          'WARN - destroy store may have unexpected effects on your application'
+        )
+      }
 
       resetToInitialState()
       destorySubscribers()
@@ -56,3 +63,6 @@ export const factory = <TState>(stateCreator: StateCreator<TState>) => {
 
   return handler.init()
 }
+
+export { factory }
+export type { Patch, Selector, StateCreator, SetState }

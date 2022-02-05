@@ -8,12 +8,18 @@ import {
   isMiddleware,
 } from 'src/utils'
 import type { StateResolvable, Listener } from 'src/utils'
-import type {
-  SetState,
-  StateCreator,
-  SetUpStore,
-  Selector,
-} from 'src/vanilla.types'
+import type { StateCreator, SetState, Selector } from 'src/factory'
+
+type SetUpStore<TState> = (
+  stateCreator: StateCreator<TState>,
+  setState: SetState<TState>
+) => {
+  state: TState
+  prevState: TState | undefined
+  setState: (
+    stateResolvable: StateResolvable<TState>
+  ) => ReturnType<SetUpStore<TState>>
+}
 
 const create = <TState>(stateCreator: StateCreator<TState>) => {
   let store: ReturnType<SetUpStore<TState>>
@@ -105,7 +111,6 @@ const invokeMiddleweres = <TState>(
     const prevValue = prevState && (prevState as any)[key]
     const newValue = newState && (newState as any)[key]
 
-    // FIXME
     if (isMiddleware(key, value)) {
       const middleware = value
       const { value: middlewareValue, next } = middleware(newValue)

@@ -5,7 +5,11 @@
   "main": "./dist/src/remind.js",
   "types": "./@types/src/remind.d.ts",
   "repository": "https://github.com/MichalTarasiuk/remind.git",
-  "author": "Michał Tarasiuk",
+  "author": {
+    "name": "Michał Tarasiuk",
+    "email": "tarasiuk.michal03@gmail.com",
+    "url": "https://strapi.io"
+  },
   "contributors": [
     "Michał Tarasiuk (https://github.com/MichalTarasiuk)"
   ],
