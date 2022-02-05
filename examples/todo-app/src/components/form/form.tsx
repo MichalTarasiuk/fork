@@ -17,7 +17,7 @@ const Form = () => {
         id: Math.random(),
       }
 
-      setMind(({ notes: prevNotes }: any) => ({
+      setMind(({ notes: prevNotes }) => ({
         notes: [...prevNotes, newNote],
       }))
 

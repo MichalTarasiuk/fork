@@ -9,6 +9,7 @@ import {
 } from 'src/utils'
 import type { StateResolvable, Listener } from 'src/utils'
 import type { StateCreator, SetState, Selector } from 'src/factory'
+import type { DeepPartial } from 'src/typings'
 
 type SetUpStore<TState> = (
   stateCreator: StateCreator<TState>,

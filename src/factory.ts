@@ -1,11 +1,12 @@
 import { create } from 'src/vanilla'
 import { useDidMount, useHistoryOf, useListener } from 'src/hooks'
+import type { DeepPartial } from 'src/typings'
 
 type Patch<TState> =
   | DeepPartial<TState>
   | ((prevState: TState) => DeepPartial<TState>)
 type SetState<TState> = (patch: Patch<TState>, replace?: boolean) => void
-type StateCreator<TState> = ((set: SetState<any>) => TState) | TState
+type StateCreator<TState> = ((set: SetState<TState>) => TState) | TState
 type Selector<TState> = (state: TState) => any
 
 const factory = <TState>(stateCreator: StateCreator<TState>) => {
