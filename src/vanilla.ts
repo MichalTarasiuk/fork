@@ -65,7 +65,9 @@ const create = <TState>(stateCreator: StateCreator<TState>) => {
       return newState
     })
 
-    observer.notify(newState, prevState)
+    if (!equals(newState, prevState)) {
+      observer.notify(newState, prevState)
+    }
   }
 
   const destroy = () => observer.destroy()
