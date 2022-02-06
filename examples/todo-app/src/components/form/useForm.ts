@@ -34,7 +34,7 @@ export const useForm = <TInitialValues>(initialValue: TInitialValues) => {
     isFilled() {
       const numberOfFields = Object.keys(Boolean).length
 
-      return Object.values(Boolean).length === numberOfFields
+      return Object.values(values).filter(Boolean).length === numberOfFields
     },
   }
 
