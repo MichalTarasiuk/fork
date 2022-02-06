@@ -323,4 +323,26 @@ describe('vanilla', () => {
     // then
     expect(store.get.state.counter).toBe(1)
   })
+
+  it('not invoke listener when state after setState action is the same', () => {
+    // given
+    const store = create({
+      counter: 0,
+    })
+
+    // when
+    const listener = jest.fn()
+    store.subscribe(listener)
+
+    // then
+    expect(store.get.listeners).toHaveLength(1)
+
+    // when
+    store.setState({
+      counter: 0,
+    })
+
+    // then
+    expect(listener).not.toHaveBeenCalled()
+  })
 })

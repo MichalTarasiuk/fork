@@ -457,4 +457,37 @@ describe('factory', () => {
     expect(store.get.state.counter).toBe(0)
     expect(store.get.listeners).toHaveLength(0)
   })
+
+  it('should not rerender listener when state after setState action is the same', () => {
+    // given
+    const store = remind({
+      counter: 0,
+    })
+    const { useRemind } = store
+
+    const Counter = () => {
+      const [{ counter }, setMind] = useRemind()
+
+      const increase = () => {
+        setMind({
+          counter: 0,
+        })
+      }
+
+      return (
+        <div>
+          <p>counter {counter}</p>
+          <button onClick={increase}>increase</button>
+        </div>
+      )
+    }
+
+    const { getByText } = render(<Counter />)
+
+    // when
+    fireEvent.click(getByText('increase'))
+
+    // then
+    getByText('counter 0')
+  })
 })
