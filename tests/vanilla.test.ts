@@ -233,27 +233,27 @@ describe('vanilla', () => {
     expect(store.get.state.counter).toEqual(oldState.counter)
   })
 
-  it('should resolve middlewere', () => {
+  it('should resolve middleware', () => {
     // arrange
     type State = {
       counter: any
     }
-    const authMiddlewere = (value: number) => ({ next: true, value })
+    const authMiddleware = (value: number) => ({ next: true, value })
     const store = create<State>({
-      counter: (value = 0) => authMiddlewere(value),
+      counter: (value = 0) => authMiddleware(value),
     })
 
     expect(store.get.state.counter).toBe(0)
   })
 
-  it('middlewere should block setState action', () => {
+  it('middleware should block setState action', () => {
     // given
     type State = {
       counter: any
     }
-    const authMiddlewere = (value: number) => ({ next: false, value })
+    const authMiddleware = (value: number) => ({ next: false, value })
     const store = create<State>({
-      counter: (value = 0) => authMiddlewere(value),
+      counter: (value = 0) => authMiddleware(value),
     })
 
     // when
@@ -265,14 +265,14 @@ describe('vanilla', () => {
     expect(store.get.state.counter).toBe(0)
   })
 
-  it('middlewere should not block the setState action', () => {
+  it('middleware should not block the setState action', () => {
     // given
     type State = {
       counter: any
     }
-    const authMiddlewere = (value: number) => ({ next: false, value })
+    const authMiddleware = (value: number) => ({ next: false, value })
     const store = create<State>({
-      counter: (value = 0) => authMiddlewere(value),
+      counter: (value = 0) => authMiddleware(value),
     })
 
     // when
@@ -284,15 +284,15 @@ describe('vanilla', () => {
     expect(store.get.state.counter).toBe(0)
   })
 
-  it('middlewere should block the inner setState action', () => {
+  it('middleware should block the inner setState action', () => {
     // given
     type State = {
       counter: any
       setCounter: Noop
     }
-    const authMiddlewere = (value: number) => ({ next: false, value })
+    const authMiddleware = (value: number) => ({ next: false, value })
     const store = create<State>((set) => ({
-      counter: (value = 0) => authMiddlewere(value),
+      counter: (value = 0) => authMiddleware(value),
       setCounter: () =>
         set((prevState) => ({ counter: prevState.counter + 1 })),
     }))
@@ -304,15 +304,15 @@ describe('vanilla', () => {
     expect(store.get.state.counter).toBe(0)
   })
 
-  it('middlewere should not block the inner setState action', () => {
+  it('middleware should not block the inner setState action', () => {
     // given
     type State = {
       counter: any
       setCounter: Noop
     }
-    const authMiddlewere = (value: number) => ({ next: true, value })
+    const authMiddleware = (value: number) => ({ next: true, value })
     const store = create<State>((set) => ({
-      counter: (value = 0) => authMiddlewere(value),
+      counter: (value = 0) => authMiddleware(value),
       setCounter: () =>
         set((prevState) => ({ counter: prevState.counter + 1 })),
     }))

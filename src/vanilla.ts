@@ -102,15 +102,15 @@ const create = <TState>(stateCreator: StateCreator<TState>) => {
   }
 }
 
-const invokeMiddleweres = <TState>(
-  stateWithMiddleweres: TState,
+const invokeMiddlewares = <TState>(
+  stateWithMiddlewares: TState,
   prevState?: TState,
   newState?: TState
 ): TState => {
-  const cloneState: any = cloneObject(newState || stateWithMiddleweres)
+  const cloneState: any = cloneObject(newState || stateWithMiddlewares)
   const initial = !prevState && !newState
 
-  Object.entries(stateWithMiddleweres).forEach(([key, value]) => {
+  Object.entries(stateWithMiddlewares).forEach(([key, value]) => {
     const prevValue = prevState && (prevState as any)[key]
     const newValue = newState && (newState as any)[key]
 
@@ -130,10 +130,10 @@ const setUpStore = <TState>(
   stateCreator: StateCreator<TState>,
   setState: SetState<TState>
 ) => {
-  const stateWithMiddleweres = isFunction(stateCreator)
+  const stateWithMiddlewares = isFunction(stateCreator)
     ? stateCreator(setState)
     : stateCreator
-  const state = invokeMiddleweres(stateWithMiddleweres)
+  const state = invokeMiddlewares(stateWithMiddlewares)
 
   const handler = {
     state,
@@ -141,8 +141,8 @@ const setUpStore = <TState>(
     setState(stateResolvable: StateResolvable<TState>) {
       const prevState = cloneObject(state)
       const newState = resolveState(stateResolvable, prevState)
-      const outputState = invokeMiddleweres(
-        stateWithMiddleweres,
+      const outputState = invokeMiddlewares(
+        stateWithMiddlewares,
         prevState,
         newState
       )

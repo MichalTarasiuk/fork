@@ -265,7 +265,7 @@ describe('factory', () => {
     await findByText('counter 1')
   })
 
-  it('should resolve middlewere', async () => {
+  it('should resolve middleware', async () => {
     // arrange
     const { useRemind } = remind<any>({
       counter: (value = 0) => {
@@ -285,7 +285,7 @@ describe('factory', () => {
     await findByText('counter 0')
   })
 
-  it('middlewere should block setState action', async () => {
+  it('middleware should block setState action', async () => {
     // given
     const { useRemind } = remind({
       counter: (value = 0) => {
@@ -319,7 +319,7 @@ describe('factory', () => {
     await findByText('counter 0')
   })
 
-  it('middlewere should not block setState action', async () => {
+  it('middleware should not block setState action', async () => {
     // given
     const { useRemind } = remind({
       counter: (value = 0) => {
@@ -353,7 +353,7 @@ describe('factory', () => {
     await findByText('counter 1')
   })
 
-  it('middlewere should block inner setState action', async () => {
+  it('middleware should block inner setState action', async () => {
     // given
     const { useRemind } = remind((set) => ({
       counter: (value = 0) => {
@@ -383,7 +383,7 @@ describe('factory', () => {
     await findByText('counter 0')
   })
 
-  it('middlewere should not block inner setState action', async () => {
+  it('middleware should not block inner setState action', async () => {
     // given
     const { useRemind } = remind((set) => ({
       counter: (value = 0) => {
