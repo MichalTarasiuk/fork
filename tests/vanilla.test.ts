@@ -4,9 +4,14 @@ import type { Noop } from './test.types'
 describe('vanilla', () => {
   it('should subscriber invoke after state change', () => {
     // given
-    const store = create({
+    type State = {
+      counter: number
+      increase: Noop
+    }
+    const store = create<State>((set) => ({
       counter: 0,
-    })
+      increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
+    }))
     const state = store.get.state
     const spy = jest.fn()
 
@@ -19,9 +24,7 @@ describe('vanilla', () => {
     // when
     const ingredient = 1
     const oldState = { ...state }
-    store.setState((prevState) => ({
-      counter: prevState.counter + ingredient,
-    }))
+    store.get.state.increase()
 
     // then
     expect(state.counter).toBe(oldState.counter + ingredient)
@@ -148,11 +151,11 @@ describe('vanilla', () => {
 
   it('should subscriber invoke after state change by inner setState', () => {
     // given
-    type State = { counter: number; setCounter: Noop }
+    type State = { counter: number; increase: Noop }
     const ingredient = 1
     const store = create<State>((set) => ({
       counter: 0,
-      setCounter: () =>
+      increase: () =>
         set((prevState) => ({ counter: prevState.counter + ingredient })),
     }))
     const state = store.get.state
@@ -166,7 +169,7 @@ describe('vanilla', () => {
     expect(store.get.listeners).toHaveLength(1)
 
     // when
-    state.setCounter()
+    state.increase()
 
     // then
     expect(state.counter).toBe(prevState.counter + ingredient)
@@ -208,12 +211,12 @@ describe('vanilla', () => {
     // given
     type State = {
       counter: number
-      setCounter: Noop
+      increase: Noop
     }
     const ingredient = 1
     const store = create<State>((set) => ({
       counter: 0,
-      setCounter: () =>
+      increase: () =>
         set((prevState) => ({
           counter: prevState.counter + ingredient,
         })),
@@ -221,7 +224,7 @@ describe('vanilla', () => {
 
     // when
     const oldState = { ...store.get.state }
-    store.get.state.setCounter()
+    store.get.state.increase()
 
     // then
     expect(store.get.state.counter).toEqual(oldState.counter + ingredient)
@@ -238,9 +241,8 @@ describe('vanilla', () => {
     type State = {
       counter: any
     }
-    const authMiddleware = (value: number) => ({ next: true, value })
     const store = create<State>({
-      counter: (value = 0) => authMiddleware(value),
+      counter: (value = 0) => ({ next: true, value }),
     })
 
     expect(store.get.state.counter).toBe(0)
@@ -250,16 +252,15 @@ describe('vanilla', () => {
     // given
     type State = {
       counter: any
+      increase: Noop
     }
-    const authMiddleware = (value: number) => ({ next: false, value })
-    const store = create<State>({
-      counter: (value = 0) => authMiddleware(value),
-    })
+    const store = create<State>((set) => ({
+      counter: (value = 0) => ({ next: false, value }),
+      increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
+    }))
 
     // when
-    store.setState((prevState) => ({
-      counter: prevState.counter + 1,
-    }))
+    store.get.state.increase()
 
     // then
     expect(store.get.state.counter).toBe(0)
@@ -269,36 +270,33 @@ describe('vanilla', () => {
     // given
     type State = {
       counter: any
+      increase: Noop
     }
-    const authMiddleware = (value: number) => ({ next: false, value })
-    const store = create<State>({
-      counter: (value = 0) => authMiddleware(value),
-    })
-
-    // when
-    store.setState((prevState) => ({
-      counter: prevState.counter + 1,
+    const store = create<State>((set) => ({
+      counter: (value = 0) => ({ next: true, value }),
+      increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
     }))
 
+    // when
+    store.get.state.increase()
+
     // then
-    expect(store.get.state.counter).toBe(0)
+    expect(store.get.state.counter).toBe(1)
   })
 
   it('middleware should block the inner setState action', () => {
     // given
     type State = {
       counter: any
-      setCounter: Noop
+      increase: Noop
     }
-    const authMiddleware = (value: number) => ({ next: false, value })
     const store = create<State>((set) => ({
-      counter: (value = 0) => authMiddleware(value),
-      setCounter: () =>
-        set((prevState) => ({ counter: prevState.counter + 1 })),
+      counter: (value = 0) => ({ next: false, value }),
+      increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
     }))
 
     // when
-    store.get.state.setCounter()
+    store.get.state.increase()
 
     // then
     expect(store.get.state.counter).toBe(0)
@@ -308,17 +306,15 @@ describe('vanilla', () => {
     // given
     type State = {
       counter: any
-      setCounter: Noop
+      increase: Noop
     }
-    const authMiddleware = (value: number) => ({ next: true, value })
     const store = create<State>((set) => ({
-      counter: (value = 0) => authMiddleware(value),
-      setCounter: () =>
-        set((prevState) => ({ counter: prevState.counter + 1 })),
+      counter: (value = 0) => ({ next: true, value }),
+      increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
     }))
 
     // when
-    store.get.state.setCounter()
+    store.get.state.increase()
 
     // then
     expect(store.get.state.counter).toBe(1)

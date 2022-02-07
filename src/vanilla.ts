@@ -114,7 +114,7 @@ const invokeMiddlewares = <TState>(
     const prevValue = prevState && (prevState as any)[key]
     const newValue = newState && (newState as any)[key]
 
-    if (isMiddleware(key, value)) {
+    if (isMiddleware(value)) {
       const middleware = value
       const { value: middlewareValue, next } = middleware(newValue)
       const condition = next || initial

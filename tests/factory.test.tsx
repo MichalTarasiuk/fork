@@ -4,24 +4,28 @@ import { render, fireEvent, act } from '@testing-library/react'
 import { useDidMount } from '../src/hooks'
 import remind from '../src/remind'
 import { random } from '../src/utils'
+import type { Noop } from './test.types'
 
 describe('factory', () => {
   it('should rerender component', async () => {
     // arrange
-    const { useRemind } = remind({
+    type State = {
+      counter: number
+      increase: Noop
+    }
+    const { useRemind } = remind<State>((set) => ({
       counter: 0,
-    })
+      increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
+    }))
 
     const Counter = () => {
-      const [mind, setMind] = useRemind()
+      const [{ counter, increase }] = useRemind()
 
       useDidMount(() => {
-        setMind((prevState) => ({
-          counter: prevState.counter + 1,
-        }))
+        increase()
       })
 
-      return <p>counter {mind.counter}</p>
+      return <p>counter {counter}</p>
     }
 
     const { findByText } = render(<Counter />)
@@ -171,24 +175,22 @@ describe('factory', () => {
 
   it('should remove listeners and back to initial state', async () => {
     // given
-    const initialValue = {
-      counter: 0,
+    type State = {
+      counter: any
+      increase: Noop
     }
-    const store = remind(initialValue)
+    const store = remind<State>((set) => ({
+      counter: 0,
+      increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
+    }))
     const { useRemind } = store
 
     const Counter = () => {
-      const [mind, setMind] = useRemind()
-
-      const increase = () => {
-        setMind((prevState) => ({
-          counter: prevState.counter + 1,
-        }))
-      }
+      const [{ counter, increase }] = useRemind()
 
       return (
         <div>
-          <p>counter {mind.counter}</p>
+          <p>counter {counter}</p>
           <button onClick={increase}>increase</button>
         </div>
       )
@@ -209,7 +211,7 @@ describe('factory', () => {
     })
 
     // then
-    expect(store.get.state).toEqual(initialValue)
+    expect(store.get.state.counter).toBe(0)
     expect(store.get.listeners).toHaveLength(0)
   })
 
@@ -287,20 +289,19 @@ describe('factory', () => {
 
   it('middleware should block setState action', async () => {
     // given
-    const { useRemind } = remind({
+    type State = {
+      counter: any
+      increase: Noop
+    }
+    const { useRemind } = remind<State>((set) => ({
       counter: (value = 0) => {
         return { next: false, value }
       },
-    })
+      increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
+    }))
 
     const Counter = () => {
-      const [{ counter }, setMind]: any = useRemind()
-
-      const increase = () => {
-        setMind((prevState: any) => ({
-          counter: prevState.counter + 1,
-        }))
-      }
+      const [{ counter, increase }] = useRemind()
 
       return (
         <div>
@@ -321,20 +322,19 @@ describe('factory', () => {
 
   it('middleware should not block setState action', async () => {
     // given
-    const { useRemind } = remind({
+    type State = {
+      counter: any
+      increase: Noop
+    }
+    const { useRemind } = remind<State>((set) => ({
       counter: (value = 0) => {
         return { next: true, value }
       },
-    })
+      increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
+    }))
 
     const Counter = () => {
-      const [{ counter }, setMind]: any = useRemind()
-
-      const increase = () => {
-        setMind((prevState: any) => ({
-          counter: prevState.counter + 1,
-        }))
-      }
+      const [{ counter, increase }] = useRemind()
 
       return (
         <div>
@@ -355,21 +355,24 @@ describe('factory', () => {
 
   it('middleware should block inner setState action', async () => {
     // given
-    const { useRemind } = remind((set) => ({
+    type State = {
+      counter: any
+      increase: Noop
+    }
+    const { useRemind } = remind<State>((set) => ({
       counter: (value = 0) => {
         return { next: false, value }
       },
-      setCounter: () =>
-        set((prevState: any) => ({ counter: prevState.counter + 1 })),
+      increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
     }))
 
     const Counter = () => {
-      const [{ counter, setCounter }]: any = useRemind()
+      const [{ counter, increase }] = useRemind()
 
       return (
         <div>
           <p>counter {counter}</p>
-          <button onClick={setCounter}>increase</button>
+          <button onClick={increase}>increase</button>
         </div>
       )
     }
@@ -385,21 +388,24 @@ describe('factory', () => {
 
   it('middleware should not block inner setState action', async () => {
     // given
-    const { useRemind } = remind((set) => ({
+    type State = {
+      counter: any
+      increase: Noop
+    }
+    const { useRemind } = remind<State>((set) => ({
       counter: (value = 0) => {
         return { next: true, value }
       },
-      setCounter: () =>
-        set((prevState: any) => ({ counter: prevState.counter + 1 })),
+      increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
     }))
 
     const Counter = () => {
-      const [{ counter, setCounter }]: any = useRemind()
+      const [{ counter, increase }] = useRemind()
 
       return (
         <div>
           <p>counter {counter}</p>
-          <button onClick={setCounter}>increase</button>
+          <button onClick={increase}>increase</button>
         </div>
       )
     }
@@ -415,19 +421,18 @@ describe('factory', () => {
 
   it('should reset store', async () => {
     // given
-    const store = remind({
+    type State = {
+      counter: number
+      increase: Noop
+    }
+    const store = remind<State>((set) => ({
       counter: 0,
-    })
+      increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
+    }))
     const { useRemind } = store
 
     const Counter = () => {
-      const [{ counter }, setMind] = useRemind()
-
-      const increase = () => {
-        setMind((prevState) => ({
-          counter: prevState.counter + 1,
-        }))
-      }
+      const [{ counter, increase }] = useRemind()
 
       return (
         <div>
@@ -460,19 +465,18 @@ describe('factory', () => {
 
   it('should not rerender listener when state after setState action is the same', () => {
     // given
-    const store = remind({
+    type State = {
+      counter: number
+      increase: Noop
+    }
+    const store = remind<State>((set) => ({
       counter: 0,
-    })
+      increase: () => set({ counter: 0 }),
+    }))
     const { useRemind } = store
 
     const Counter = () => {
-      const [{ counter }, setMind] = useRemind()
-
-      const increase = () => {
-        setMind({
-          counter: 0,
-        })
-      }
+      const [{ counter, increase }] = useRemind()
 
       return (
         <div>
