@@ -9,21 +9,15 @@ const { useRemind } = remind((set) => ({
     return { next: true, value }
   },
   setToInitial: () => set({ counter: 0 }),
+  increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
 }))
 
 function App() {
-  const [mind, setMind] = useRemind()
-
-  const increase = () => {
-    setMind((prevState) => ({
-      counter: prevState.counter + 1,
-    }))
-  }
-
+  const [mind] = useRemind()
   return (
     <div>
       <p>counter {mind.counter}</p>
-      <button onClick={increase}>increase</button>
+      <button onClick={mind.increase}>increase</button>
       <button onClick={mind.setToInitial}>reset</button>
     </div>
   )
