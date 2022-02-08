@@ -1,5 +1,6 @@
 import { create } from '../src/vanilla'
 import type { Noop } from './test.types'
+import { wait } from './test.utils'
 
 describe('vanilla', () => {
   it('should subscriber invoke after state change', () => {
@@ -340,5 +341,27 @@ describe('vanilla', () => {
 
     // then
     expect(listener).not.toHaveBeenCalled()
+  })
+
+  it('should wait for async actions', async () => {
+    // given
+    type State = {
+      counter: number
+      increase: () => Promise<void>
+    }
+    const store = create<State>((set) => ({
+      counter: 0,
+      increase: async () => {
+        await wait(1000)
+        set((prevState) => ({ counter: prevState.counter + 1 }))
+      },
+    }))
+    const state = store.get.state
+
+    // when
+    await state.increase()
+
+    // then
+    expect(state.counter).toBe(1)
   })
 })

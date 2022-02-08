@@ -1,4 +1,5 @@
-import { createObserver, noop } from '../../src/utils'
+import { createObserver } from '../../src/utils'
+import { noop } from '../test.utils'
 
 describe('observer', () => {
   it('should subscribe observer', () => {

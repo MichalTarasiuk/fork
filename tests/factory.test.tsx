@@ -3,7 +3,7 @@ import { render, fireEvent, act } from '@testing-library/react'
 
 import { useDidMount } from '../src/hooks'
 import remind from '../src/remind'
-import { random } from '../src/utils'
+import { random, wait } from './test.utils'
 import type { Noop } from './test.types'
 
 describe('factory', () => {
@@ -493,5 +493,40 @@ describe('factory', () => {
 
     // then
     getByText('counter 0')
+  })
+
+  it('should wait for async actions', async () => {
+    // given
+    type State = {
+      counter: number
+      increase: () => Promise<void>
+    }
+    const store = remind<State>((set) => ({
+      counter: 0,
+      increase: async () => {
+        await wait(1000)
+        set({ counter: 1 })
+      },
+    }))
+    const { useRemind } = store
+
+    const Counter = () => {
+      const [{ counter, increase }] = useRemind()
+
+      return (
+        <div>
+          <p>counter {counter}</p>
+          <button onClick={increase}>increase</button>
+        </div>
+      )
+    }
+
+    const { findByText, getByText } = render(<Counter />)
+
+    // when
+    fireEvent.click(getByText('increase'))
+
+    // then
+    await findByText('counter 1')
   })
 })

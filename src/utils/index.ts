@@ -9,8 +9,3 @@ export { isMiddleware } from './isMiddleware'
 export const isFunction = <TValue extends Function>(
   value: any
 ): value is TValue => typeof value === 'function'
-
-export const noop = () => {}
-
-export const random = <TValue extends any>(arr: TValue[]): TValue =>
-  arr[Math.floor(Math.random() * arr.length)]
