@@ -5,6 +5,7 @@ export * from './resolveState'
 export { equals } from './equals'
 export { cloneObject } from './cloneObject'
 export { isMiddleware } from './isMiddleware'
+export { merge } from './merge'
 
 export const isFunction = <TValue extends Function>(
   value: any

@@ -7,10 +7,5 @@ export const useListener = <TState>(initialState: TState) => {
     setState(newState)
   }
 
-  const returnValue = {
-    state,
-    listener,
-  }
-
-  return Object.assign([state, listener] as const, returnValue)
+  return [state, listener] as const
 }
