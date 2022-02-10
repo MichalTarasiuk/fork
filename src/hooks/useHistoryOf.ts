@@ -1,6 +1,7 @@
 import { useRef } from 'react'
 
 import { usePrevious, useFirstMountState } from 'src/hooks'
+import { merge } from 'src/utils'
 
 export type Config<TState> = {
   capacity?: number
@@ -72,8 +73,10 @@ export const useHistoryOf = <TState>(
     },
   }
 
-  return {
+  const result = {
     savedHistory: savedHistory.current,
     handler,
   }
+
+  return merge([result.savedHistory, result.handler], result)
 }

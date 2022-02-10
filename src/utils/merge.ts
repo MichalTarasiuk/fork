@@ -5,9 +5,7 @@ export const merge = <
   arr: TArr,
   plainObject: TPlainObject
 ) => {
-  const result = Object.assign(arr, plainObject)
-
-  Object.setPrototypeOf(result, null)
+  const result = Object.freeze(Object.assign(arr, plainObject))
 
   return result
 }

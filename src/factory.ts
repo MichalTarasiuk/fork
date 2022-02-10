@@ -1,5 +1,6 @@
 import { create } from 'src/vanilla'
 import { useDidMount, useHistoryOf, useListener } from 'src/hooks'
+import { merge } from 'src/utils'
 import type { DeepPartial } from 'src/typings'
 
 type Patch<TState> =
@@ -29,7 +30,7 @@ const factory = <TState>(stateCreator: StateCreator<TState>) => {
       history,
     }
 
-    return Object.assign([state, store.setState, history] as const, handler)
+    return merge([state, store.setState, history] as const, handler)
   }
 
   const {
