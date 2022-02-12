@@ -45,9 +45,11 @@ const create = <TState>(stateCreator: StateCreator<TState>) => {
     listener: Listener<TState>,
     selector?: Selector<TState>
   ) => {
-    listener = selector ? customListener(listener, selector) : listener
+    const readydListener = selector
+      ? customListener(listener, selector)
+      : listener
 
-    const subscriber = observer.subscribe(listener)
+    const subscriber = observer.subscribe(readydListener)
 
     return {
       unsubscribe: subscriber.unsubscribe,
@@ -55,12 +57,12 @@ const create = <TState>(stateCreator: StateCreator<TState>) => {
   }
 
   const setState: SetState<TState> = (patch, replace = false) => {
-    patch = isFunction(patch) ? patch(store.state) : patch
+    const nextState = isFunction(patch) ? patch(store.state) : patch
 
     const { state: newState, prevState } = store.setState((prevState) => {
       const newState = replace
         ? (patch as TState)
-        : buildOf(prevState, patch as DeepPartial<TState>)
+        : buildOf(prevState, nextState as DeepPartial<TState>)
 
       return newState
     })
