@@ -12,7 +12,7 @@ type Selector<TState> = (state: TState) => any
 
 const factory = <TState>(stateCreator: StateCreator<TState>) => {
   const store = create(stateCreator)
-  const hook = (selector?: Selector<TState>) => {
+  const useRemind = (selector?: Selector<TState>) => {
     const [state, listener] = useListener(store.get.state)
     const history = useHistoryOf(state)
 
@@ -39,31 +39,28 @@ const factory = <TState>(stateCreator: StateCreator<TState>) => {
     ...restStore
   } = store
 
-  const handler = {
-    init() {
-      return {
-        useRemind: hook,
-        destory: this.destory,
-        ...restStore,
-      }
-    },
-    destory() {
-      if (process.env.NODE_ENV === 'development') {
-        console.warn(
-          'WARN - destroy store may have unexpected effects on your application'
-        )
-      }
+  const destroy = () => {
+    if (process.env.NODE_ENV === 'development') {
+      console.warn(
+        'WARN - destroy store may have unexpected effects on your application'
+      )
+    }
 
-      resetToInitialState()
-      destorySubscribers()
+    resetToInitialState()
+    destorySubscribers()
 
-      return {
-        init: this.init,
-      }
-    },
+    return {
+      useRemind,
+      destroy,
+      ...restStore,
+    }
   }
 
-  return handler.init()
+  return {
+    useRemind,
+    destroy,
+    ...restStore,
+  }
 }
 
 export { factory }
