@@ -207,7 +207,7 @@ describe('factory', () => {
 
     // when
     act(() => {
-      store.destory()
+      store.destroy()
     })
 
     // then
@@ -454,7 +454,7 @@ describe('factory', () => {
 
     // when
     act(() => {
-      store.destory()
+      store.destroy()
     })
 
     // then

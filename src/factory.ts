@@ -8,7 +8,7 @@ type Patch<TState> =
   | ((prevState: TState) => DeepPartial<TState>)
 type SetState<TState> = (patch: Patch<TState>, replace?: boolean) => void
 type StateCreator<TState> = ((set: SetState<TState>) => TState) | TState
-type Selector<TState> = (state: TState) => any
+type Selector<TState> = (state: TState) => TState[keyof TState]
 
 const factory = <TState>(stateCreator: StateCreator<TState>) => {
   const store = create(stateCreator)
