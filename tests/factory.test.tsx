@@ -66,13 +66,14 @@ describe('factory', () => {
       'keep counting!!!',
       "you're doing better and better",
     ]
-    const { useRemind } = remind({
+    const { useRemind, get } = remind({
       counter: {
         name: initialName,
         value: 0,
       },
       dakrMode: false,
     })
+    get.state.counter.name
 
     const Component = () => {
       const [mind, setMind] = useRemind((state) => state.counter.name)

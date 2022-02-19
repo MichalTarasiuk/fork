@@ -3,6 +3,7 @@ import { isMiddleware } from '../../src/utils'
 describe('isMiddleware', () => {
   it('should return true when function has default params', () => {
     // arrange
+    // @ts-ignore
     const middleware = (value = 0, divider = 1) => ({ next: true, value })
 
     // assert
@@ -11,6 +12,7 @@ describe('isMiddleware', () => {
 
   it('should return false when function has one constant param', () => {
     // arrange
+    // @ts-ignore
     const middleware = (divider, value = 0) => ({ next: true, value })
 
     // assert

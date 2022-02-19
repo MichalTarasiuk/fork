@@ -152,7 +152,6 @@ describe('useHistoryOf', () => {
       initialIndex: 0,
     })
     const hook = result.current
-    const initialPosition = { ...hook.history.handler.position }
 
     // when
     const index = 4.8239289

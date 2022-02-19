@@ -30,6 +30,7 @@ describe('cloneObject', () => {
     // @ts-expect-error
     copy.test.what = '1243'
     copy.test.date = new Date('2020-10-16')
+    // @ts-ignore
     copy.items[0] = 2
 
     expect(data).toEqual({
@@ -54,6 +55,7 @@ describe('cloneObject', () => {
       ]),
     })
 
+    // @ts-ignore
     data.items = [1, 2, 3]
 
     expect(copy.items).toEqual([2])
