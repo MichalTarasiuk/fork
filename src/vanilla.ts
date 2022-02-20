@@ -116,10 +116,10 @@ const invokeMiddlewares = <TState>(
     const value = state && (state as any)[key]
     const nextValue = nextState && (nextState as any)[key]
 
-    const { value: defaultValue, next } = middleware(nextValue)
+    const { value: middlewareValue, next } = middleware(nextValue)
     const condition = next || initialStateCreation
 
-    cloneState[key] = condition ? defaultValue : value
+    cloneState[key] = condition ? middlewareValue : value
   })
 
   return cloneState
