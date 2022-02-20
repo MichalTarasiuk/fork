@@ -57,12 +57,12 @@ const create = <TState>(stateCreator: StateCreator<TState>) => {
   }
 
   const setState: SetState<TState> = (patch, replace = false) => {
-    const nextState = isFunction(patch) ? patch(store.state) : patch
+    const resolvedPatch = isFunction(patch) ? patch(store.state) : patch
 
     const { state: newState, prevState } = store.setState((prevState) => {
       const newState = replace
         ? (patch as TState)
-        : buildOf(prevState, nextState as DeepPartial<TState>)
+        : buildOf(prevState, resolvedPatch as DeepPartial<TState>)
 
       return newState
     })
