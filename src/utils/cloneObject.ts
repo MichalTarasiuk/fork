@@ -1,4 +1,4 @@
-import { isPrimitive } from 'src/utils'
+import { isPrimitive } from '../utils'
 
 function cloneObject<TValue>(value: TValue): TValue {
   let clone: any

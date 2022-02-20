@@ -1,7 +1,7 @@
 import { useRef } from 'react'
 
-import { usePrevious, useFirstMountState } from 'src/hooks'
-import { merge } from 'src/utils'
+import { usePrevious, useFirstMountState } from '../hooks'
+import { merge } from '../utils'
 
 export type Config<TState> = {
   capacity?: number

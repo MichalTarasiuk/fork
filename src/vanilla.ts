@@ -6,10 +6,10 @@ import {
   isFunction,
   cloneObject,
   isMiddleware,
-} from 'src/utils'
-import type { StateResolvable, Listener } from 'src/utils'
-import type { StateCreator, SetState, Selector } from 'src/factory'
-import type { DeepPartial } from 'src/typings'
+} from './utils'
+import type { StateResolvable, Listener } from './utils'
+import type { StateCreator, SetState, Selector } from './factory'
+import type { DeepPartial } from './typings'
 
 type SetUpStore<TState> = (
   stateCreator: StateCreator<TState>,
@@ -105,37 +105,40 @@ const create = <TState>(stateCreator: StateCreator<TState>) => {
 }
 
 const invokeMiddlewares = <TState>(
-  stateWithMiddlewares: TState,
-  prevState?: TState,
-  newState?: TState
+  middlewares: TState,
+  state: TState,
+  nextState?: TState
 ): TState => {
-  const cloneState: any = cloneObject(newState || stateWithMiddlewares)
-  const initial = !prevState && !newState
+  const cloneState: any = cloneObject(nextState || state)
+  const initialStateCreation = !nextState
 
-  Object.entries(stateWithMiddlewares).forEach(([key, value]) => {
-    const prevValue = prevState && (prevState as any)[key]
-    const newValue = newState && (newState as any)[key]
+  Object.entries(middlewares).forEach(([key, middleware]) => {
+    const value = state && (state as any)[key]
+    const nextValue = nextState && (nextState as any)[key]
 
-    if (isMiddleware(value)) {
-      const middleware = value
-      const { value: middlewareValue, next } = middleware(newValue)
-      const condition = next || initial
+    const { value: defaultValue, next } = middleware(nextValue)
+    const condition = next || initialStateCreation
 
-      cloneState[key] = condition ? middlewareValue : prevValue
-    }
+    cloneState[key] = condition ? defaultValue : value
   })
 
   return cloneState
 }
 
+const getMiddlewares = <TState extends Record<string, any>>(state: TState) =>
+  Object.fromEntries(
+    Object.entries(state).filter(([, value]) => isMiddleware(value))
+  ) as TState
+
 const setUpStore = <TState>(
   stateCreator: StateCreator<TState>,
   setState: SetState<TState>
 ) => {
-  const stateWithMiddlewares = isFunction(stateCreator)
+  const resolvedState = isFunction(stateCreator)
     ? stateCreator(setState)
     : stateCreator
-  const state = invokeMiddlewares(stateWithMiddlewares)
+  const middlewares = getMiddlewares(resolvedState)
+  const state = invokeMiddlewares(middlewares, resolvedState)
 
   const handler = {
     state,
@@ -143,11 +146,7 @@ const setUpStore = <TState>(
     setState(stateResolvable: StateResolvable<TState>) {
       const prevState = cloneObject(state)
       const newState = resolveState(stateResolvable, prevState)
-      const outputState = invokeMiddlewares(
-        stateWithMiddlewares,
-        prevState,
-        newState
-      )
+      const outputState = invokeMiddlewares(middlewares, prevState, newState)
 
       Object.assign(this.state, outputState)
 

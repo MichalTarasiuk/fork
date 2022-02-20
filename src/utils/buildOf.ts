@@ -1,5 +1,5 @@
-import { isPrimitive, cloneObject } from 'src/utils'
-import type { DeepPartial } from 'src/typings'
+import { isPrimitive, cloneObject } from '../utils'
+import type { DeepPartial } from '../typings'
 
 export const buildOf = <TValue extends Record<string, any>>(
   value: TValue,

@@ -1,7 +1,7 @@
-import { create } from 'src/vanilla'
-import { useDidMount, useHistoryOf, useListener } from 'src/hooks'
-import { merge } from 'src/utils'
-import type { DeepPartial } from 'src/typings'
+import { create } from './vanilla'
+import { useDidMount, useListener } from './hooks'
+import { merge } from './utils'
+import type { DeepPartial } from './typings'
 
 type Patch<TState> =
   | DeepPartial<TState>
@@ -14,7 +14,6 @@ const factory = <TState>(stateCreator: StateCreator<TState>) => {
   const store = create(stateCreator)
   const useRemind = (selector?: Selector<TState>) => {
     const [state, listener] = useListener(store.get.state)
-    const history = useHistoryOf(state)
 
     useDidMount(() => {
       const subscriber = store.subscribe(listener, selector)
@@ -27,10 +26,9 @@ const factory = <TState>(stateCreator: StateCreator<TState>) => {
     const handler = {
       mind: state,
       setMind: store.setState,
-      history,
     }
 
-    return merge([state, store.setState, history] as const, handler)
+    return merge([state, store.setState] as const, handler)
   }
 
   const {
