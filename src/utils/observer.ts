@@ -1,4 +1,4 @@
-export type Listener<TState> = (newState: TState, prevState?: TState) => void
+export type Listener<TState> = (nextState: TState, state?: TState) => void
 
 const createObserver = <TState>() => {
   const _listeners: Set<Listener<TState>> = new Set()
@@ -15,14 +15,14 @@ const createObserver = <TState>() => {
 
   const destroy = () => _listeners.clear()
 
-  const notify = (newState: TState, prevState?: TState) => {
+  const notify = (nextState: TState, state?: TState) => {
     for (const listener of _listeners) {
-      listener(newState, prevState)
+      listener(nextState, state)
     }
   }
 
   return {
-    get getListeners() {
+    get listeners() {
       return Array.from(_listeners)
     },
     notify,

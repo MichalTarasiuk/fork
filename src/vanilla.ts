@@ -94,7 +94,7 @@ const create = <TState>(stateCreator: StateCreator<TState>) => {
         return store.state
       },
       get listeners() {
-        return observer.getListeners
+        return observer.listeners
       },
     },
     reset,
