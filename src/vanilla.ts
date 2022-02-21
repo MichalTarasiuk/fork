@@ -10,15 +10,15 @@ import {
 import type { StateResolvable, Listener } from './utils'
 import type { DeepPartial } from './typings'
 
-type SetUpStore<TState> = (
+type CreateManager<TState> = (
   stateCreator: StateCreator<TState>,
   setState: SetState<TState>
 ) => {
-  state: TState
-  prevState: TState | undefined
+  nextState: TState
+  state: TState | undefined
   setState: (
     stateResolvable: StateResolvable<TState>
-  ) => ReturnType<SetUpStore<TState>>
+  ) => Omit<ReturnType<CreateManager<TState>>, 'setState'>
 }
 type Patch<TState> =
   | DeepPartial<TState>
@@ -28,20 +28,20 @@ type StateCreator<TState> = ((set: SetState<TState>) => TState) | TState
 type Selector<TState> = (state: TState) => any
 
 const create = <TState>(stateCreator: StateCreator<TState>) => {
-  let store: ReturnType<SetUpStore<TState>>
+  let manager: ReturnType<CreateManager<TState>>
   const observer = createObserver<TState>()
 
   const customListener = (
     listener: Listener<TState>,
     selector: Selector<TState>
   ) => {
-    return (newState: TState, prevState?: TState) => {
-      const newSlice = selector(newState)
+    return (nextState: TState, state?: TState) => {
+      const nextSlice = selector(nextState)
 
-      if (prevState) {
-        const oldSlice = selector(prevState)
+      if (state) {
+        const slice = selector(state)
 
-        !equals(newSlice, oldSlice) && listener(newState, prevState)
+        !equals(nextSlice, slice) && listener(nextState, state)
       }
     }
   }
@@ -62,49 +62,45 @@ const create = <TState>(stateCreator: StateCreator<TState>) => {
   }
 
   const setState: SetState<TState> = (patch, replace = false) => {
-    const resolvedPatch = isFunction(patch) ? patch(store.state) : patch
+    const resolvedPatch = isFunction(patch) ? patch(manager.nextState) : patch
 
-    const { state: newState, prevState } = store.setState((prevState) => {
-      const newState = replace
+    const { nextState, state } = manager.setState((state) => {
+      const nextState = replace
         ? (patch as TState)
-        : buildOf(prevState, resolvedPatch as DeepPartial<TState>)
+        : buildOf(state, resolvedPatch as DeepPartial<TState>)
 
-      return newState
+      return nextState
     })
 
-    if (!equals(newState, prevState)) {
-      observer.notify(newState, prevState)
+    if (!equals(nextState, state)) {
+      observer.notify(nextState, state)
     }
   }
 
-  const destroy = () => observer.destroy()
-
   const reset = () => {
-    const restoredStore = setUpStore(stateCreator, setState)
-    const prevState = store.state
-    const restoredState = restoredStore.state
-    store = restoredStore
+    const restoredManager = createManager(stateCreator, setState)
+    const savedState = cloneObject(manager.nextState)
 
-    observer.notify(restoredState, prevState)
+    manager = restoredManager
+    observer.notify(restoredManager.nextState, savedState)
 
-    return restoredState
+    return restoredManager.nextState
   }
 
-  const initializedStore = setUpStore(stateCreator, setState)
-  store = initializedStore
+  manager = createManager(stateCreator, setState)
 
   return {
     get: {
       get state() {
-        return store.state
+        return manager.nextState
       },
       get listeners() {
         return observer.listeners
       },
     },
+    destroy: observer.destroy,
     reset,
     setState,
-    destroy,
     subscribe,
   }
 }
@@ -114,20 +110,19 @@ const invokeMiddlewares = <TState>(
   state: TState,
   nextState?: TState
 ): TState => {
-  const cloneState: any = cloneObject(nextState || state)
-  const initialStateCreation = !nextState
+  const currentState: any = cloneObject(nextState || state)
 
-  Object.entries(middlewares).forEach(([key, middleware]) => {
+  for (const [key, middleware] of Object.entries(middlewares)) {
     const value = state && (state as any)[key]
     const nextValue = nextState && (nextState as any)[key]
 
     const { value: middlewareValue, next } = middleware(nextValue)
-    const condition = next || initialStateCreation
+    const allow = next || !nextState
 
-    cloneState[key] = condition ? middlewareValue : value
-  })
+    currentState[key] = allow ? middlewareValue : value
+  }
 
-  return cloneState
+  return currentState
 }
 
 const getMiddlewares = <TState extends Record<string, any>>(state: TState) =>
@@ -135,7 +130,7 @@ const getMiddlewares = <TState extends Record<string, any>>(state: TState) =>
     Object.entries(state).filter(([, value]) => isMiddleware(value))
   ) as TState
 
-const setUpStore = <TState>(
+const createManager = <TState>(
   stateCreator: StateCreator<TState>,
   setState: SetState<TState>
 ) => {
@@ -143,27 +138,28 @@ const setUpStore = <TState>(
     ? stateCreator(setState)
     : stateCreator
   const middlewares = getMiddlewares(resolvedState)
-  const state = invokeMiddlewares(middlewares, resolvedState)
+  const nextState = invokeMiddlewares(middlewares, resolvedState)
 
-  const handler = {
-    state,
-    prevState: undefined,
+  return {
+    nextState,
+    state: undefined,
     setState(stateResolvable: StateResolvable<TState>) {
-      const prevState = cloneObject(state)
-      const newState = resolveState(stateResolvable, prevState)
-      const outputState = invokeMiddlewares(middlewares, prevState, newState)
+      const previousState = cloneObject(this.nextState)
+      const nextState = resolveState(stateResolvable, previousState)
+      const modifiedState = invokeMiddlewares(
+        middlewares,
+        previousState,
+        nextState
+      )
 
-      Object.assign(this.state, outputState)
+      Object.assign(this.nextState, modifiedState)
 
       return {
-        state: outputState,
-        prevState,
-        setState: this.setState,
+        nextState: modifiedState,
+        state: previousState,
       }
     },
   }
-
-  return handler
 }
 
 export { create }
