@@ -531,7 +531,7 @@ describe('factory', () => {
     await findByText('counter 1')
   })
 
-  it('it should follow state on change', () => {
+  it('should observe state on change', () => {
     // given
     const { useRemind } = remind({
       list: [] as number[],
@@ -561,5 +561,49 @@ describe('factory', () => {
 
     // then
     expect(getByTestId('list').children).toHaveLength(1)
+  })
+
+  it('should notify all subscribers by watch option', () => {
+    // given
+    const { useRemind } = remind({
+      list: [] as number[],
+    })
+    const Root = {
+      Parent() {
+        return (
+          <>
+            <Root.Child1 />
+            <Root.Child2 />
+          </>
+        )
+      },
+      Child1() {
+        const { mind } = useRemind({ watch: true })
+
+        const add = () => {
+          mind.list.push(Math.random())
+        }
+
+        return <button onClick={add}>add</button>
+      },
+      Child2() {
+        const { mind } = useRemind((state) => state.list)
+
+        return (
+          <ul data-testid="numbers-list">
+            {mind.list.map((element) => (
+              <li key={element}>{element}</li>
+            ))}
+          </ul>
+        )
+      },
+    }
+    const { getByText, getByTestId } = render(<Root.Parent />)
+
+    // when
+    fireEvent.click(getByText('add'))
+
+    // then
+    expect(getByTestId('numbers-list').children).toHaveLength(1)
   })
 })
