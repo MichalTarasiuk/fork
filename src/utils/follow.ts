@@ -15,15 +15,18 @@ export const follow = <TValue extends object>(
 
   const proxy = new Proxy(value, {
     get(target, prop, receiver) {
-      const result = Reflect.get(target, prop, receiver)
-      const observer: any = isObject(result) ? follow(result, callback) : result
+      const ret = Reflect.get(target, prop, receiver)
+      const observer: any = isObject(ret) ? follow(ret, callback) : ret
 
       return observer
     },
     set(target, prop, value) {
       const ret = Reflect.set(target, prop, value)
 
-      callback()
+      if (prop !== 'length') {
+        callback()
+      }
+
       return ret
     },
     deleteProperty(target, key) {

@@ -531,16 +531,16 @@ describe('factory', () => {
     await findByText('counter 1')
   })
 
-  it.only('it should follow state on change', () => {
+  it('it should follow state on change', () => {
     // given
     const { useRemind } = remind({
-      list: [] as string[],
+      list: [] as number[],
     })
     const Todo = () => {
-      const { mind } = useRemind({ watch: true })
+      const { mind } = useRemind({ watch: true }, (state) => state.list)
 
       const add = () => {
-        mind.list.push(`${Math.random()}`)
+        mind.list.push(Math.random())
       }
 
       return (
@@ -560,6 +560,6 @@ describe('factory', () => {
     fireEvent.click(getByText('add'))
 
     // then
-    // expect(getByTestId('list').children).toHaveLength(1)
+    expect(getByTestId('list').children).toHaveLength(1)
   })
 })

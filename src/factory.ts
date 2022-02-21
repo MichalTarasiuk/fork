@@ -1,3 +1,5 @@
+import { useCallback, useMemo } from 'react'
+
 import { create } from './vanilla'
 import { useDidMount, useListener } from './hooks'
 import { merge, isFunction, follow } from './utils'
@@ -16,18 +18,20 @@ type Config = {
 const factory = <TState extends object>(stateCreator: StateCreator<TState>) => {
   const store = create(stateCreator)
   const useRemind = (...options: Options<TState>) => {
-    const config = options.find((option) => !isFunction(option)) as Config
-    const [mind, observer] = useListener(store.get.state, (state) => {
+    const listener = useCallback((nextState: TState, state?: TState) => {
+      const config = options.find((option) => !isFunction(option)) as Config
       const { watch = false } = config || {}
 
       if (watch) {
-        return follow(state, () => {
-          store.notify(mind)
+        return follow(nextState, () => {
+          store.notify(nextState, state)
         })
       }
 
-      return state
-    })
+      return nextState
+    }, [])
+
+    const [mind, observer] = useListener(store.get.state, listener)
 
     useDidMount(() => {
       const selector = options.find((option) =>
@@ -40,10 +44,13 @@ const factory = <TState extends object>(stateCreator: StateCreator<TState>) => {
       }
     })
 
-    const handler = {
-      mind,
-      setMind: store.setState,
-    }
+    const handler = useMemo(
+      () => ({
+        mind,
+        setMind: store.setState,
+      }),
+      [mind]
+    )
 
     return merge([mind, store.setState] as const, handler)
   }

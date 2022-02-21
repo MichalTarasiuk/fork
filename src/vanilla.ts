@@ -37,12 +37,9 @@ const create = <TState>(stateCreator: StateCreator<TState>) => {
   ) => {
     return (nextState: TState, state?: TState) => {
       const nextSlice = selector(nextState)
+      const slice = state && selector(state)
 
-      if (state) {
-        const slice = selector(state)
-
-        !equals(nextSlice, slice) && listener(nextState, state)
-      }
+      !equals(nextSlice, slice) && listener(nextState, state)
     }
   }
 
