@@ -114,12 +114,13 @@ const invokeMiddlewares = <TState>(
   const initialStateCreate = !nextState
 
   for (const [key, middleware] of Object.entries(middlewares)) {
-    const value = state && (state as any)[key]
+    const fallbackValue = state && (state as any)[key]
     const nextValue = nextState && (nextState as any)[key]
 
     const { value: middlewareValue, next } = middleware(nextValue)
 
-    currentState[key] = next || initialStateCreate ? middlewareValue : value
+    currentState[key] =
+      next || initialStateCreate ? middlewareValue : fallbackValue
   }
 
   return currentState
