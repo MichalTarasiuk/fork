@@ -1,14 +1,25 @@
-import { useState, useCallback } from 'react'
+import { useCallback, useRef } from 'react'
+
+import { useFirstMountState } from './useFirstMountState'
+import { useForce } from './useForce'
 
 export const useListener = <TState>(
   initialState: TState,
-  listener: (state: TState) => TState
+  listener: (nextState: TState, state?: TState) => TState
 ) => {
-  const [state, setState] = useState(listener(initialState))
+  const force = useForce()
+
+  const state = useRef<TState | undefined>(undefined)
+  const isFirstMount = useFirstMountState()
+
+  if (isFirstMount) {
+    state.current = listener(initialState)
+  }
 
   const observer = useCallback((nextState: TState) => {
-    setState(listener(nextState))
+    state.current = listener(nextState, state.current)
+    force()
   }, [])
 
-  return [state, observer] as const
+  return [state.current as unknown as TState, observer] as const
 }
