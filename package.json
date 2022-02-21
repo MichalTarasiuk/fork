@@ -1,60 +1,60 @@
 {
-  "name": "remind",
-  "version": "1.0.0",
-  "description": "🧠 Remind is library for state management in React",
-  "main": "./dist/src/remind.js",
-  "types": "./@types/src/remind.d.ts",
-  "repository": "https://github.com/MichalTarasiuk/remind.git",
-  "author": {
-    "name": "Michał Tarasiuk",
-    "email": "tarasiuk.michal03@gmail.com",
-    "url": "https://strapi.io"
-  },
-  "contributors": [
-    "Michał Tarasiuk (https://github.com/MichalTarasiuk)"
-  ],
-  "private": true,
-  "workspaces": [
-    ".",
-    "examples/*"
-  ],
-  "keywords": [
-    "react",
-    "state",
-    "manager",
-    "management",
-    "redux",
-    "store"
-  ],
-  "bugs": {
-    "url": "https://github.com/MichalTarasiuk/remind/issues"
-  },
-  "license": "MIT",
-  "scripts": {
-    "build": "tsc",
-    "test": "jest --watch"
-  },
-  "lint-staged": {
-    "*": "prettier --write"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.16.12",
-    "@babel/preset-env": "^7.16.11",
-    "@babel/preset-typescript": "^7.16.7",
-    "@testing-library/react": "^12.1.2",
-    "@testing-library/react-hooks": "^7.0.2",
-    "@types/jest": "^27.4.0",
-    "@types/react": "^17.0.38",
-    "@types/react-dom": "^17.0.11",
-    "babel-jest": "^27.4.6",
-    "husky": "^7.0.4",
-    "jest": "^27.4.7",
-    "lerna": "^4.0.0",
-    "lint-staged": "^12.2.2",
-    "prettier": "^2.5.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
-    "ts-jest": "^27.1.3",
-    "typescript": "^4.5.5"
-  }
+    "name": "remind",
+    "version": "1.0.0",
+    "description": "🧠 Remind is library for state management in React",
+    "main": "./dist/src/factory.js",
+    "types": "./@types/src/factory.d.ts",
+    "repository": "https://github.com/MichalTarasiuk/remind.git",
+    "author": {
+        "name": "Michał Tarasiuk",
+        "email": "tarasiuk.michal03@gmail.com",
+        "url": "https://strapi.io"
+    },
+    "contributors": [
+        "Michał Tarasiuk (https://github.com/MichalTarasiuk)"
+    ],
+    "private": true,
+    "workspaces": [
+        ".",
+        "examples/*"
+    ],
+    "keywords": [
+        "react",
+        "state",
+        "manager",
+        "management",
+        "redux",
+        "store"
+    ],
+    "bugs": {
+        "url": "https://github.com/MichalTarasiuk/remind/issues"
+    },
+    "license": "MIT",
+    "scripts": {
+        "build": "tsc",
+        "test": "jest --watch"
+    },
+    "lint-staged": {
+        "*": "prettier --write"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.16.12",
+        "@babel/preset-env": "^7.16.11",
+        "@babel/preset-typescript": "^7.16.7",
+        "@testing-library/react": "^12.1.2",
+        "@testing-library/react-hooks": "^7.0.2",
+        "@types/jest": "^27.4.0",
+        "@types/react": "^17.0.38",
+        "@types/react-dom": "^17.0.11",
+        "babel-jest": "^27.4.6",
+        "husky": "^7.0.4",
+        "jest": "^27.4.7",
+        "lerna": "^4.0.0",
+        "lint-staged": "^12.2.2",
+        "prettier": "^2.5.1",
+        "react": "^17.0.2",
+        "react-dom": "^17.0.2",
+        "ts-jest": "^27.1.3",
+        "typescript": "^4.5.5"
+    }
 }

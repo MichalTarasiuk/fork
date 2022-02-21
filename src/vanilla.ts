@@ -8,7 +8,6 @@ import {
   isMiddleware,
 } from './utils'
 import type { StateResolvable, Listener } from './utils'
-import type { StateCreator, SetState, Selector } from './factory'
 import type { DeepPartial } from './typings'
 
 type SetUpStore<TState> = (
@@ -21,6 +20,12 @@ type SetUpStore<TState> = (
     stateResolvable: StateResolvable<TState>
   ) => ReturnType<SetUpStore<TState>>
 }
+type Patch<TState> =
+  | DeepPartial<TState>
+  | ((prevState: TState) => DeepPartial<TState>)
+type SetState<TState> = (patch: Patch<TState>, replace?: boolean) => void
+type StateCreator<TState> = ((set: SetState<TState>) => TState) | TState
+type Selector<TState> = (state: TState) => any
 
 const create = <TState>(stateCreator: StateCreator<TState>) => {
   let store: ReturnType<SetUpStore<TState>>
@@ -162,3 +167,4 @@ const setUpStore = <TState>(
 }
 
 export { create }
+export type { Patch, Selector, StateCreator, SetState }

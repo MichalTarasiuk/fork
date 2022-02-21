@@ -1,14 +1,7 @@
 import { create } from './vanilla'
 import { useDidMount, useListener } from './hooks'
 import { merge } from './utils'
-import type { DeepPartial } from './typings'
-
-type Patch<TState> =
-  | DeepPartial<TState>
-  | ((prevState: TState) => DeepPartial<TState>)
-type SetState<TState> = (patch: Patch<TState>, replace?: boolean) => void
-type StateCreator<TState> = ((set: SetState<TState>) => TState) | TState
-type Selector<TState> = (state: TState) => any
+import type { StateCreator, Selector } from './vanilla'
 
 const factory = <TState>(stateCreator: StateCreator<TState>) => {
   const store = create(stateCreator)
@@ -61,5 +54,4 @@ const factory = <TState>(stateCreator: StateCreator<TState>) => {
   }
 }
 
-export { factory }
-export type { Patch, Selector, StateCreator, SetState }
+export default factory
