@@ -1,11 +1,14 @@
 import { useState, useCallback } from 'react'
 
-export const useListener = <TState>(initialState: TState) => {
-  const [state, setState] = useState(initialState)
+export const useListener = <TState>(
+  initialState: TState,
+  listener: (state: TState) => TState
+) => {
+  const [state, setState] = useState(listener(initialState))
 
-  const listener = useCallback((nextState: TState) => {
-    setState(nextState)
+  const observer = useCallback((nextState: TState) => {
+    setState(listener(nextState))
   }, [])
 
-  return [state, listener] as const
+  return [state, observer] as const
 }

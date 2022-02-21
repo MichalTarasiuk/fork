@@ -99,6 +99,7 @@ const create = <TState>(stateCreator: StateCreator<TState>) => {
       },
     },
     destroy: observer.destroy,
+    notify: observer.notify,
     reset,
     setState,
     subscribe,

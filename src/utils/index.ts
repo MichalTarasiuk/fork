@@ -6,6 +6,7 @@ export { equals } from './equals'
 export { cloneObject } from './cloneObject'
 export { isMiddleware } from './isMiddleware'
 export { merge } from './merge'
+export { follow } from './follow'
 
 export const isFunction = <TValue extends Function>(
   value: any

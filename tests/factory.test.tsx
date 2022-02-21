@@ -530,4 +530,36 @@ describe('factory', () => {
     // then
     await findByText('counter 1')
   })
+
+  it.only('it should follow state on change', () => {
+    // given
+    const { useRemind } = remind({
+      list: [] as string[],
+    })
+    const Todo = () => {
+      const { mind } = useRemind({ watch: true })
+
+      const add = () => {
+        mind.list.push(`${Math.random()}`)
+      }
+
+      return (
+        <div>
+          <ul data-testid="list">
+            {mind.list.map((element) => (
+              <li key={element}>{element}</li>
+            ))}
+          </ul>
+          <button onClick={add}>add</button>
+        </div>
+      )
+    }
+    const { getByText, getByTestId } = render(<Todo />)
+
+    // when
+    fireEvent.click(getByText('add'))
+
+    // then
+    // expect(getByTestId('list').children).toHaveLength(1)
+  })
 })
