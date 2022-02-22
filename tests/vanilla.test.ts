@@ -1,4 +1,4 @@
-import { create } from '../src/vanilla'
+import { createStore } from '../src/store'
 import type { Noop } from './test.types'
 import { wait } from './test.utils'
 
@@ -9,7 +9,7 @@ describe('vanilla', () => {
       counter: number
       increase: Noop
     }
-    const store = create<State>((set) => ({
+    const store = createStore<State>((set) => ({
       counter: 0,
       increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
     }))
@@ -33,7 +33,7 @@ describe('vanilla', () => {
 
   it('should not invoke subscriber which has selector', () => {
     // given
-    const store = create({
+    const store = createStore({
       counter: 0,
       darkMode: false,
     })
@@ -60,7 +60,7 @@ describe('vanilla', () => {
 
   it('should invoke subscriber which has selector', () => {
     // given
-    const store = create({
+    const store = createStore({
       counter: 0,
       darkMode: false,
     })
@@ -85,7 +85,7 @@ describe('vanilla', () => {
 
   it('should unsubscribe all listener before notify', () => {
     // given
-    const store = create({
+    const store = createStore({
       darkMode: false,
     })
     const state = store.get.state
@@ -115,7 +115,7 @@ describe('vanilla', () => {
 
   it('should unsubscribe only dark mode listener', () => {
     // given
-    const store = create({
+    const store = createStore({
       counter: 0,
       darkMode: false,
     })
@@ -144,7 +144,7 @@ describe('vanilla', () => {
     const initialState = {
       counter: 0,
     }
-    const store = create(() => initialState)
+    const store = createStore(() => initialState)
 
     // assert
     expect(store.get.state).toEqual(initialState)
@@ -154,7 +154,7 @@ describe('vanilla', () => {
     // given
     type State = { counter: number; increase: Noop }
     const ingredient = 1
-    const store = create<State>((set) => ({
+    const store = createStore<State>((set) => ({
       counter: 0,
       increase: () =>
         set((prevState) => ({ counter: prevState.counter + ingredient })),
@@ -179,7 +179,7 @@ describe('vanilla', () => {
 
   it('should change the selected value of the object while not modifying the others', () => {
     // given
-    const store = create({
+    const store = createStore({
       a: {
         b: {
           c: '',
@@ -215,7 +215,7 @@ describe('vanilla', () => {
       increase: Noop
     }
     const ingredient = 1
-    const store = create<State>((set) => ({
+    const store = createStore<State>((set) => ({
       counter: 0,
       increase: () =>
         set((prevState) => ({
@@ -242,7 +242,7 @@ describe('vanilla', () => {
     type State = {
       counter: any
     }
-    const store = create<State>({
+    const store = createStore<State>({
       counter: (value = 0) => ({ next: true, value }),
     })
 
@@ -255,7 +255,7 @@ describe('vanilla', () => {
       counter: any
       increase: Noop
     }
-    const store = create<State>((set) => ({
+    const store = createStore<State>((set) => ({
       counter: (value = 0) => ({ next: false, value }),
       increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
     }))
@@ -273,7 +273,7 @@ describe('vanilla', () => {
       counter: any
       increase: Noop
     }
-    const store = create<State>((set) => ({
+    const store = createStore<State>((set) => ({
       counter: (value = 0) => ({ next: true, value }),
       increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
     }))
@@ -291,7 +291,7 @@ describe('vanilla', () => {
       counter: any
       increase: Noop
     }
-    const store = create<State>((set) => ({
+    const store = createStore<State>((set) => ({
       counter: (value = 0) => ({ next: false, value }),
       increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
     }))
@@ -309,7 +309,7 @@ describe('vanilla', () => {
       counter: any
       increase: Noop
     }
-    const store = create<State>((set) => ({
+    const store = createStore<State>((set) => ({
       counter: (value = 0) => ({ next: true, value }),
       increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
     }))
@@ -323,7 +323,7 @@ describe('vanilla', () => {
 
   it('not invoke listener when state after setState action is the same', () => {
     // given
-    const store = create({
+    const store = createStore({
       counter: 0,
     })
 
@@ -349,7 +349,7 @@ describe('vanilla', () => {
       counter: number
       increase: () => Promise<void>
     }
-    const store = create<State>((set) => ({
+    const store = createStore<State>((set) => ({
       counter: 0,
       increase: async () => {
         await wait(1000)

@@ -1,9 +1,9 @@
 import { useCallback, useMemo } from 'react'
 
-import { create } from './vanilla'
+import { createStore } from './store'
 import { useDidMount, useListener } from './hooks'
 import { merge, isFunction, follow } from './utils'
-import type { StateCreator, Selector } from './vanilla'
+import type { StateCreator, Selector } from './store'
 
 type Options<TState> =
   | [Selector<TState>, Config]
@@ -15,8 +15,8 @@ type Config = {
   watch?: boolean
 }
 
-const factory = <TState extends object>(stateCreator: StateCreator<TState>) => {
-  const store = create(stateCreator)
+const remind = <TState extends object>(stateCreator: StateCreator<TState>) => {
+  const store = createStore(stateCreator)
   const useRemind = (...options: Options<TState>) => {
     const listener = useCallback((nextState: TState, state?: TState) => {
       const config = options.find((option) => !isFunction(option)) as Config
@@ -85,4 +85,4 @@ const factory = <TState extends object>(stateCreator: StateCreator<TState>) => {
   }
 }
 
-export default factory
+export default remind

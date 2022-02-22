@@ -27,7 +27,7 @@ type SetState<TState> = (patch: Patch<TState>, replace?: boolean) => void
 type StateCreator<TState> = ((set: SetState<TState>) => TState) | TState
 type Selector<TState> = (state: TState) => any
 
-const create = <TState>(stateCreator: StateCreator<TState>) => {
+const createStore = <TState>(stateCreator: StateCreator<TState>) => {
   let manager: ReturnType<CreateManager<TState>>
   const observer = createObserver<TState>()
 
@@ -53,9 +53,7 @@ const create = <TState>(stateCreator: StateCreator<TState>) => {
 
     const subscriber = observer.subscribe(readydListener)
 
-    return {
-      unsubscribe: subscriber.unsubscribe,
-    }
+    return subscriber
   }
 
   const setState: SetState<TState> = (patch, replace = false) => {
@@ -160,5 +158,5 @@ const createManager = <TState>(
   }
 }
 
-export { create }
+export { createStore }
 export type { Patch, Selector, StateCreator, SetState }

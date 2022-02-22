@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { render, fireEvent, act } from '@testing-library/react'
 
 import { useDidMount } from '../src/hooks'
-import remind from '../src/factory'
+import remind from '../src/remind'
 import { random, wait } from './test.utils'
 import type { Noop } from './test.types'
 
