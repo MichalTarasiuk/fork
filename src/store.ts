@@ -5,7 +5,8 @@ import {
   equals,
   isFunction,
   cloneObject,
-  isMiddleware,
+  getMiddlewares,
+  invokeMiddlewares,
 } from './utils'
 import type { StateResolvable, Listener } from './utils'
 import type { DeepPartial } from './typings'
@@ -100,32 +101,6 @@ const createStore = <TState>(stateCreator: StateCreator<TState>) => {
     subscribe,
   }
 }
-
-const invokeMiddlewares = <TState>(
-  middlewares: TState,
-  state: TState,
-  nextState?: TState
-): TState => {
-  const currentState: any = cloneObject(nextState || state)
-  const initialStateCreate = !nextState
-
-  for (const [key, middleware] of Object.entries(middlewares)) {
-    const fallbackValue = state && (state as any)[key]
-    const nextValue = nextState && (nextState as any)[key]
-
-    const { value: middlewareValue, next } = middleware(nextValue)
-
-    currentState[key] =
-      next || initialStateCreate ? middlewareValue : fallbackValue
-  }
-
-  return currentState
-}
-
-const getMiddlewares = <TState extends Record<string, any>>(state: TState) =>
-  Object.fromEntries(
-    Object.entries(state).filter(([, value]) => isMiddleware(value))
-  ) as TState
 
 const createManager = <TState>(
   stateCreator: StateCreator<TState>,

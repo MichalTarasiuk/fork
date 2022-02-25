@@ -4,7 +4,7 @@ export { buildOf } from './buildOf'
 export * from './resolveState'
 export { equals } from './equals'
 export { cloneObject } from './cloneObject'
-export { isMiddleware } from './isMiddleware'
+export * from './middleware'
 export { merge } from './merge'
 export { follow } from './follow'
 
