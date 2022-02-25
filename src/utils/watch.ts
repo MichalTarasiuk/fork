@@ -5,7 +5,7 @@ const weakMap = new WeakMap()
 const isObject = (value: any): value is object =>
   typeof value === 'object' && value !== null
 
-export const follow = <TValue extends object>(
+export const watch = <TValue extends object>(
   value: TValue,
   callback: Noop
 ): TValue => {
@@ -16,7 +16,7 @@ export const follow = <TValue extends object>(
   const proxy = new Proxy(value, {
     get(target, prop, receiver) {
       const ret = Reflect.get(target, prop, receiver)
-      const observer: any = isObject(ret) ? follow(ret, callback) : ret
+      const observer: any = isObject(ret) ? watch(ret, callback) : ret
 
       return observer
     },

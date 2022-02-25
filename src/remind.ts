@@ -5,7 +5,7 @@ import { useDidMount, useListener } from './hooks'
 import {
   merge,
   isFunction,
-  follow,
+  watch,
   pick,
   pickKeysByValue,
   compose,
@@ -28,7 +28,7 @@ const defaultConfig = {
 
 const getSourcesMap = <TStore extends Record<string, any>>(store: TStore) => ({
   watch<TState extends Record<string, any>>(nextState: TState, state?: TState) {
-    return follow(nextState, () => {
+    return watch(nextState, () => {
       store.notify(nextState, state)
     })
   },

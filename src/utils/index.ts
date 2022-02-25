@@ -6,7 +6,7 @@ export { equals } from './equals'
 export { cloneObject } from './cloneObject'
 export * from './middleware'
 export { merge } from './merge'
-export { follow } from './follow'
+export { watch } from './watch'
 
 export const isFunction = <TValue extends Function>(
   value: any
@@ -39,9 +39,7 @@ export const compose = (...funcs: Function[]) => {
     return funcs[0]
   }
 
-  return funcs.reduce(
-    (a, b) =>
-      (...args: any) =>
-        a(b(...args))
-  )
+  return funcs.reduce((a, b) => {
+    return (...args: any) => a(b(...args))
+  })
 }
