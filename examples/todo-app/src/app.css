@@ -10,18 +10,8 @@
   flex-basis: 50%;
 }
 
-.list-section {
+.notes-section {
   background-color: hsl(210 79% 46% / 0.04);
   flex-basis: 50%;
   overflow-y: scroll;
-}
-
-.list {
-  margin: 30px;
-}
-
-.list-element {
-  border: 3px blue dotted;
-  margin: 10px;
-  padding: 10px 20px;
 }

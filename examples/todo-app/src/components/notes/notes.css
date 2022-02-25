@@ -1,0 +1,16 @@
+.list {
+  margin: 30px;
+}
+
+.list-element {
+  border: 3px blue dotted;
+  margin: 10px;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.list-element .content {
+  display: flex;
+}
