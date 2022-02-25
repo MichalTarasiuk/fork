@@ -26,9 +26,7 @@ const defaultConfig = {
   watch: false,
 }
 
-const getConfigSources = <TStore extends Record<string, any>>(
-  store: TStore
-) => ({
+const getSourcesMap = <TStore extends Record<string, any>>(store: TStore) => ({
   watch<TState extends Record<string, any>>(nextState: TState, state?: TState) {
     return follow(nextState, () => {
       store.notify(nextState, state)
@@ -38,7 +36,7 @@ const getConfigSources = <TStore extends Record<string, any>>(
 
 const remind = <TState extends object>(stateCreator: StateCreator<TState>) => {
   const store = createStore(stateCreator)
-  const configSources = getConfigSources(store)
+  const sourcesMap = getSourcesMap(store)
 
   const useRemind = (...options: Options<TState>) => {
     const listener = useCallback((nextState: TState, state?: TState) => {
@@ -46,8 +44,10 @@ const remind = <TState extends object>(stateCreator: StateCreator<TState>) => {
         (option) => !isFunction(option)
       ) as Config
       const config = { ...defaultConfig, ...partialConfig }
-      const sourcesMap = pick(configSources, pickKeysByValue(config, true))
-      const combinedSources = compose(...Object.values(sourcesMap))
+      const pickedSources = Object.values(
+        pick(sourcesMap, pickKeysByValue(config, true))
+      )
+      const combinedSources = compose(...pickedSources)
 
       return combinedSources(nextState, state)
     }, [])
