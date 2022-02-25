@@ -8,7 +8,7 @@ const isObject = (value: any): value is object =>
 export const follow = <TValue extends object>(
   value: TValue,
   callback: Noop
-) => {
+): TValue => {
   if (weakMap.has(value)) {
     return weakMap.get(value)
   }

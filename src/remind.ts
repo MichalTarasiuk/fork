@@ -1,8 +1,15 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback } from 'react'
 
 import { createStore } from './store'
 import { useDidMount, useListener } from './hooks'
-import { merge, isFunction, follow } from './utils'
+import {
+  merge,
+  isFunction,
+  follow,
+  pick,
+  pickKeysByValue,
+  compose,
+} from './utils'
 import type { StateCreator, Selector } from './store'
 
 type Options<TState> =
@@ -15,20 +22,34 @@ type Config = {
   watch?: boolean
 }
 
+const defaultConfig = {
+  watch: false,
+}
+
+const getConfigSources = <TStore extends Record<string, any>>(
+  store: TStore
+) => ({
+  watch<TState extends Record<string, any>>(nextState: TState, state?: TState) {
+    return follow(nextState, () => {
+      store.notify(nextState, state)
+    })
+  },
+})
+
 const remind = <TState extends object>(stateCreator: StateCreator<TState>) => {
   const store = createStore(stateCreator)
+  const configSources = getConfigSources(store)
+
   const useRemind = (...options: Options<TState>) => {
     const listener = useCallback((nextState: TState, state?: TState) => {
-      const config = options.find((option) => !isFunction(option)) as Config
-      const { watch = false } = config || {}
+      const partialConfig = options.find(
+        (option) => !isFunction(option)
+      ) as Config
+      const config = { ...defaultConfig, ...partialConfig }
+      const sourcesMap = pick(configSources, pickKeysByValue(config, true))
+      const combinedSources = compose(...Object.values(sourcesMap))
 
-      if (watch) {
-        return follow(nextState, () => {
-          store.notify(nextState, state)
-        })
-      }
-
-      return nextState
+      return combinedSources(nextState, state)
     }, [])
 
     const [mind, observer] = useListener(store.get.state, listener)
@@ -44,13 +65,10 @@ const remind = <TState extends object>(stateCreator: StateCreator<TState>) => {
       }
     })
 
-    const handler = useMemo(
-      () => ({
-        mind,
-        setMind: store.setState,
-      }),
-      [mind]
-    )
+    const handler = {
+      mind,
+      setMind: store.setState,
+    }
 
     return merge([mind, store.setState] as const, handler)
   }
