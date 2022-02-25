@@ -7,9 +7,10 @@ import './notes.css'
 type Props = {
   note: Note
   onEdit: (content: string, id: number) => void
+  onRemove: (id: number) => void
 }
 
-const Element = ({ note, onEdit }: Props) => {
+const Element = ({ note, onEdit, onRemove }: Props) => {
   const [contentEditable, setContentEditable] = useState(false)
 
   const toggle = useCallback(() => {
@@ -36,13 +37,14 @@ const Element = ({ note, onEdit }: Props) => {
           <button onClick={() => save(note.content, note.id)}>save</button>
         )}
         <button onClick={toggle}>edit</button>
+        <button onClick={() => onRemove(note.id)}>remove</button>
       </div>
     </li>
   )
 }
 
 export const Notes = () => {
-  const { mind } = useRemind({ watch: true })
+  const { mind, setMind } = useRemind({ watch: true })
 
   const editHandler = useCallback(
     (content: string, id: number) => {
@@ -55,10 +57,24 @@ export const Notes = () => {
     [mind.notes]
   )
 
+  const removeHandler = useCallback(
+    (id: number) => {
+      setMind((mind) => ({
+        notes: mind.notes.filter((note) => note.id !== id),
+      }))
+    },
+    [setMind]
+  )
+
   return (
     <ul className="list">
       {mind.notes.map((note) => (
-        <Element note={note} onEdit={editHandler} key={note.id} />
+        <Element
+          note={note}
+          onEdit={editHandler}
+          onRemove={removeHandler}
+          key={note.id}
+        />
       ))}
     </ul>
   )
