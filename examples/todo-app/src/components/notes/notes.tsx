@@ -42,21 +42,17 @@ const Element = ({ note, onEdit }: Props) => {
 }
 
 export const Notes = () => {
-  const { mind, setMind } = useRemind()
+  const { mind } = useRemind({ watch: true })
 
   const editHandler = useCallback(
     (content: string, id: number) => {
-      setMind((mind) => ({
-        notes: mind.notes.map((note) => {
-          if (note.id === id) {
-            return { ...note, content }
-          }
+      const noteIndex = mind.notes.findIndex((note) => note.id === id)
 
-          return note
-        }),
-      }))
+      if (noteIndex !== -1) {
+        mind.notes[noteIndex] = { ...mind.notes[noteIndex], content }
+      }
     },
-    [setMind]
+    [mind.notes]
   )
 
   return (
