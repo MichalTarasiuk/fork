@@ -1,16 +1,13 @@
 export * from './observer'
+export * from './resolveState'
+export * from './middleware'
 export { isPrimitive } from './isPrimitive'
 export { buildOf } from './buildOf'
-export * from './resolveState'
 export { equals } from './equals'
 export { cloneObject } from './cloneObject'
-export * from './middleware'
 export { merge } from './merge'
 export { watch } from './watch'
-
-export const isFunction = <TValue extends Function>(
-  value: any
-): value is TValue => typeof value === 'function'
+export { isFunction } from './isFunction'
 
 export const pick = <TObject extends Record<string, any>>(
   object: TObject,
