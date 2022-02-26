@@ -10,23 +10,12 @@ import {
 } from './utils'
 import type { StateResolvable, Listener } from './utils'
 import type { DeepPartial } from './typings'
-
-type CreateManager<TState> = (
-  stateCreator: StateCreator<TState>,
-  setState: SetState<TState>
-) => {
-  state: TState
-  setState: (stateResolvable: StateResolvable<TState>) => {
-    nextState: TState
-    state: TState
-  }
-}
-type Patch<TState> =
-  | DeepPartial<TState>
-  | ((prevState: TState) => DeepPartial<TState>)
-type SetState<TState> = (patch: Patch<TState>, replace?: boolean) => void
-type StateCreator<TState> = ((set: SetState<TState>) => TState) | TState
-type Selector<TState> = (state: TState) => any
+import type {
+  CreateManager,
+  StateCreator,
+  Selector,
+  SetState,
+} from './store.types'
 
 const createStore = <TState>(stateCreator: StateCreator<TState>) => {
   let manager: ReturnType<CreateManager<TState>>
@@ -134,4 +123,3 @@ const createManager = <TState>(
 }
 
 export { createStore }
-export type { Patch, Selector, StateCreator, SetState }

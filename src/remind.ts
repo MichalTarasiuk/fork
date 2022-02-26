@@ -3,17 +3,8 @@ import { useCallback } from 'react'
 import { createStore } from './store'
 import { useDidMount, useListener } from './hooks'
 import { merge, isFunction, watch, pick, compose } from './utils'
-import type { StateCreator, Selector } from './store'
-
-type Options<TState> =
-  | [Selector<TState>, Config]
-  | [Config, Selector<TState>]
-  | [Config]
-  | [Selector<TState>]
-  | []
-type Config = {
-  watch?: boolean
-}
+import type { StateCreator, Selector } from './store.types'
+import type { Options, Config } from './remind.types'
 
 const getSourcesMap = <TStore extends Record<string, any>>(store: TStore) => ({
   watch<TState extends Record<string, any>>(nextState: TState, state?: TState) {
