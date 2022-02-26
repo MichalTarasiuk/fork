@@ -12,11 +12,6 @@ export const isFunction = <TValue extends Function>(
   value: any
 ): value is TValue => typeof value === 'function'
 
-export const pickKeysByValue = <TObject extends Record<string, any>>(
-  object: TObject,
-  value: any
-) => Object.keys(object).filter((key) => object[key] === value)
-
 export const pick = <TObject extends Record<string, any>>(
   object: TObject,
   keys: string[]

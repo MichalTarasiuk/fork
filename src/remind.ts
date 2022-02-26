@@ -2,14 +2,7 @@ import { useCallback } from 'react'
 
 import { createStore } from './store'
 import { useDidMount, useListener } from './hooks'
-import {
-  merge,
-  isFunction,
-  watch,
-  pick,
-  pickKeysByValue,
-  compose,
-} from './utils'
+import { merge, isFunction, watch, pick, compose } from './utils'
 import type { StateCreator, Selector } from './store'
 
 type Options<TState> =
@@ -43,9 +36,8 @@ const remind = <TState extends object>(stateCreator: StateCreator<TState>) => {
       const partialConfig = options.find(
         (option) => !isFunction(option)
       ) as Config
-      const config = { ...defaultConfig, ...partialConfig }
       const pickedSources = Object.values(
-        pick(sourcesMap, pickKeysByValue(config, true))
+        pick(sourcesMap, Object.keys(partialConfig || {}))
       )
       const combinedSources = compose(...pickedSources)
 
