@@ -11,14 +11,14 @@ import {
 import type { StateResolvable, Listener } from './utils'
 import type { DeepPartial } from './typings'
 import type {
-  CreateManager,
+  CreateState,
   StateCreator,
   Selector,
   SetState,
 } from './store.types'
 
 const createStore = <TState>(stateCreator: StateCreator<TState>) => {
-  let manager: ReturnType<CreateManager<TState>>
+  let state: ReturnType<CreateState<TState>>
   const observer = createObserver<TState>()
 
   const customListener = (
@@ -47,9 +47,9 @@ const createStore = <TState>(stateCreator: StateCreator<TState>) => {
   }
 
   const setState: SetState<TState> = (patch, replace = false) => {
-    const resolvedPatch = isFunction(patch) ? patch(manager.state) : patch
+    const resolvedPatch = isFunction(patch) ? patch(state.value) : patch
 
-    const { nextState, state } = manager.setState((state) => {
+    const { nextState, oldState } = state.setState((state) => {
       const nextState = replace
         ? (patch as TState)
         : buildOf(state, resolvedPatch as DeepPartial<TState>)
@@ -57,27 +57,27 @@ const createStore = <TState>(stateCreator: StateCreator<TState>) => {
       return nextState
     })
 
-    if (!equals(nextState, state)) {
-      observer.notify(nextState, state)
+    if (!equals(nextState, oldState)) {
+      observer.notify(nextState, oldState)
     }
   }
 
   const reset = () => {
-    const restoredManager = createManager(stateCreator, setState)
-    const savedState = cloneObject(manager.state)
+    const restoredState = createState(stateCreator, setState)
+    const savedState = cloneObject(state.value)
 
-    manager = restoredManager
-    observer.notify(restoredManager.state, savedState)
+    state = restoredState
+    observer.notify(restoredState.value, savedState)
 
-    return restoredManager.state
+    return restoredState.value
   }
 
-  manager = createManager(stateCreator, setState)
+  state = createState(stateCreator, setState)
 
   return {
     get: {
       get state() {
-        return manager.state
+        return state.value
       },
       get listeners() {
         return observer.listeners
@@ -91,7 +91,7 @@ const createStore = <TState>(stateCreator: StateCreator<TState>) => {
   }
 }
 
-const createManager = <TState>(
+const createState = <TState>(
   stateCreator: StateCreator<TState>,
   setState: SetState<TState>
 ) => {
@@ -102,9 +102,9 @@ const createManager = <TState>(
   const initialState = invokeMiddlewares(middlewares, resolvedState)
 
   return {
-    state: initialState,
+    value: initialState,
     setState(stateResolvable: StateResolvable<TState>) {
-      const previousState = cloneObject(this.state)
+      const previousState = cloneObject(this.value)
       const resolvedState = resolveState(stateResolvable, previousState)
       const nextState = invokeMiddlewares(
         middlewares,
@@ -112,11 +112,11 @@ const createManager = <TState>(
         resolvedState
       )
 
-      Object.assign(this.state, nextState)
+      Object.assign(this.value, nextState)
 
       return {
         nextState,
-        state: previousState,
+        oldState: previousState,
       }
     },
   }

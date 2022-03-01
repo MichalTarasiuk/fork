@@ -1,14 +1,14 @@
 import type { StateResolvable } from './utils'
 import type { DeepPartial } from './typings'
 
-export type CreateManager<TState> = (
+export type CreateState<TState> = (
   stateCreator: StateCreator<TState>,
   setState: SetState<TState>
 ) => {
-  state: TState
+  value: TState
   setState: (stateResolvable: StateResolvable<TState>) => {
     nextState: TState
-    state: TState
+    oldState: TState
   }
 }
 export type Selector<TState> = (state: TState) => any
