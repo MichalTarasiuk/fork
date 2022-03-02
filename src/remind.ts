@@ -1,8 +1,8 @@
-import { useCallback } from 'react'
+import { useCallback, useRef } from 'react'
 
 import { createStore } from './store'
 import { useDidMount, useListener } from './hooks'
-import { merge, isFunction, watch, pick, compose } from './utils'
+import { merge, isFunction, watch, pick, compose, noop } from './utils'
 import type { StateCreator, Selector } from './store.types'
 import type { Options, Config } from './remind.types'
 
@@ -19,6 +19,9 @@ const remind = <TState extends object>(stateCreator: StateCreator<TState>) => {
   const sourcesMap = getSourcesMap(store)
 
   const useRemind = (...options: Options<TState>) => {
+    type Subscriber = ReturnType<typeof store['subscribe']>
+    const savedSubscriber = useRef<Subscriber | null>(null)
+
     const listener = useCallback((nextState: TState, state?: TState) => {
       const config = options.find((option) => !isFunction(option)) as Config
       const pickedSources = Object.values(
@@ -36,6 +39,7 @@ const remind = <TState extends object>(stateCreator: StateCreator<TState>) => {
         isFunction(option)
       ) as Selector<TState>
       const subscriber = store.subscribe(observer, selector)
+      savedSubscriber.current = subscriber
 
       return () => {
         subscriber.unsubscribe()
@@ -45,6 +49,7 @@ const remind = <TState extends object>(stateCreator: StateCreator<TState>) => {
     const handler = {
       mind,
       setMind: store.setState,
+      unregister: savedSubscriber.current?.unsubscribe || noop,
     }
 
     return merge([mind, store.setState] as const, handler)

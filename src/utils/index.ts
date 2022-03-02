@@ -10,3 +10,5 @@ export { watch } from './watch'
 export { isFunction } from './isFunction'
 export { pick } from './pick'
 export { compose } from './compose'
+
+export const noop = () => {}

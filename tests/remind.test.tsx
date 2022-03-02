@@ -606,4 +606,46 @@ describe('factory', () => {
     // then
     expect(getByTestId('numbers-list').children).toHaveLength(1)
   })
+
+  it('should unregister component', () => {
+    // given
+    type State = {
+      counter: number
+      increase: () => void
+    }
+    const store = remind<State>((set) => ({
+      counter: 0,
+      increase: () => {
+        set({ counter: 1 })
+      },
+    }))
+    const { useRemind } = store
+
+    const Counter = () => {
+      const { mind, unregister } = useRemind()
+
+      return (
+        <div>
+          <p>counter {mind.counter}</p>
+          <button onClick={mind.increase}>increase</button>
+          <button onClick={unregister}>unregister</button>
+        </div>
+      )
+    }
+
+    const { getByText } = render(<Counter />)
+
+    // when
+    fireEvent.click(getByText('increase'))
+
+    // then
+    getByText('counter 1')
+
+    // when
+    fireEvent.click(getByText('unregister'))
+    fireEvent.click(getByText('increase'))
+
+    // then
+    getByText('counter 1')
+  })
 })
