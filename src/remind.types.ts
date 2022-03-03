@@ -8,4 +8,9 @@ export type Options<TState> =
   | []
 export type Config = {
   watch?: boolean
+  broadcast?: boolean
+}
+export type StateMap<TState extends object> = {
+  nextState: TState
+  state: TState
 }

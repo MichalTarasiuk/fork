@@ -16,8 +16,8 @@ export const useListener = <TState>(
     state.current = listener(initialState)
   }
 
-  const observer = useCallback((nextState: TState) => {
-    state.current = listener(nextState, state.current)
+  const observer = useCallback((nextState: TState, prevState?: TState) => {
+    state.current = listener(nextState, prevState)
     force()
   }, [])
 

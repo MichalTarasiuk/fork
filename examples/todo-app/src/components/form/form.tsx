@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 
 import { useRemind } from 'store'
 import { useForm } from './useForm'
@@ -6,7 +6,11 @@ import './form.css'
 
 const Form = () => {
   const [values, handler] = useForm({ title: '', content: '' })
-  const { setMind } = useRemind()
+  const { setMind, unregister } = useRemind()
+
+  useEffect(() => {
+    unregister()
+  }, [unregister])
 
   const submit = (formValues: typeof values) => {
     if (handler.isFilled()) {

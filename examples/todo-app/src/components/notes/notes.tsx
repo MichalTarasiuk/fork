@@ -44,7 +44,7 @@ const Element = ({ note, onEdit, onRemove }: Props) => {
 }
 
 export const Notes = () => {
-  const { mind, setMind } = useRemind({ watch: true })
+  const { mind, setMind } = useRemind({ watch: true, broadcast: true })
 
   const editHandler = useCallback(
     (content: string, id: number) => {
