@@ -2,37 +2,12 @@ import { useCallback, useRef } from 'react'
 
 import { createStore } from './store'
 import { useDidMount, useListener } from './hooks'
-import {
-  merge,
-  isFunction,
-  watch,
-  pick,
-  compose,
-  noop,
-  equals,
-  pickKeysByType,
-} from './utils'
+import { merge, isFunction, pick, compose, noop, pickKeysByType } from './utils'
+import { getSourcesMap } from './logic'
 import type { StateCreator, Selector } from './store.types'
 import type { Options, Config, StateMap } from './remind.types'
 
-const broadcastChannel = new BroadcastChannel('remind')
-
-const getSourcesMap = <TStore extends Record<string, any>>(store: TStore) => ({
-  watch({ nextState, state }: StateMap<object>) {
-    const modifiedNextState = watch(nextState, () => {
-      store.notify(nextState, state)
-    })
-
-    return { nextState: modifiedNextState, state: state }
-  },
-  broadcast(stateMap: StateMap<object>) {
-    if (!equals(stateMap.nextState, stateMap.state)) {
-      broadcastChannel.postMessage(JSON.stringify(stateMap))
-    }
-
-    return stateMap
-  },
-})
+export const broadcastChannel = new BroadcastChannel('remind')
 
 const remind = <TState extends Record<PropertyKey, any>>(
   stateCreator: StateCreator<TState>
