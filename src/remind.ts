@@ -1,8 +1,16 @@
 import { useCallback, useRef } from 'react'
 
 import { createStore } from './store'
-import { useDidMount, useListener } from './hooks'
-import { merge, isFunction, pick, compose, noop, pickKeysByType } from './utils'
+import { useDidMount, useListener, useEventListenr } from './hooks'
+import {
+  merge,
+  isFunction,
+  pick,
+  compose,
+  noop,
+  pickKeysByType,
+  isMessageEvent,
+} from './utils'
 import { getSourcesMap } from './logic'
 import type { StateCreator, Selector } from './store.types'
 import type { Options, Config, StateMap } from './remind.types'
@@ -43,17 +51,11 @@ const remind = <TState extends Record<PropertyKey, any>>(
       }
     })
 
-    useDidMount(() => {
-      const handleMessage = (event: MessageEvent<string>) => {
+    useEventListenr(broadcastChannel, 'message', (event) => {
+      if (isMessageEvent(event)) {
         const { nextState } = JSON.parse(event.data) as StateMap<TState>
 
         store.setState(nextState)
-      }
-
-      broadcastChannel.addEventListener('message', handleMessage)
-
-      return () => {
-        broadcastChannel.removeEventListener('message', handleMessage)
       }
     })
 
