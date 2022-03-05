@@ -1,41 +1,24 @@
 import { renderHook } from '@testing-library/react-hooks'
 
-import { useDidUpdate } from '../../src/hooks'
+import { useIsMounted } from '../../src/hooks'
 
-const mockEffectCallback = jest.fn()
-const mockEffectCleanup = jest.fn()
-mockEffectCallback.mockReturnValue(mockEffectCleanup)
-
-describe('useDidUpdate', () => {
-  it('should effect callback call on mount', () => {
+describe('useMountedState', () => {
+  it('should return true if component is mounted', () => {
     // arrange
-    renderHook(() => useDidUpdate(mockEffectCallback))
+    const { result } = renderHook(() => useIsMounted())
 
     // assert
-    expect(mockEffectCallback).toHaveBeenCalledTimes(1)
+    expect(result.current.isMounted).toBeTruthy()
   })
 
-  it('should effect cleanup not call on unmount', () => {
+  it('should return false if component is unmounted', () => {
     // given
-    const { unmount } = renderHook(() => useDidUpdate(mockEffectCallback))
+    const { unmount, result } = renderHook(() => useIsMounted())
 
     // when
     unmount()
 
-    // assert
-    expect(mockEffectCleanup).toHaveBeenCalledTimes(0)
-  })
-
-  it('should effect callback call on update', () => {
-    // given
-    const { rerender } = renderHook(() =>
-      useDidUpdate(mockEffectCallback, Math.random())
-    )
-
-    // when
-    rerender()
-
-    // assert
-    expect(mockEffectCallback).toHaveBeenCalledTimes(2)
+    // then
+    expect(result.current.isMounted).toBeFalsy()
   })
 })

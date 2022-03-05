@@ -27,4 +27,20 @@ describe('useListener', () => {
     // then
     expect(result.current[0]).toBe(2)
   })
+
+  it('should not invoke observer on unmounted component', () => {
+    // given
+    const listener = jest.fn().mockImplementation((value) => value)
+    const { result, unmount } = renderHook(() => useListener(1, listener))
+
+    // when
+    const observer = result.current[1]
+    unmount()
+    act(() => {
+      observer(2)
+    })
+
+    // then
+    expect(result.current[0]).toBe(1)
+  })
 })
