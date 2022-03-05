@@ -15,8 +15,10 @@ export { isStateMap } from './isStateMap'
 
 export const noop = () => {}
 
-export const isMessageEvent = (event: any): event is MessageEvent<string> =>
-  event.data
+export const isMessageEvent = (
+  event: any,
+  callback: (data: string) => any
+): event is MessageEvent<string> => event.data && callback(event.data)
 
 export const isPlainObject = (value: any) =>
   value !== null && typeof value === 'object' && value.constructor === Object
