@@ -53,10 +53,13 @@ const remind = <TState extends Record<PropertyKey, any>>(
     })
 
     useEventListenr(broadcastChannel, 'message', (event) => {
-      if (isMessageEvent(event) && isStateMap<TState>(JSON.parse(event.data))) {
-        const { nextState } = JSON.parse(event.data)
+      if (isMessageEvent(event)) {
+        const parseData = JSON.parse(event.data)
 
-        store.setState(nextState)
+        if (isStateMap<TState>(parseData)) {
+          const { nextState } = parseData
+          store.setState(nextState)
+        }
       }
     })
 
