@@ -10,10 +10,11 @@ import {
   noop,
   pickKeysByType,
   isMessageEvent,
+  isStateMap,
 } from './utils'
 import { getSourcesMap } from './logic'
 import type { StateCreator, Selector } from './store.types'
-import type { Options, Config, StateMap } from './remind.types'
+import type { Options, Config } from './remind.types'
 
 export const broadcastChannel = new BroadcastChannel('remind')
 
@@ -52,8 +53,8 @@ const remind = <TState extends Record<PropertyKey, any>>(
     })
 
     useEventListenr(broadcastChannel, 'message', (event) => {
-      if (isMessageEvent(event)) {
-        const { nextState } = JSON.parse(event.data) as StateMap<TState>
+      if (isMessageEvent(event) && isStateMap<TState>(JSON.parse(event.data))) {
+        const { nextState } = JSON.parse(event.data)
 
         store.setState(nextState)
       }

@@ -11,8 +11,12 @@ export { isFunction } from './isFunction'
 export { pick } from './pick'
 export { compose } from './compose'
 export { pickKeysByType } from './pickKeysByType'
+export { isStateMap } from './isStateMap'
 
 export const noop = () => {}
 
 export const isMessageEvent = (event: any): event is MessageEvent<string> =>
   event.data
+
+export const isPlainObject = (value: any) =>
+  value !== null && typeof value === 'object' && value.constructor === Object
