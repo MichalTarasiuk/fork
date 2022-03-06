@@ -364,4 +364,26 @@ describe('vanilla', () => {
     // then
     expect(state.counter).toBe(1)
   })
+
+  it('it should return true when counter is divisible', async () => {
+    // given
+    type State = {
+      counter: number
+      increase: () => void
+      isDivisible: () => boolean
+    }
+    const store = createStore<State>((set, get) => ({
+      counter: 0,
+      increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
+      isDivisible: () => get().counter % 2 === 0,
+    }))
+    const state = store.get.state
+
+    // when
+    state.increase()
+    state.increase()
+
+    // then
+    expect(store.get.state.isDivisible()).toBeTruthy()
+  })
 })

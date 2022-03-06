@@ -15,6 +15,7 @@ import type {
   StateCreator,
   Selector,
   SetState,
+  GetState,
 } from './store.types'
 
 const createStore = <TState>(stateCreator: StateCreator<TState>) => {
@@ -62,8 +63,10 @@ const createStore = <TState>(stateCreator: StateCreator<TState>) => {
     }
   }
 
+  const getState = () => state.value
+
   const reset = () => {
-    const restoredState = createState(stateCreator, setState)
+    const restoredState = createState(stateCreator, setState, getState)
     const savedState = cloneObject(state.value)
 
     state = restoredState
@@ -72,7 +75,7 @@ const createStore = <TState>(stateCreator: StateCreator<TState>) => {
     return restoredState.value
   }
 
-  state = createState(stateCreator, setState)
+  state = createState(stateCreator, setState, getState)
 
   return {
     get: {
@@ -93,10 +96,11 @@ const createStore = <TState>(stateCreator: StateCreator<TState>) => {
 
 const createState = <TState>(
   stateCreator: StateCreator<TState>,
-  setState: SetState<TState>
+  setState: SetState<TState>,
+  getState: GetState<TState>
 ) => {
   const resolvedState = isFunction(stateCreator)
-    ? stateCreator(setState)
+    ? stateCreator(setState, getState)
     : stateCreator
   const middlewares = getMiddlewares(resolvedState)
   const initialState = invokeMiddlewares(middlewares, resolvedState)

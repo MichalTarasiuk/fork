@@ -6,7 +6,7 @@ import remind from '../src/remind'
 import { random, wait } from './test.utils'
 import type { Noop } from './test.types'
 
-describe('factory', () => {
+describe('remind', () => {
   it('should rerender component', async () => {
     // arrange
     type State = {
@@ -647,5 +647,40 @@ describe('factory', () => {
 
     // then
     getByText('counter 1')
+  })
+
+  it('it should return true when counter is divisible', () => {
+    // given
+    type State = {
+      counter: number
+      increase: () => void
+      isDivisible: () => boolean
+    }
+    const { useRemind } = remind<State>((set, get) => ({
+      counter: 0,
+      increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
+      isDivisible: () => get().counter % 2 === 0,
+    }))
+
+    const Counter = () => {
+      const { mind } = useRemind()
+
+      return (
+        <div>
+          <p>is divisible: {mind.isDivisible.toString()}</p>
+          <p>counter {mind.counter}</p>
+          <button onClick={mind.increase}>increase</button>
+        </div>
+      )
+    }
+
+    const { getByText } = render(<Counter />)
+
+    // when
+    fireEvent.click(getByText('increase'))
+    fireEvent.click(getByText('increase'))
+
+    // then
+    getByText('is divisible: true')
   })
 })
