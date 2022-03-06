@@ -21,6 +21,7 @@ const remind = <TState extends Record<PropertyKey, any>>(
 ) => {
   const store = createStore(stateCreator)
   const sourcesMap = getSourcesMap(store)
+  const state = store.get.state
 
   const useRemind = (...options: Options<TState>) => {
     type Subscriber = ReturnType<typeof store['subscribe']>
@@ -36,13 +37,14 @@ const remind = <TState extends Record<PropertyKey, any>>(
       return combinedSources({ nextState, state }).nextState
     }, [])
 
-    const [mind, observer] = useListener(store.get.state, listener)
+    const [mind, observer] = useListener(state, listener)
 
     useDidMount(() => {
       const selector = options.find((option) =>
         isFunction(option)
       ) as Selector<TState>
       const subscriber = store.subscribe(observer, selector)
+
       savedSubscriber.current = subscriber
 
       return () => {
