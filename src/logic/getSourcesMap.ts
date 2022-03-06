@@ -1,6 +1,7 @@
 import { watch, equals } from '../utils'
-import { broadcastChannel } from '../remind'
 import type { StateMap } from '../remind.types'
+
+export const broadcastChannel = new BroadcastChannel('remind')
 
 export const getSourcesMap = <TStore extends Record<string, any>>(
   store: TStore

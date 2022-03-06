@@ -12,11 +12,9 @@ import {
   isMessageEvent,
   isStateMap,
 } from './utils'
-import { getSourcesMap } from './logic'
+import { getSourcesMap, broadcastChannel } from './logic'
 import type { StateCreator, Selector } from './store.types'
 import type { Options, Config } from './remind.types'
-
-export const broadcastChannel = new BroadcastChannel('remind')
 
 const remind = <TState extends Record<PropertyKey, any>>(
   stateCreator: StateCreator<TState>

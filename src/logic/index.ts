@@ -1,1 +1,1 @@
-export { getSourcesMap } from './getSourcesMap'
+export * from './getSourcesMap'
