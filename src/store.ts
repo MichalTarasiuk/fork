@@ -8,7 +8,7 @@ import {
   getMiddlewares,
   invokeMiddlewares,
 } from './utils'
-import type { StateResolvable, Listener } from './utils'
+import type { ResolvableState, Listener } from './utils'
 import type { DeepPartial } from './typings'
 import type {
   CreateState,
@@ -103,9 +103,9 @@ const createState = <TState>(
 
   return {
     value: initialState,
-    setState(stateResolvable: StateResolvable<TState>) {
+    setState(resolvableState: ResolvableState<TState>) {
       const previousState = cloneObject(this.value)
-      const resolvedState = resolveState(stateResolvable, previousState)
+      const resolvedState = resolveState(resolvableState, previousState)
       const nextState = invokeMiddlewares(
         middlewares,
         previousState,
