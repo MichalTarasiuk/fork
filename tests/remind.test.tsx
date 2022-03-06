@@ -55,7 +55,7 @@ describe('remind', () => {
 
     const { findByText } = render(<Counter />)
 
-    // asserts
+    // assert
     await findByText('counter 0')
   })
 

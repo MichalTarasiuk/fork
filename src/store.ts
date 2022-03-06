@@ -16,30 +16,38 @@ import type {
   Selector,
   SetState,
   GetState,
+  CustomEquality,
 } from './store.types'
 
 const createStore = <TState>(stateCreator: StateCreator<TState>) => {
   let state: ReturnType<CreateState<TState>>
   const observer = createObserver<TState>()
 
-  const customListener = (
+  const customListener = <TSelector extends Selector<TState>>(
     listener: Listener<TState>,
-    selector: Selector<TState>
+    selector: Selector<TState>,
+    customEquality?: CustomEquality<ReturnType<TSelector>>
   ) => {
     return (nextState: TState, state?: TState) => {
       const nextSlice = selector(nextState)
       const slice = state && selector(state)
+      const notify = customEquality
+        ? customEquality(nextSlice, slice)
+        : !equals(nextSlice, slice)
 
-      !equals(nextSlice, slice) && listener(nextState, state)
+      if (notify) {
+        listener(nextState, state)
+      }
     }
   }
 
-  const subscribe = (
+  const subscribe = <TSelector extends Selector<TState>>(
     listener: Listener<TState>,
-    selector?: Selector<TState>
+    selector?: TSelector,
+    customEquality?: CustomEquality<ReturnType<TSelector>>
   ) => {
     const readydListener = selector
-      ? customListener(listener, selector)
+      ? customListener(listener, selector, customEquality)
       : listener
 
     const subscriber = observer.subscribe(readydListener)

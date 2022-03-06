@@ -386,4 +386,42 @@ describe('vanilla', () => {
     // then
     expect(store.get.state.isDivisible()).toBeTruthy()
   })
+
+  it('should invoke listener when previous value is bigger', () => {
+    // given
+    type State = {
+      counter: number
+      increase: () => void
+      decrease: () => void
+    }
+    const store = createStore<State>((set) => ({
+      counter: 0,
+      increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
+      decrease: () => set((prevState) => ({ counter: prevState.counter - 1 })),
+    }))
+    const state = store.get.state
+
+    // when
+    const logger = jest.fn()
+    store.subscribe(
+      logger,
+      (state) => state.counter,
+      (nextSlice, slice) => nextSlice > slice
+    )
+
+    // then
+    expect(store.get.listeners).toHaveLength(1)
+
+    // when
+    state.increase()
+
+    // then
+    expect(logger).toHaveBeenCalled()
+
+    // when
+    state.decrease()
+
+    // then
+    expect(logger).toHaveBeenCalledTimes(1)
+  })
 })
