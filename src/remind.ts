@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useMemo } from 'react'
 
 import { createStore } from './store'
 import { useDidMount, useListener, useEventListenr } from './hooks'
@@ -63,11 +63,14 @@ const remind = <TState extends Record<PropertyKey, any>>(
       })
     })
 
-    const handler = {
-      mind,
-      setMind: store.setState,
-      unregister: savedSubscriber.current?.unsubscribe || noop,
-    }
+    const handler = useMemo(
+      () => ({
+        mind,
+        setMind: store.setState,
+        unregister: savedSubscriber.current?.unsubscribe || noop,
+      }),
+      [mind]
+    )
 
     return merge([mind, store.setState] as const, handler)
   }
