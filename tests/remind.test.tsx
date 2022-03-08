@@ -667,7 +667,7 @@ describe('remind', () => {
 
       return (
         <div>
-          <p>is divisible: {mind.isDivisible.toString()}</p>
+          <p>is divisible: {mind.isDivisible().toString()}</p>
           <p>counter {mind.counter}</p>
           <button onClick={mind.increase}>increase</button>
         </div>
@@ -682,5 +682,47 @@ describe('remind', () => {
 
     // then
     getByText('is divisible: true')
+  })
+
+  it('should rerender component when next value is bigger', () => {
+    // given
+    type State = {
+      counter: number
+      increase: () => void
+      decrease: () => void
+    }
+    const { useRemind } = remind<State>((set) => ({
+      counter: 0,
+      increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
+      decrease: () => set((prevState) => ({ counter: prevState.counter - 1 })),
+    }))
+
+    const Counter = () => {
+      const { mind } = useRemind((state) => state.counter, {
+        equalityFn: (nextSlice, slice) => nextSlice > slice,
+      })
+
+      return (
+        <div>
+          <p>counter {mind.counter}</p>
+          <button onClick={mind.increase}>increase</button>
+          <button onClick={mind.decrease}>decrease</button>
+        </div>
+      )
+    }
+
+    const { getByText } = render(<Counter />)
+
+    // when
+    fireEvent.click(getByText('increase'))
+
+    // then
+    getByText('counter 1')
+
+    // when
+    fireEvent.click(getByText('decrease'))
+
+    // then
+    getByText('counter 1')
   })
 })

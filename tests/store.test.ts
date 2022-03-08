@@ -387,7 +387,7 @@ describe('vanilla', () => {
     expect(store.get.state.isDivisible()).toBeTruthy()
   })
 
-  it('should invoke listener when previous value is bigger', () => {
+  it('should invoke listener when next value is bigger', () => {
     // given
     type State = {
       counter: number

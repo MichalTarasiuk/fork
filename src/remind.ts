@@ -1,7 +1,12 @@
 import { useCallback, useRef, useMemo } from 'react'
 
 import { createStore } from './store'
-import { useDidMount, useListener, useEventListenr } from './hooks'
+import {
+  useDidMount,
+  useListener,
+  useEventListenr,
+  useSyncedRef,
+} from './hooks'
 import {
   merge,
   isFunction,
@@ -26,11 +31,13 @@ const remind = <TState extends Record<PropertyKey, any>>(
   const useRemind = (...options: Options<TState>) => {
     type Subscriber = ReturnType<typeof store['subscribe']>
     const savedSubscriber = useRef<Subscriber | null>(null)
+    const syncedConfig = useSyncedRef<Config<TState> | undefined>(
+      options.find((option) => !isFunction(option)) as Config<TState>
+    )
 
     const listener = useCallback((nextState: TState, state?: TState) => {
-      const config = options.find((option) => !isFunction(option)) as Config
       const pickedSources = Object.values(
-        pick(sourcesMap, pickKeysByType(config, true))
+        pick(sourcesMap, pickKeysByType(syncedConfig.current || {}, true))
       )
       const combinedSources = compose(...pickedSources)
 
@@ -43,7 +50,8 @@ const remind = <TState extends Record<PropertyKey, any>>(
       const selector = options.find((option) =>
         isFunction(option)
       ) as Selector<TState>
-      const subscriber = store.subscribe(observer, selector)
+      const { equalityFn } = syncedConfig.current || {}
+      const subscriber = store.subscribe(observer, selector, equalityFn)
 
       savedSubscriber.current = subscriber
 
