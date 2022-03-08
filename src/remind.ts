@@ -28,11 +28,16 @@ const remind = <TState extends Record<PropertyKey, any>>(
   const sourcesMap = getSourcesMap(store)
   const state = store.get.state
 
-  const useRemind = (...options: Options<TState>) => {
+  const useRemind = <
+    TSelector extends Selector<TState>,
+    TConfig extends Config<TState, TSelector>
+  >(
+    ...options: Options<TState, TSelector>
+  ) => {
     type Subscriber = ReturnType<typeof store['subscribe']>
     const savedSubscriber = useRef<Subscriber | null>(null)
-    const syncedConfig = useSyncedRef<Config<TState> | undefined>(
-      options.find((option) => !isFunction(option)) as Config<TState>
+    const syncedConfig = useSyncedRef<TConfig | undefined>(
+      options.find((option) => !isFunction(option)) as TConfig
     )
 
     const listener = useCallback((nextState: TState, state?: TState) => {
@@ -47,9 +52,7 @@ const remind = <TState extends Record<PropertyKey, any>>(
     const [mind, observer] = useListener(state, listener)
 
     useDidMount(() => {
-      const selector = options.find((option) =>
-        isFunction(option)
-      ) as Selector<TState>
+      const selector = options.find((option) => isFunction(option)) as TSelector
       const { equalityFn } = syncedConfig.current || {}
       const subscriber = store.subscribe(observer, selector, equalityFn)
 
