@@ -86,33 +86,12 @@ const remind = <TState extends Record<PropertyKey, any>>(
     return merge([mind, store.setState] as const, handler)
   }
 
-  const {
-    destroy: destorySubscribers,
-    reset: resetToInitialState,
-    ...restStore
-  } = store
-
-  const destroy = () => {
-    if (process.env.NODE_ENV === 'development') {
-      console.warn(
-        'WARN - destroy store may have unexpected effects on your application'
-      )
-    }
-
-    resetToInitialState()
-    destorySubscribers()
-
-    return {
-      useRemind,
-      destroy,
-      ...restStore,
-    }
-  }
+  const { get, setState } = store
 
   return {
     useRemind,
-    destroy,
-    ...restStore,
+    get,
+    setState,
   }
 }
 

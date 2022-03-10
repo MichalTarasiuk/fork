@@ -73,7 +73,6 @@ describe('remind', () => {
       },
       dakrMode: false,
     })
-    get.state.counter.name
 
     const Component = () => {
       const [mind, setMind] = useRemind((state) => state.counter.name)
@@ -172,48 +171,6 @@ describe('remind', () => {
 
     // then
     expect(store.get.listeners).toHaveLength(1)
-  })
-
-  it('should remove listeners and back to initial state', async () => {
-    // given
-    type State = {
-      counter: any
-      increase: Noop
-    }
-    const store = remind<State>((set) => ({
-      counter: 0,
-      increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
-    }))
-    const { useRemind } = store
-
-    const Counter = () => {
-      const [{ counter, increase }] = useRemind()
-
-      return (
-        <div>
-          <p>counter {counter}</p>
-          <button onClick={increase}>increase</button>
-        </div>
-      )
-    }
-    const { getByText, findByText } = render(<Counter />)
-
-    // when
-    act(() => {
-      fireEvent.click(getByText('increase'))
-    })
-
-    // then
-    await findByText('counter 1')
-
-    // when
-    act(() => {
-      store.destroy()
-    })
-
-    // then
-    expect(store.get.state.counter).toBe(0)
-    expect(store.get.listeners).toHaveLength(0)
   })
 
   it('subscriber with selector should not rerender after invoke setState function outside component', async () => {
@@ -418,50 +375,6 @@ describe('remind', () => {
 
     // then
     await findByText('counter 1')
-  })
-
-  it('should reset store', async () => {
-    // given
-    type State = {
-      counter: number
-      increase: Noop
-    }
-    const store = remind<State>((set) => ({
-      counter: 0,
-      increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
-    }))
-    const { useRemind } = store
-
-    const Counter = () => {
-      const [{ counter, increase }] = useRemind()
-
-      return (
-        <div>
-          <p>counter {counter}</p>
-          <button onClick={increase}>increase</button>
-        </div>
-      )
-    }
-
-    const { getByText, findByText } = render(<Counter />)
-
-    // when
-    act(() => {
-      fireEvent.click(getByText('increase'))
-    })
-
-    // then
-    await findByText('counter 1')
-
-    // when
-    act(() => {
-      store.destroy()
-    })
-
-    // then
-    await findByText('counter 0')
-    expect(store.get.state.counter).toBe(0)
-    expect(store.get.listeners).toHaveLength(0)
   })
 
   it('should not rerender listener when state after setState action is the same', () => {
