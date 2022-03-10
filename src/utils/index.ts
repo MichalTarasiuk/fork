@@ -15,6 +15,7 @@ export { isStateMap } from './isStateMap'
 export { isAsyncFunction } from './isAsyncFunction'
 export { deepPickAsyncFunctions } from './deepPickAsyncFunctions'
 export { getSlugs } from './getSlugs'
+export { set } from './set'
 
 export const noop = () => {}
 
