@@ -14,6 +14,7 @@ export { pickKeysByType } from './pickKeysByType'
 export { isStateMap } from './isStateMap'
 export { isAsyncFunction } from './isAsyncFunction'
 export { deepPickAsyncFunctions } from './deepPickAsyncFunctions'
+export { getSlugs } from './getSlugs'
 
 export const noop = () => {}
 
