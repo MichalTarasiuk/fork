@@ -13,6 +13,7 @@ export { compose } from './compose'
 export { pickKeysByType } from './pickKeysByType'
 export { isStateMap } from './isStateMap'
 export { isAsyncFunction } from './isAsyncFunction'
+export { deepPickAsyncFunctions } from './deepPickAsyncFunctions'
 
 export const noop = () => {}
 
