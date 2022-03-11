@@ -11,7 +11,7 @@ export type Status = 'idle' | 'success' | 'error' | 'loading'
 
 const getInitialState = <TValue extends Record<string, any>>(value: TValue) =>
   Object.keys(value).reduce<Record<string, any>>((acc, key) => {
-    acc[key] = isPlainObject(acc[key]) ? getInitialState(acc[key]) : 'idle'
+    acc[key] = isPlainObject(value[key]) ? getInitialState(value[key]) : 'idle'
 
     return acc
   }, {})
@@ -40,8 +40,8 @@ export const useMultipleFetch = <
           return acc
         }
 
-        const slug = slugs[key]
         const mutation = async () => {
+          const slug = slugs[key]
           dispatch({ status: 'loading', slug })
 
           try {
@@ -80,5 +80,7 @@ export const useMultipleFetch = <
     []
   )
 
-  return combaine(state, mutations)
+  const combined = useMemo(() => combaine(state, mutations), [state, mutations])
+
+  return combined
 }
