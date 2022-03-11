@@ -2,6 +2,7 @@ import { useReducer, useCallback, useMemo } from 'react'
 
 import { isAsyncFunction, isPlainObject, getSlugs, set } from '../../src/utils'
 import { DeepReplace, AsyncFunction, DeepPickByType } from '../types'
+import { Value as Slugs } from '../utils/getSlugs'
 
 type Action = {
   status: Status
@@ -28,15 +29,13 @@ export const useMultipleFetch = <
     getInitialState(value) as TState
   )
 
-  const slugs = useMemo(() => getSlugs(value), [value])
-
   const createMutations = useCallback(
-    (value) =>
+    (value: Record<string, any>, slugs: Slugs) =>
       Object.keys(value).reduce<Record<string, any>>((acc, key) => {
         const valueOfProp = value[key]
 
         if (!isAsyncFunction(valueOfProp)) {
-          acc[key] = createMutations(valueOfProp) as any
+          acc[key] = createMutations(valueOfProp, slugs) as any
           return acc
         }
 
@@ -58,14 +57,12 @@ export const useMultipleFetch = <
 
         return acc
       }, {}) as TValue,
-    [slugs]
+    []
   )
-
-  const mutations = useMemo(() => createMutations(value), [value])
 
   const combaine = useCallback(
     (state, mutations) =>
-      Object.keys(state).reduce((acc: Record<string, any>, key) => {
+      Object.keys(mutations).reduce((acc: Record<string, any>, key) => {
         const mutation = mutations[key]
 
         if (!isAsyncFunction(mutation)) {
@@ -80,6 +77,8 @@ export const useMultipleFetch = <
     []
   )
 
+  const slugs = useMemo(() => getSlugs(value), [value])
+  const mutations = useMemo(() => createMutations(value, slugs), [value, slugs])
   const combined = useMemo(() => combaine(state, mutations), [state, mutations])
 
   return combined

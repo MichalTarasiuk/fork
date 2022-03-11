@@ -1,6 +1,6 @@
 import { isPlainObject } from '../utils'
 
-type Value = Record<string, any>
+export type Value = Record<string, any>
 
 export const getSlugs = (map: Value, prefix = '', slugs = {}): Value =>
   Object.keys(map).reduce<Value>((slugs, key) => {
