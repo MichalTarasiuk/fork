@@ -425,12 +425,17 @@ describe('remind', () => {
     const { useRemind } = store
 
     const Counter = () => {
-      const [{ counter, increase }] = useRemind()
+      const [
+        {
+          counter,
+          increase: [increaseCounter],
+        },
+      ] = useRemind()
 
       return (
         <div>
           <p>counter {counter}</p>
-          <button onClick={increase}>increase</button>
+          <button onClick={increaseCounter}>increase</button>
         </div>
       )
     }

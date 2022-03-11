@@ -21,8 +21,10 @@ import {
   buildOf,
 } from './utils'
 import { getSourcesMap, broadcastChannel } from './logic'
+import { Status } from './hooks'
 import type { StateCreator, Selector } from './store.types'
 import type { Options, Config } from './remind.types'
+import type { AsyncFunction, DeepReplace } from './types'
 
 const remind = <TState extends Record<PropertyKey, any>>(
   stateCreator: StateCreator<TState>
@@ -37,6 +39,7 @@ const remind = <TState extends Record<PropertyKey, any>>(
   >(
     ...options: Options<TState, TSelector>
   ) => {
+    type Mind = DeepReplace<TState, AsyncFunction, [AsyncFunction, Status]>
     type Subscriber = ReturnType<typeof store['subscribe']>
     const savedSubscriber = useRef<Subscriber | null>(null)
     const syncedConfig = useSyncedRef<TConfig | undefined>(
@@ -80,7 +83,7 @@ const remind = <TState extends Record<PropertyKey, any>>(
 
     const handler = useMemo(
       () => ({
-        mind: buildOf(mind, multipleFetch),
+        mind: buildOf(mind, multipleFetch) as Mind,
         setMind: store.setState,
         unregister: savedSubscriber.current?.unsubscribe || noop,
       }),

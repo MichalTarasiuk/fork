@@ -9,5 +9,11 @@ export type AsyncFunction = (...args: any[]) => Promise<any>
 export type DeepReplace<TValue, TFrom, TTo> = {
   [key in keyof TValue]: TValue[key] extends TFrom
     ? TTo
-    : DeepReplace<TValue[key], TFrom, TTo>
+    : TValue[key] extends object
+    ? TValue[key] extends Function
+      ? TValue[key]
+      : TValue extends Array<any>
+      ? TValue[key]
+      : DeepReplace<TValue[key], TFrom, TTo>
+    : TValue[key]
 }

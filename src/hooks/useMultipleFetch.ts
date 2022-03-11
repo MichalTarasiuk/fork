@@ -40,8 +40,8 @@ export const useMultipleFetch = <
           return acc
         }
 
+        const slug = slugs[key]
         const mutation = async () => {
-          const slug = slugs[key]
           dispatch({ status: 'loading', slug })
 
           try {
