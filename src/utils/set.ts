@@ -11,11 +11,7 @@ export const set = <TObject extends Record<string, any>>(
   const isEmpty = splittedSlug.length === 0
 
   for (const key in copy) {
-    if (
-      step &&
-      copy[step] !== undefined &&
-      (isPlainObject(object[key]) || isEmpty)
-    ) {
+    if (step && step in copy && (isPlainObject(object[key]) || isEmpty)) {
       copy[step] = isEmpty
         ? value
         : set(object[key], splittedSlug.join('.'), value)
