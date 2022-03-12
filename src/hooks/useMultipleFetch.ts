@@ -19,8 +19,12 @@ const getInitialState = <TValue extends Record<string, any>>(value: TValue) =>
 
 export const useMultipleFetch = <
   TMind extends Record<PropertyKey, any>,
-  TValue = DeepPickByType<TMind, AsyncFunction>,
-  TState = DeepReplace<TValue, AsyncFunction, Status>
+  TValue extends Record<string, any> = DeepPickByType<TMind, AsyncFunction>,
+  TState extends Record<string, any> = DeepReplace<
+    TValue,
+    AsyncFunction,
+    Status
+  >
 >(
   value: TValue
 ) => {
@@ -30,7 +34,7 @@ export const useMultipleFetch = <
   )
 
   const createMutations = useCallback(
-    (value: Record<string, any>, slugs: Slugs) =>
+    (value: TValue, slugs: Slugs) =>
       Object.keys(value).reduce<Record<string, any>>((acc, key) => {
         const valueOfProp = value[key]
 
@@ -61,7 +65,7 @@ export const useMultipleFetch = <
   )
 
   const combaine = useCallback(
-    (state, mutations) =>
+    (state: TState, mutations: TValue) =>
       Object.keys(mutations).reduce((acc: Record<string, any>, key) => {
         const mutation = mutations[key]
 
