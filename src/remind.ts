@@ -6,7 +6,6 @@ import {
   useListener,
   useEventListenr,
   useSyncedRef,
-  useMultipleFetch,
 } from './hooks'
 import {
   merge,
@@ -17,8 +16,6 @@ import {
   pickKeysByType,
   isMessageEvent,
   isStateMap,
-  deepPickAsyncFunctions,
-  buildOf,
 } from './utils'
 import { getSourcesMap, broadcastChannel } from './logic'
 import { Status } from './hooks'
@@ -56,7 +53,6 @@ const remind = <TState extends Record<PropertyKey, any>>(
     }, [])
 
     const [mind, observer] = useListener(state, listener)
-    const multipleFetch = useMultipleFetch<TState>(deepPickAsyncFunctions(mind))
 
     useDidMount(() => {
       const selector = options.find((option) => isFunction(option)) as TSelector
@@ -83,7 +79,7 @@ const remind = <TState extends Record<PropertyKey, any>>(
 
     const handler = useMemo(
       () => ({
-        mind: buildOf(mind, multipleFetch) as Mind,
+        mind,
         setMind: store.setState,
         unregister: savedSubscriber.current?.unsubscribe || noop,
       }),
