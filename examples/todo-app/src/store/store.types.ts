@@ -6,4 +6,6 @@ export type Note = {
 
 export type State = {
   notes: Note[]
+  block: boolean
+  unlock: () => Promise<unknown>
 }

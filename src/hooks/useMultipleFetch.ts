@@ -57,8 +57,8 @@ export const useMultipleFetch = <
           dispatch({ status: 'loading', slug })
 
           try {
-            dispatch({ status: 'success', slug })
             const result = await fetcher()
+            dispatch({ status: 'success', slug })
 
             return result
           } catch {
