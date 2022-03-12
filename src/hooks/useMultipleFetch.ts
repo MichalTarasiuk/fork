@@ -15,6 +15,11 @@ type Mutations<TValue> = DeepReplace<
   AsyncFunction,
   [AsyncFunction, Status]
 >
+type Combined<TFetchers> = DeepReplace<
+  TFetchers,
+  AsyncFunction,
+  [AsyncFunction, Status]
+>
 export type Status = 'idle' | 'success' | 'error' | 'loading'
 
 const getInitialState = (value: Record<string, any>) =>
@@ -81,7 +86,7 @@ export const useMultipleFetch = <
         acc[key] = [mutation, state[key]]
 
         return acc
-      }, {}),
+      }, {}) as Combined<TFetchers>,
     []
   )
 
