@@ -28,9 +28,9 @@ export const useListener = <TState>(
   const multipleFetch = useMultipleFetch<TState>(
     deepPickAsyncFunctions(initialState)
   )
-  const savedMultipleFetch = useRef(multipleFetch)
 
   const state = useRef<TState | undefined>(undefined)
+  const savedMultipleFetch = useRef(multipleFetch)
 
   if (isFirstMount) {
     state.current = listener(
