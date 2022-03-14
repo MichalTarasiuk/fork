@@ -3,7 +3,7 @@ import type { StateMap } from '../remind.types'
 
 export const broadcastChannel = new BroadcastChannel('remind')
 
-export const getSourcesMap = <TStore extends Record<string, any>>(
+export const getPluginsMap = <TStore extends Record<string, any>>(
   store: TStore
 ) => ({
   watch({ nextState, state }: StateMap<object>) {

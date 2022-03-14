@@ -1,1 +1,1 @@
-export * from './getSourcesMap'
+export * from './getPluginsMap'

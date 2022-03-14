@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "module": "CommonJS",
     "target": "esnext",
     "strict": true,
     "jsx": "react-jsx",
@@ -8,10 +7,6 @@
     "moduleResolution": "node",
     "exactOptionalPropertyTypes": true,
     "baseUrl": ".",
-    "outDir": "./dist",
-    "declaration": true,
-    "declarationDir": "./@types",
-    "rootDir": ".",
     "allowUnusedLabels": false,
     "allowUnreachableCode": false,
     "noFallthroughCasesInSwitch": true,
@@ -21,6 +16,5 @@
     "noUnusedParameters": true,
     "resolveJsonModule": true
   },
-  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist/**/*", "tests/**/*"]
 }

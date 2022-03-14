@@ -17,7 +17,7 @@ import {
   isMessageEvent,
   isStateMap,
 } from './utils'
-import { getSourcesMap, broadcastChannel } from './logic'
+import { getPluginsMap, broadcastChannel } from './logic'
 import type { StateCreator, Selector } from './store.types'
 import type { Options, Config } from './remind.types'
 
@@ -25,7 +25,7 @@ const remind = <TState extends Record<PropertyKey, any>>(
   stateCreator: StateCreator<TState>
 ) => {
   const store = createStore(stateCreator)
-  const sourcesMap = getSourcesMap(store)
+  const pluginsMap = getPluginsMap(store)
   const state = store.get.state
 
   const useRemind = <
@@ -42,7 +42,7 @@ const remind = <TState extends Record<PropertyKey, any>>(
 
     const listener = useCallback((nextState: TState, state?: TState) => {
       const pickedSources = Object.values(
-        pick(sourcesMap, pickKeysByType(syncedConfig.current || {}, true))
+        pick(pluginsMap, pickKeysByType(syncedConfig.current || {}, true))
       )
       const combinedSources = compose(...pickedSources)
 
