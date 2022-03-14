@@ -41,10 +41,10 @@ const remind = <TState extends Record<PropertyKey, any>>(
     )
 
     const listener = useCallback((nextState: TState, state?: TState) => {
-      const pickedSources = Object.values(
+      const pickedPlugins = Object.values(
         pick(pluginsMap, pickKeysByType(syncedConfig.current || {}, true))
       )
-      const combinedSources = compose(...pickedSources)
+      const combinedSources = compose(...pickedPlugins)
 
       return combinedSources({ nextState, state }).nextState
     }, [])
