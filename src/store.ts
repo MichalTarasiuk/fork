@@ -7,6 +7,7 @@ import {
   cloneObject,
   getMiddlewares,
   invokeMiddlewares,
+  noop,
 } from './utils'
 import type { ResolvableState, Listener } from './utils'
 import type { DeepPartial } from './typings'
@@ -17,9 +18,20 @@ import type {
   SetState,
   GetState,
   CustomEquality,
+  Lifecycle,
 } from './store.types'
 
-const createStore = <TState>(stateCreator: StateCreator<TState>) => {
+const getMockLifecycle = <TState>(): Lifecycle<TState> => ({
+  onMount() {
+    return null
+  },
+  onUpdate: noop,
+})
+
+const createStore = <TState>(
+  stateCreator: StateCreator<TState>,
+  lifecycle: Lifecycle<TState> = getMockLifecycle()
+) => {
   let state: ReturnType<CreateState<TState>>
   const observer = createObserver<TState>()
 
@@ -63,6 +75,8 @@ const createStore = <TState>(stateCreator: StateCreator<TState>) => {
         ? (patch as TState)
         : buildOf(state, resolvedPatch as DeepPartial<TState>)
 
+      lifecycle.onUpdate(nextState)
+
       return nextState
     })
 
@@ -84,6 +98,15 @@ const createStore = <TState>(stateCreator: StateCreator<TState>) => {
   }
 
   state = createState(stateCreator, setState, getState)
+  state.setState((state) => {
+    const nextState = lifecycle.onMount()
+
+    if (nextState) {
+      return nextState
+    }
+
+    return state
+  })
 
   return {
     get: {

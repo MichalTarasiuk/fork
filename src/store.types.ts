@@ -11,6 +11,10 @@ export type CreateState<TState> = (
     oldState: TState
   }
 }
+export type Lifecycle<TState> = {
+  onMount: () => TState | null
+  onUpdate: (state: TState) => void
+}
 export type Selector<TState> = (state: TState) => any
 export type StateCreator<TState> =
   | ((set: SetState<TState>, get: GetState<TState>) => TState)

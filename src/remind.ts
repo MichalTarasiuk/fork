@@ -17,14 +17,24 @@ import {
   isMessageEvent,
   isStateMap,
 } from './utils'
-import { getPluginsMap, broadcastChannel } from './logic'
+import { getPluginsMap, broadcastChannel, createStash } from './logic'
 import type { StateCreator, Selector } from './store.types'
 import type { Options, Config } from './remind.types'
 
 const remind = <TState extends Record<PropertyKey, any>>(
   stateCreator: StateCreator<TState>
 ) => {
-  const store = createStore(stateCreator)
+  const stash = createStash<TState>()
+  const store = createStore<TState>(stateCreator, {
+    onMount() {
+      const state = stash.read()
+
+      return state
+    },
+    onUpdate(nextState) {
+      stash.set(nextState)
+    },
+  })
   const pluginsMap = getPluginsMap(store)
   const state = store.get.state
 
@@ -60,6 +70,12 @@ const remind = <TState extends Record<PropertyKey, any>>(
 
       return () => {
         subscriber.unsubscribe()
+      }
+    })
+
+    useDidMount(() => {
+      if (stash.isNotReadable) {
+        stash.set(mind as TState)
       }
     })
 
