@@ -21,16 +21,16 @@ import type {
   Lifecycle,
 } from './store.types'
 
-const getMockLifecycle = <TState>(): Lifecycle<TState> => ({
+const mockLifecycle = {
   onMount() {
     return null
   },
   onUpdate: noop,
-})
+}
 
 const createStore = <TState>(
   stateCreator: StateCreator<TState>,
-  lifecycle: Lifecycle<TState> = getMockLifecycle()
+  lifecycle: Lifecycle<TState> = mockLifecycle
 ) => {
   let state: ReturnType<CreateState<TState>>
   const observer = createObserver<TState>()
