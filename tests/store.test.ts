@@ -1,8 +1,8 @@
 import { createStore } from '../src/store'
-import type { Noop } from './test.types'
-import { wait } from './test.utils'
+import { wait } from './tests.utils'
+import type { Noop } from '../src/typings'
 
-describe('vanilla', () => {
+describe('store', () => {
   it('should subscriber invoke after state change', () => {
     // given
     type State = {

@@ -1,4 +1,4 @@
-import type { ResolvableState } from './utils'
+import type { ResolvableState } from './helpers/helpers'
 import type { DeepPartial } from './typings'
 
 export type CreateState<TState> = (

@@ -7,7 +7,7 @@ import pkg from './package.json'
 
 const config = [
   {
-    input: 'src/remind.ts',
+    input: 'src/factory.ts',
     output: [
       {
         name: 'remind',

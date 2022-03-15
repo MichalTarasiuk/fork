@@ -9,7 +9,7 @@
     "require": "./dist/index.cjs",
     "browser": "./dist/index.umd.js"
   },
-  "types": "./dist/src/remind.d.ts",
+  "types": "./dist/src/factory.d.ts",
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
   "browser": "dist/index.umd.js",
