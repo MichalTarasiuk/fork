@@ -54,9 +54,9 @@ const remind = <TState extends Record<PropertyKey, any>>(
       const pickedPlugins = Object.values(
         pick(pluginsMap, pickKeysByType(syncedConfig.current || {}, true))
       )
-      const combinedSources = compose(...pickedPlugins)
+      const combinedPlugins = compose(...pickedPlugins)
 
-      return combinedSources({ nextState, state }).nextState
+      return combinedPlugins({ nextState, state }).nextState
     }, [])
 
     const [mind, observer] = useListener(state, listener)
