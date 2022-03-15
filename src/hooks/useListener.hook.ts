@@ -1,7 +1,7 @@
 import { useCallback, useRef } from 'react'
 
 import { equals, deepPickAsyncFunctions, buildOf } from '../helpers/helpers'
-import type { DeepReplace, AsyncFunction } from '../typings'
+import type { DeepAddByValue, AsyncFunction } from '../typings'
 
 import {
   useFirstMountState,
@@ -11,11 +11,7 @@ import {
 } from './hooks'
 import type { Status } from './useMultipleFetch.hook'
 
-type ModifiedState<TState> = DeepReplace<
-  TState,
-  AsyncFunction,
-  [AsyncFunction, Status]
->
+type ModifiedState<TState> = DeepAddByValue<TState, AsyncFunction, Status>
 
 export const useListener = <TState>(
   initialState: TState,

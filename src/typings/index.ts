@@ -21,10 +21,10 @@ export type DeepPickByType<TValue extends Record<string, any>, TType> = {
 
 export type AsyncFunction = (...args: any[]) => Promise<any>
 
-export type DeepReplace<TValue, TFrom, TTo> = {
-  [key in keyof TValue]: TValue[key] extends TFrom
-    ? TTo
-    : TValue[key] extends Function | Array<any> | Primitive
-    ? TValue[key]
-    : DeepReplace<TValue[key], TFrom, TTo>
+export type DeepAddByValue<TObject, TValue, TNewValue> = {
+  [key in keyof TObject]: TObject[key] extends TValue
+    ? [TObject[key], TNewValue]
+    : TObject[key] extends Function | Array<any> | Primitive
+    ? TObject[key]
+    : DeepAddByValue<TObject[key], TValue, TNewValue>
 }

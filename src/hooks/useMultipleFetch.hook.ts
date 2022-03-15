@@ -6,7 +6,7 @@ import {
   getSlugs,
   set,
 } from '../helpers/helpers'
-import { DeepReplace, AsyncFunction, DeepPickByType } from '../typings'
+import { DeepAddByValue, AsyncFunction, DeepPickByType } from '../typings'
 import { Value as Slugs } from '../helpers/getSlugs.helper'
 
 type Fetchers<TValue> = DeepPickByType<TValue, AsyncFunction>
@@ -14,17 +14,9 @@ type Action = {
   status: Status
   slug: string
 }
-type State<TValue> = DeepReplace<TValue, AsyncFunction, Status>
-type Mutations<TValue> = DeepReplace<
-  TValue,
-  AsyncFunction,
-  [AsyncFunction, Status]
->
-type Combined<TFetchers> = DeepReplace<
-  TFetchers,
-  AsyncFunction,
-  [AsyncFunction, Status]
->
+type State<TValue> = DeepAddByValue<TValue, AsyncFunction, Status>
+type Mutations<TValue> = DeepAddByValue<TValue, AsyncFunction, Status>
+type Combined<TFetchers> = DeepAddByValue<TFetchers, AsyncFunction, Status>
 export type Status = 'idle' | 'success' | 'error' | 'loading'
 
 const getInitialState = (value: Record<string, any>) =>
