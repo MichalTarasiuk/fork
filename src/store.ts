@@ -5,8 +5,6 @@ import {
   equals,
   isFunction,
   cloneObject,
-  getMiddlewares,
-  invokeMiddlewares,
   noop,
 } from './helpers/helpers'
 import type { ResolvableState, Listener } from './helpers/helpers'
@@ -133,25 +131,18 @@ const createState = <TState>(
   const resolvedState = isFunction(stateCreator)
     ? stateCreator(setState, getState)
     : stateCreator
-  const middlewares = getMiddlewares(resolvedState)
-  const initialState = invokeMiddlewares(middlewares, resolvedState)
 
   return {
-    value: initialState,
+    value: resolvedState,
     setState(resolvableState: ResolvableState<TState>) {
-      const previousState = cloneObject(this.value)
-      const resolvedState = resolveState(resolvableState, previousState)
-      const nextState = invokeMiddlewares(
-        middlewares,
-        previousState,
-        resolvedState
-      )
+      const oldState = cloneObject(this.value)
+      const nextState = resolveState(resolvableState, oldState)
 
       Object.assign(this.value, nextState)
 
       return {
         nextState,
-        oldState: previousState,
+        oldState,
       }
     },
   }

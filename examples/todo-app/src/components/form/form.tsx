@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 
 import { useRemind } from 'store'
-import { useForm } from './useForm'
+import { useForm } from './useForm.hook'
 import './form.css'
 
 const Form = () => {

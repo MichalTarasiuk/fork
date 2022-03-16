@@ -1,8 +1,7 @@
 import remind from 'remind'
 
 import { State } from './store.types'
-
-const wait = (ms = 0) => new Promise((res) => setTimeout(res, ms))
+import { wait } from './store.helpers'
 
 const { useRemind } = remind<State>((set) => ({
   block: true,

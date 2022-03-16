@@ -225,158 +225,6 @@ describe('factory', () => {
     await findByText('counter 1')
   })
 
-  it('should resolve middleware', async () => {
-    // arrange
-    const { useRemind } = remind<any>({
-      counter: (value = 0) => {
-        return { next: false, value }
-      },
-    })
-
-    const Counter = () => {
-      const [{ counter }] = useRemind()
-
-      return <p>counter {counter}</p>
-    }
-
-    const { findByText } = render(<Counter />)
-
-    // assert
-    await findByText('counter 0')
-  })
-
-  it('middleware should block setState action', async () => {
-    // given
-    type State = {
-      counter: any
-      increase: Noop
-    }
-    const { useRemind } = remind<State>((set) => ({
-      counter: (value = 0) => {
-        return { next: false, value }
-      },
-      increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
-    }))
-
-    const Counter = () => {
-      const [{ counter, increase }] = useRemind()
-
-      return (
-        <div>
-          <p>counter {counter}</p>
-          <button onClick={increase}>increase</button>
-        </div>
-      )
-    }
-
-    const { getByText, findByText } = render(<Counter />)
-
-    // when
-    fireEvent.click(getByText('increase'))
-
-    // then
-    await findByText('counter 0')
-  })
-
-  it('middleware should not block setState action', async () => {
-    // given
-    type State = {
-      counter: any
-      increase: Noop
-    }
-    const { useRemind } = remind<State>((set) => ({
-      counter: (value = 0) => {
-        return { next: true, value }
-      },
-      increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
-    }))
-
-    const Counter = () => {
-      const [{ counter, increase }] = useRemind()
-
-      return (
-        <div>
-          <p>counter {counter}</p>
-          <button onClick={increase}>increase</button>
-        </div>
-      )
-    }
-
-    const { getByText, findByText } = render(<Counter />)
-
-    // when
-    fireEvent.click(getByText('increase'))
-
-    // then
-    await findByText('counter 1')
-  })
-
-  it('middleware should block inner setState action', async () => {
-    // given
-    type State = {
-      counter: any
-      increase: Noop
-    }
-    const { useRemind } = remind<State>((set) => ({
-      counter: (value = 0) => {
-        return { next: false, value }
-      },
-      increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
-    }))
-
-    const Counter = () => {
-      const [{ counter, increase }] = useRemind()
-
-      return (
-        <div>
-          <p>counter {counter}</p>
-          <button onClick={increase}>increase</button>
-        </div>
-      )
-    }
-
-    const { getByText, findByText } = render(<Counter />)
-
-    // when
-    fireEvent.click(getByText('increase'))
-
-    // then
-    await findByText('counter 0')
-  })
-
-  it('middleware should not block inner setState action', async () => {
-    // given
-    type State = {
-      counter: any
-      increase: Noop
-    }
-    const { useRemind } = remind<State>((set) => ({
-      counter: (value = 0) => {
-        return { next: true, value }
-      },
-      increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
-    }))
-
-    const Counter = () => {
-      const [{ counter, increase }] = useRemind()
-
-      return (
-        <div>
-          <p>counter {counter}</p>
-          <button onClick={increase}>increase</button>
-        </div>
-      )
-    }
-
-    const { getByText, findByText } = render(<Counter />)
-
-    // when
-    fireEvent.click(getByText('increase'))
-
-    // then
-    await findByText('counter 1')
-  })
-
   it('should not rerender listener when state after setState action is the same', () => {
     // given
     type State = {
@@ -455,7 +303,7 @@ describe('factory', () => {
       list: [] as number[],
     })
     const Todo = () => {
-      const { mind } = useRemind({ watch: true }, (state) => state.list)
+      const { mind } = useRemind((state) => state.list, { watch: true })
 
       const add = () => {
         mind.list.push(Math.random())
@@ -496,7 +344,7 @@ describe('factory', () => {
         )
       },
       Child1() {
-        const { mind } = useRemind({ watch: true })
+        const { mind } = useRemind((state) => state, { watch: true })
 
         const add = () => {
           mind.list.push(Math.random())

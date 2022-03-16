@@ -1,6 +1,5 @@
 export * from './observer.helper'
 export * from './resolveState.helper'
-export * from './middleware.helper'
 export { isPrimitive } from './isPrimitive.helper'
 export { buildOf } from './buildOf.helper'
 export { equals } from './equals.helper'

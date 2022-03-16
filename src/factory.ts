@@ -1,15 +1,9 @@
 import { useCallback, useRef, useMemo } from 'react'
 
 import { createStore } from './store'
-import {
-  useDidMount,
-  useListener,
-  useEventListenr,
-  useSyncedRef,
-} from './hooks/hooks'
+import { useDidMount, useListener, useEventListenr } from './hooks/hooks'
 import {
   merge,
-  isFunction,
   pick,
   compose,
   noop,
@@ -19,7 +13,7 @@ import {
 } from './helpers/helpers'
 import { getPluginsMap, createStash, broadcastChannel } from './logic/logic'
 import type { StateCreator, Selector } from './store.types'
-import type { Options, Config } from './factory.types'
+import type { Config } from './factory.types'
 
 const factory = <TState extends Record<PropertyKey, any>>(
   stateCreator: StateCreator<TState>
@@ -38,32 +32,29 @@ const factory = <TState extends Record<PropertyKey, any>>(
   const pluginsMap = getPluginsMap(store)
   const state = store.get.state
 
-  const useRemind = <
-    TSelector extends Selector<TState>,
-    TConfig extends Config<TState, TSelector>
-  >(
-    ...options: Options<TState, TSelector>
+  const useRemind = <TSelector extends Selector<TState>>(
+    selector?: TSelector,
+    config?: Config<TState, TSelector>
   ) => {
     type Subscriber = ReturnType<typeof store['subscribe']>
     const savedSubscriber = useRef<Subscriber | null>(null)
-    const syncedConfig = useSyncedRef<TConfig | undefined>(
-      options.find((option) => !isFunction(option)) as TConfig
+
+    const listener = useCallback(
+      (nextState: TState, state?: TState) => {
+        const pickedPlugins = Object.values(
+          pick(pluginsMap, pickKeysByType(config || {}, true))
+        )
+        const combinedPlugins = compose(...pickedPlugins)
+
+        return combinedPlugins({ nextState, state }).nextState
+      },
+      [config]
     )
-
-    const listener = useCallback((nextState: TState, state?: TState) => {
-      const pickedPlugins = Object.values(
-        pick(pluginsMap, pickKeysByType(syncedConfig.current || {}, true))
-      )
-      const combinedPlugins = compose(...pickedPlugins)
-
-      return combinedPlugins({ nextState, state }).nextState
-    }, [])
 
     const [mind, observer] = useListener(state, listener)
 
     useDidMount(() => {
-      const selector = options.find((option) => isFunction(option)) as TSelector
-      const { equalityFn } = syncedConfig.current || {}
+      const { equalityFn } = config || {}
       const subscriber = store.subscribe(observer, selector, equalityFn)
 
       savedSubscriber.current = subscriber

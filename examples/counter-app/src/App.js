@@ -1,13 +1,7 @@
 import remind from 'remind'
 
 const { useRemind } = remind((set) => ({
-  counter: (value = 0) => {
-    if (value > 10) {
-      return { next: false, value }
-    }
-
-    return { next: true, value }
-  },
+  counter: 0,
   setToInitial: () => set({ counter: 0 }),
   increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
 }))
