@@ -3,13 +3,8 @@ import { useCallback, useRef } from 'react'
 import { equals, deepPickAsyncFunctions, buildOf } from '../helpers/helpers'
 import type { DeepAddByValue, AsyncFunction } from '../typings'
 
-import {
-  useFirstMountState,
-  useForce,
-  useIsMounted,
-  useMultipleFetch,
-} from './hooks'
-import type { Status } from './useMultipleFetch.hook'
+import { useFirstMountState, useForce, useIsMounted, useAsync } from './hooks'
+import type { Status } from './useAsync.hook'
 
 type ModifiedState<TState> = DeepAddByValue<TState, AsyncFunction, Status>
 
@@ -20,9 +15,7 @@ export const useListener = <TState>(
   const force = useForce()
   const component = useIsMounted()
   const isFirstMount = useFirstMountState()
-  const multipleFetch = useMultipleFetch<TState>(
-    deepPickAsyncFunctions(initialState)
-  )
+  const multipleFetch = useAsync<TState>(deepPickAsyncFunctions(initialState))
 
   const state = useRef<TState | undefined>(undefined)
   const savedMultipleFetch = useRef(multipleFetch)

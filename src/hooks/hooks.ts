@@ -1,4 +1,4 @@
-export * from './useMultipleFetch.hook'
+export * from './useAsync.hook'
 export { useDidMount } from './useDidMount.hook'
 export { usePrevious } from './usePrevious.hook'
 export { useFirstMountState } from './useFirstMountState.hook'
