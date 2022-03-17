@@ -1,5 +1,6 @@
 export * from './observer.helper'
 export * from './resolveState.helper'
+export * from './suspensePromise.helper'
 export { isPrimitive } from './isPrimitive.helper'
 export { buildOf } from './buildOf.helper'
 export { equals } from './equals.helper'
@@ -15,6 +16,7 @@ export { isAsyncFunction } from './isAsyncFunction.helper'
 export { deepPickAsyncFunctions } from './deepPickAsyncFunctions.helper'
 export { getSlugs } from './getSlugs.helper'
 export { set } from './set.helper'
+export { deepReplace } from './deepReplace.helper'
 
 export const noop = () => {}
 

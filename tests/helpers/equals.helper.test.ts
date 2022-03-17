@@ -1,6 +1,6 @@
 import { equals } from '../../src/helpers/helpers'
 
-describe.only('equals', () => {
+describe('equals', () => {
   it('should return false when two sets not match', () => {
     expect(
       equals([{ test: '123' }, { test: '455' }, { test: '455' }], [])

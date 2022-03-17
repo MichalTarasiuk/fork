@@ -66,7 +66,7 @@ describe('factory', () => {
       'keep counting!!!',
       "you're doing better and better",
     ]
-    const { useRemind, get } = remind({
+    const { useRemind } = remind({
       counter: {
         name: initialName,
         value: 0,
