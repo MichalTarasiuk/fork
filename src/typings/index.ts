@@ -28,3 +28,11 @@ export type DeepAddByValue<TObject, TValue, TNewValue> = {
     ? TObject[key]
     : DeepAddByValue<TObject[key], TValue, TNewValue>
 }
+
+export type DeepReplace<TValue, TFrom, TTo> = {
+  [key in keyof TValue]: TValue[key] extends TFrom
+    ? TTo
+    : TValue[key] extends Function | Array<any> | Primitive
+    ? TValue[key]
+    : DeepReplace<TValue[key], TFrom, TTo>
+}

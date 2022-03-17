@@ -1,42 +1,31 @@
 import { useReducer, useCallback, useMemo } from 'react'
 
+import { isAsyncFunction, getSlugs, set, deepReplace } from '../helpers/helpers'
 import {
-  isAsyncFunction,
-  isPlainObject,
-  getSlugs,
-  set,
-} from '../helpers/helpers'
-import { DeepAddByValue, AsyncFunction, DeepPickByType } from '../typings'
-import { Value as Slugs } from '../helpers/getSlugs.helper'
+  DeepReplace,
+  AsyncFunction,
+  DeepPickByType,
+  DeepAddByValue,
+} from '../typings'
 
-type Fetchers<TValue> = DeepPickByType<TValue, AsyncFunction>
 type Action = {
   status: Status
   slug: string
 }
-type State<TValue> = DeepAddByValue<TValue, AsyncFunction, Status>
-type Mutations<TValue> = DeepAddByValue<TValue, AsyncFunction, Status>
-type Combined<TFetchers> = DeepAddByValue<TFetchers, AsyncFunction, Status>
+type Fetchers<TValue> = DeepPickByType<TValue, AsyncFunction>
+type Slugs = Record<string, any>
 export type Status = 'idle' | 'success' | 'error' | 'loading'
 
-const getInitialState = (value: Record<string, any>) =>
-  Object.keys(value).reduce<Record<string, any>>((acc, key) => {
-    acc[key] = isPlainObject(value[key]) ? getInitialState(value[key]) : 'idle'
-
-    return acc
-  }, {})
-
 export const useMultipleFetch = <
-  TValue extends Record<string, any>,
-  TState extends Record<string, any> = State<TValue>,
-  TMutations extends Record<string, any> = Mutations<TValue>,
-  TFetchers extends Record<string, any> = Fetchers<TValue>
+  TValue,
+  TFetchers extends Record<string, any> = Fetchers<TValue>,
+  TState extends Record<string, any> = DeepReplace<TFetchers, any, Status>
 >(
   fetchers: TFetchers
 ) => {
   const [state, dispatch] = useReducer(
     (state: TState, { slug, status }: Action) => set(state, slug, status),
-    getInitialState(fetchers) as TState
+    deepReplace(fetchers, 'idle' as Status) as TState
   )
 
   const createMutations = useCallback(
@@ -66,24 +55,24 @@ export const useMultipleFetch = <
         acc[key] = mutation
 
         return acc
-      }, {}) as TMutations,
+      }, {}) as TFetchers,
     []
   )
 
   const combaine = useCallback(
-    (state: TState, mutations: TMutations) =>
-      Object.keys(mutations).reduce<Record<string, any>>((acc, key) => {
-        const mutation = mutations[key]
+    (state: TState, fetchers: TFetchers) =>
+      Object.keys(fetchers).reduce<Record<string, any>>((acc, key) => {
+        const fetcher = fetchers[key]
 
-        if (!isAsyncFunction(mutation)) {
-          acc[key] = combaine(state[key], mutation)
+        if (!isAsyncFunction(fetcher)) {
+          acc[key] = combaine(state[key], fetcher)
           return acc
         }
 
-        acc[key] = [mutation, state[key]]
+        acc[key] = [fetcher, state[key]]
 
         return acc
-      }, {}) as Combined<TFetchers>,
+      }, {}) as DeepAddByValue<TFetchers, AsyncFunction, Status>,
     []
   )
 
@@ -92,7 +81,6 @@ export const useMultipleFetch = <
     () => createMutations(fetchers, slugs),
     [fetchers, slugs]
   )
-  const combined = useMemo(() => combaine(state, mutations), [state, mutations])
 
-  return combined
+  return useMemo(() => combaine(state, mutations), [state, mutations])
 }
