@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { render, fireEvent, act } from '@testing-library/react'
+import { render, fireEvent, act, waitFor } from '@testing-library/react'
 
 import { useDidMount } from '../src/hooks/hooks'
 import remind from '../src/factory'
@@ -490,5 +490,89 @@ describe('factory', () => {
 
     // then
     getByText('counter 1')
+  })
+
+  it('should generate status for each async function', async () => {
+    // given
+    const { useRemind } = remind({
+      async fetchUser() {
+        return {
+          name: 'John',
+          age: 20,
+        }
+      },
+    })
+
+    const Hero = () => {
+      const { mind } = useRemind()
+      const [fetchUser, status] = mind.fetchUser
+
+      return (
+        <div>
+          <p>status: {status}</p>
+          <button onClick={fetchUser}>fetch</button>
+        </div>
+      )
+    }
+
+    // when
+    const { getByText, findByText } = render(<Hero />)
+
+    // then
+    getByText('status: idle')
+
+    // when
+    fireEvent.click(getByText('fetch'))
+
+    // then
+    await waitFor(() => {
+      findByText('status: loading')
+    })
+    await findByText('status: success')
+  })
+
+  it('should generate status for new each async function', () => {
+    // given
+    type User = {
+      name: string
+      age: number
+    }
+    type State = {
+      fetchUser?: () => Promise<User>
+    }
+    const { useRemind } = remind<State>({})
+
+    const Hero = () => {
+      const { mind, setMind } = useRemind()
+
+      if (mind.fetchUser) {
+        const [fetchUser, status] = mind.fetchUser
+
+        return (
+          <div>
+            <p>status: {status}</p>
+            <button onClick={fetchUser}>fetch</button>
+          </div>
+        )
+      }
+
+      const updateState = () => {
+        setMind({
+          async fetchUser() {
+            return {
+              name: 'John',
+              age: 20,
+            }
+          },
+        })
+      }
+
+      return <button onClick={updateState}>update state</button>
+    }
+
+    const { getByText } = render(<Hero />)
+
+    // when
+    fireEvent.click(getByText('update state'))
   })
 })

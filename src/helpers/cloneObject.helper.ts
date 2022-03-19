@@ -1,6 +1,6 @@
 import { isPrimitive } from './helpers'
 
-function cloneObject<TValue>(value: TValue): TValue {
+export const cloneObject = <TValue>(value: TValue): TValue => {
   let clone: any
 
   if (isPrimitive(value)) {
@@ -28,5 +28,3 @@ function cloneObject<TValue>(value: TValue): TValue {
 
   return clone
 }
-
-export { cloneObject }

@@ -1,34 +1,16 @@
 import { useCallback, useRef, useMemo } from 'react'
 
 import { createStore } from './store'
-import { useDidMount, useListener, useEventListenr } from './hooks/hooks'
-import {
-  merge,
-  pick,
-  compose,
-  noop,
-  pickKeysByType,
-  isMessageEvent,
-  isStateMap,
-} from './helpers/helpers'
-import { getPluginsMap, createStash, broadcastChannel } from './logic/logic'
+import { useDidMount, useListener } from './hooks/hooks'
+import { merge, pick, compose, noop, pickKeysByType } from './helpers/helpers'
+import { getPluginsMap } from './logic/logic'
 import type { StateCreator, Selector } from './store.types'
 import type { Config } from './factory.types'
 
 const factory = <TState extends Record<PropertyKey, any>>(
   stateCreator: StateCreator<TState>
 ) => {
-  const stash = createStash<TState>()
-  const store = createStore<TState>(stateCreator, {
-    onMount() {
-      const state = stash.read()
-
-      return state
-    },
-    onUpdate(nextState) {
-      stash.set(nextState)
-    },
-  })
+  const store = createStore<TState>(stateCreator)
   const pluginsMap = getPluginsMap(store)
   const state = store.get.state
 
@@ -62,23 +44,6 @@ const factory = <TState extends Record<PropertyKey, any>>(
       return () => {
         subscriber.unsubscribe()
       }
-    })
-
-    useDidMount(() => {
-      if (stash.isNotReadable) {
-        stash.set(mind as TState)
-      }
-    })
-
-    useEventListenr(broadcastChannel, 'message', (event) => {
-      isMessageEvent(event, (data) => {
-        const parseData = JSON.parse(data)
-
-        if (isStateMap(parseData)) {
-          const { nextState } = parseData
-          store.setState(nextState)
-        }
-      })
     })
 
     const handler = useMemo(

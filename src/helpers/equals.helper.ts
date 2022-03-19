@@ -1,4 +1,4 @@
-const equals = (a: any, b: any): boolean => {
+export const equals = (a: any, b: any): boolean => {
   if (a === b) {
     return true
   }
@@ -32,5 +32,3 @@ const equals = (a: any, b: any): boolean => {
 
   return keysA.every((k) => equals(a[k], b[k]))
 }
-
-export { equals }

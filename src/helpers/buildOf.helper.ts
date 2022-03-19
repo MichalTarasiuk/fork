@@ -6,11 +6,12 @@ export const buildOf = <TValue extends Record<string, any>>(
   source: DeepPartial<TValue>
 ): TValue => {
   const copy = cloneObject(value)
-  const shallowSource = { ...source }
 
-  for (const [key, sourceValue] of Object.entries(shallowSource)) {
+  for (const [key, sourceValue] of Object.entries(source)) {
     ;(copy[key] as any) =
-      isPrimitive(sourceValue) || Array.isArray(sourceValue)
+      isPrimitive(sourceValue) ||
+      Array.isArray(sourceValue) ||
+      typeof sourceValue === 'function'
         ? sourceValue
         : buildOf(copy[key], sourceValue)
   }

@@ -11,9 +11,8 @@ export const getSlugs = (
     const slug = prefix.length ? `${prefix}.${key}` : `${prefix}${key}`
     slugs[key] = slug
 
-    const valueOfProp = map[key]
-    if (isPlainObject(valueOfProp)) {
-      return getSlugs(valueOfProp as unknown as Map, slug, slugs)
+    if (isPlainObject(map[key])) {
+      return getSlugs(map[key] as unknown as Map, slug, slugs)
     }
 
     return slugs

@@ -1,7 +1,5 @@
-import { watch, equals } from '../helpers/helpers'
+import { watch } from '../helpers/helpers'
 import type { StateMap } from '../factory.types'
-
-export const broadcastChannel = new BroadcastChannel('remind')
 
 export const getPluginsMap = <TStore extends Record<string, any>>(
   store: TStore
@@ -12,12 +10,5 @@ export const getPluginsMap = <TStore extends Record<string, any>>(
     })
 
     return { nextState: modifiedNextState, state: state }
-  },
-  broadcast(stateMap: StateMap<object>) {
-    if (!equals(stateMap.nextState, stateMap.state)) {
-      broadcastChannel.postMessage(JSON.stringify(stateMap))
-    }
-
-    return stateMap
   },
 })
