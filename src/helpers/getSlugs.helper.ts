@@ -8,7 +8,8 @@ export const getSlugs = (
   slugs = {}
 ): Record<string, any> =>
   Object.keys(map).reduce<Map>((slugs, key) => {
-    const slug = prefix.length ? `${prefix}.${key}` : `${prefix}${key}`
+    const slug = prefix.length ? `${prefix}.${key}` : `${key}`
+
     slugs[key] = slug
 
     if (isPlainObject(map[key])) {
