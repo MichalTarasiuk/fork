@@ -9,13 +9,12 @@ export { watch } from './watch.helper'
 export { isFunction } from './isFunction.helper'
 export { pick } from './pick.helper'
 export { compose } from './compose.helper'
-export { pickKeysByType } from './pickKeysByType.helper'
 export { isAsyncFunction } from './isAsyncFunction.helper'
-export { deepPickAsyncFunctions } from './deepPickAsyncFunctions.helper'
 export { getSlugs } from './getSlugs.helper'
 export { set } from './set.helper'
 export { deepReplace } from './deepReplace.helper'
 export { mergeFactory } from './mergeFactory.helper'
+export { deepPickByValue } from './deepPickByValue'
 
 export const noop = () => {}
 
@@ -26,3 +25,5 @@ export const isMessageEvent = (
 
 export const isPlainObject = (value: any) =>
   value !== null && typeof value === 'object' && value.constructor === Object
+
+export const isEmpty = (value: any) => Object.keys(value).length === 0

@@ -1,4 +1,4 @@
-import { useReducer, useCallback, useMemo } from 'react'
+import { useRef, useCallback, useMemo } from 'react'
 
 import {
   getSlugs,
@@ -8,17 +8,8 @@ import {
   equals,
   mergeFactory,
 } from '../helpers/helpers'
-import {
-  DeepReplace,
-  AsyncFunction,
-  DeepPickByType,
-  DeepAddByValue,
-} from '../typings'
+import { AsyncFunction, DeepPickByType, DeepAddByValue } from '../typings'
 
-type Action = {
-  status: Status
-  slug: string
-}
 type FetchersMap<TValue> = DeepPickByType<TValue, AsyncFunction>
 type Slugs = Record<string, any>
 export type Status = 'idle' | 'success' | 'error' | 'loading'
@@ -29,15 +20,11 @@ const myMerge = mergeFactory(
 
 export const useAsync = <
   TValue,
-  TFetchersMap extends Record<string, any> = FetchersMap<TValue>,
-  TState extends Record<string, any> = DeepReplace<TFetchersMap, any, Status>
+  TFetchersMap extends Record<string, any> = FetchersMap<TValue>
 >(
   fetchersMap: TFetchersMap
 ) => {
-  const [state, dispatch] = useReducer(
-    (state: TState, { slug, status }: Action) => set(state, slug, status),
-    deepReplace(fetchersMap, 'idle' as Status) as TState
-  )
+  const state = useRef(deepReplace(fetchersMap, 'idle' as Status))
 
   const createMutations = useCallback(
     (fetchersMap: TFetchersMap, slugs: Slugs) =>
@@ -50,15 +37,15 @@ export const useAsync = <
         const fetcher = fetchersMap[key]
         const slug = slugs[key]
         const mutation = async () => {
-          dispatch({ status: 'loading', slug })
+          state.current = set(state.current, slug, 'loading')
 
           try {
             const result = await fetcher()
-            dispatch({ status: 'success', slug })
+            state.current = set(state.current, slug, 'success')
 
             return result
           } catch {
-            dispatch({ status: 'error', slug })
+            state.current = set(state.current, slug, 'error')
           }
         }
 
@@ -75,13 +62,13 @@ export const useAsync = <
     [fetchersMap, slugs]
   )
 
-  return useMemo(
-    () =>
-      myMerge<DeepAddByValue<TFetchersMap, AsyncFunction, Status>>(
+  return {
+    get current() {
+      return myMerge<DeepAddByValue<TFetchersMap, AsyncFunction, Status>>(
         mutations,
-        state,
+        state.current,
         (mutation: AsyncFunction, status: Status) => [mutation, status]
-      ),
-    [mutations, state]
-  )
+      )
+    },
+  }
 }
