@@ -16,7 +16,7 @@ export const watch = <TValue extends object>(
   const proxy = new Proxy(value, {
     get(target, prop, receiver) {
       const ret = Reflect.get(target, prop, receiver)
-      const observer: any = isObject(ret) ? watch(ret, callback) : ret
+      const observer = isObject(ret) ? watch(ret, callback) : ret
 
       return observer
     },

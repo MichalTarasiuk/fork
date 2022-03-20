@@ -9,6 +9,6 @@ export const compose = (...funcs: Function[]) => {
   }
 
   return funcs.reduce((a, b) => {
-    return (...args: any) => a(b(...args))
+    return (...args: unknown[]) => a(b(...args))
   })
 }

@@ -9,5 +9,6 @@ export { watch } from './watch.helper'
 export { isFunction } from './isFunction.helper'
 export { pick } from './pick.helper'
 export { compose } from './compose.helper'
+export { pickKeysByValue } from './pickKeysByValue.helper'
 
 export const noop = () => {}

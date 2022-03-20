@@ -1,6 +1,6 @@
 export const merge = <
   TArr extends Readonly<Array<any>>,
-  TPlainObject extends object
+  TPlainObject extends Record<PropertyKey, any>
 >(
   arr: TArr,
   plainObject: TPlainObject

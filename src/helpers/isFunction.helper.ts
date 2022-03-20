@@ -1,3 +1,3 @@
 export const isFunction = <TValue extends Function>(
-  value: any
+  value: unknown
 ): value is TValue => typeof value === 'function'

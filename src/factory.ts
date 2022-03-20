@@ -2,7 +2,7 @@ import { useCallback, useRef, useMemo } from 'react'
 
 import { createStore } from './store'
 import { useDidMount, useListener } from './hooks/hooks'
-import { merge, pick, compose, noop } from './helpers/helpers'
+import { merge, pick, compose, noop, pickKeysByValue } from './helpers/helpers'
 import { getPluginsMap } from './logic/logic'
 import type { StateCreator, Selector } from './store.types'
 import type { Config } from './factory.types'
@@ -23,7 +23,7 @@ const factory = <TState extends Record<PropertyKey, any>>(
 
     const observer = useCallback(
       (nextState: TState, state?: TState) => {
-        const keys = Object.keys(config || {}).filter(Boolean)
+        const keys = pickKeysByValue(config || {}, true)
         const pickedPlugins = Object.values(pick(pluginsMap, keys))
         const combinedPlugins = compose(...pickedPlugins)
 
