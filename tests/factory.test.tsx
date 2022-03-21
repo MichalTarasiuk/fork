@@ -59,68 +59,6 @@ describe('factory', () => {
     await findByText('counter 0')
   })
 
-  it('should not rerender component when use deep selector', () => {
-    // given
-    const initialName = 'you can count, count on yourself'
-    const additionalNames = [
-      'keep counting!!!',
-      "you're doing better and better",
-    ]
-    const { useRemind } = remind({
-      counter: {
-        name: initialName,
-        value: 0,
-      },
-      dakrMode: false,
-    })
-
-    const Component = () => {
-      const [mind, setMind] = useRemind((state) => state.counter.name)
-
-      const increase = () => {
-        setMind((prevState) => ({
-          counter: {
-            value: prevState.counter.value + 1,
-          },
-        }))
-      }
-
-      const changeName = (newName: string) => {
-        setMind({
-          counter: {
-            name: newName,
-          },
-        })
-      }
-
-      return (
-        <div>
-          <p>name {mind.counter.name}</p>
-          <button onClick={() => changeName(random(additionalNames))}>
-            change name
-          </button>
-          <p>counter {mind.counter.value}</p>
-          <button onClick={increase}>increse</button>
-        </div>
-      )
-    }
-
-    const { getByText } = render(<Component />)
-
-    // when
-    fireEvent.click(getByText('increse'))
-
-    // then
-    getByText('counter 0')
-
-    // when
-    const nameElement = getByText(`name ${initialName}`)
-    fireEvent.click(getByText('change name'))
-
-    // then
-    expect(nameElement.nodeValue).not.toBe(initialName)
-  })
-
   it('should remove listener from component which is not mounted', () => {
     // given
     const store = remind({

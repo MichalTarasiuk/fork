@@ -177,37 +177,6 @@ describe('store', () => {
     expect(spy).toHaveBeenCalled()
   })
 
-  it('should change the selected value of the object while not modifying the others', () => {
-    // given
-    const store = createStore({
-      a: {
-        b: {
-          c: '',
-          d: '',
-        },
-      },
-    })
-
-    // when
-    store.setState({
-      a: {
-        b: {
-          c: 'C',
-        },
-      },
-    })
-
-    // then
-    expect(store.get.state).toEqual({
-      a: {
-        b: {
-          c: 'C',
-          d: '',
-        },
-      },
-    })
-  })
-
   it('should reset to initial value', () => {
     // given
     type State = {

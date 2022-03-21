@@ -1,6 +1,5 @@
 import {
   createObserver,
-  buildOf,
   resolveState,
   equals,
   isFunction,
@@ -8,7 +7,6 @@ import {
   noop,
 } from './helpers/helpers'
 import type { ResolvableState, Listener } from './helpers/helpers'
-import type { DeepPartial } from './typings'
 import type {
   CreateState,
   StateCreator,
@@ -71,7 +69,7 @@ const createStore = <TState>(
     const { nextState, oldState } = state.setState((state) => {
       const nextState = replace
         ? (patch as TState)
-        : buildOf(state, resolvedPatch as DeepPartial<TState>)
+        : { ...state, ...resolvedPatch }
 
       lifecycle.onUpdate(nextState)
 

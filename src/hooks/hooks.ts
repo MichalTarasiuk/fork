@@ -1,4 +1,3 @@
-export * from './useAsync.hook'
 export { useDidMount } from './useDidMount.hook'
 export { useFirstMountState } from './useFirstMountState.hook'
 export { useListener } from './useListener.hook'

@@ -1,7 +1,6 @@
 export * from './observer.helper'
 export * from './resolveState.helper'
 export { isPrimitive } from './isPrimitive.helper'
-export { buildOf } from './buildOf.helper'
 export { equals } from './equals.helper'
 export { cloneObject } from './cloneObject.helper'
 export { merge } from './merge.helper'
