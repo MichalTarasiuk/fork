@@ -64,7 +64,9 @@ const createStore = <TState>(
   }
 
   const setState: SetState<TState> = (patch, replace = false) => {
-    const resolvedPatch = isFunction(patch) ? patch(state.value) : patch
+    const resolvedPatch = isFunction(patch)
+      ? patch(state.value, setState)
+      : patch
 
     const { nextState, oldState } = state.setState((state) => {
       const nextState = replace

@@ -1,6 +1,12 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useRef } from 'react'
 
-import { mapObject } from '../helpers/helpers'
+import {
+  mapObject,
+  findDiffrence,
+  isEmpty,
+  set,
+  isFunction,
+} from '../helpers/helpers'
 import { useRefState } from '../hooks/hooks'
 import type { PickByValue, AsyncFunction, AddByValue } from '../typings'
 
@@ -31,7 +37,7 @@ export const useAsync = <
     AsyncFunction
   >,
   TAsyncActions extends Record<PropertyKey, unknown> = AddByValue<
-    TPlainState,
+    TObject,
     AsyncFunction,
     Status
   >
@@ -40,12 +46,22 @@ export const useAsync = <
   callback: (asyncActions: TAsyncActions) => void
 ) => {
   type State = typeof state['current']
-  const [state, setState] = useRefState(
+  const { state, setState, replaceState } = useRefState(
     mapObject<TObject, Status>(object, () => 'idle'),
     (nextState) => {
       callback(merge(mutations, nextState, (a, b) => [a, b]) as TAsyncActions)
     }
   )
+  const savedObject = useRef(object)
+  const diffrence = findDiffrence(object, savedObject.current)
+
+  if (!isEmpty(diffrence)) {
+    const nextState = mapObject(set(state.current, diffrence), (_, value) =>
+      isFunction(value) ? 'idle' : value
+    )
+
+    replaceState(nextState)
+  }
 
   const createMutation = useCallback((key: keyof State, fn: AsyncFunction) => {
     const mutation = async () => {

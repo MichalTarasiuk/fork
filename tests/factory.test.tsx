@@ -425,4 +425,47 @@ describe('factory', () => {
     // then
     getByText('counter 1')
   })
+
+  it('should generate for new async actions', async () => {
+    // given
+    type State = {
+      counter: number
+      increase?: () => Promise<void>
+    }
+    const store = remind<State>({
+      counter: 0,
+    })
+    const { useRemind } = store
+
+    const Counter = () => {
+      const { mind, setMind } = useRemind()
+
+      if (mind.increase) {
+        const [increase] = mind.increase
+
+        return (
+          <div>
+            <p>counter: {mind.counter}</p>
+            <button onClick={increase}>increase</button>
+          </div>
+        )
+      }
+
+      const upgrade = () => {
+        setMind((_, set) => ({
+          increase: async () => {
+            await wait(1000)
+            set({ counter: 1 })
+          },
+        }))
+      }
+
+      return <button onClick={upgrade}>upgrade</button>
+    }
+
+    const { getByText } = render(<Counter />)
+
+    // when
+    fireEvent.click(getByText('upgrade'))
+  })
 })

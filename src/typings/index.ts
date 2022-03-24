@@ -7,10 +7,6 @@ export type Primitive =
   | symbol
   | bigint
 
-export type DeepPartial<TValue> = {
-  [key in keyof TValue]?: DeepPartial<TValue[key]>
-}
-
 export type PickByValue<
   TObject extends Record<PropertyKey, unknown>,
   TValue

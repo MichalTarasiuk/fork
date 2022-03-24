@@ -1,5 +1,4 @@
 import type { ResolvableState } from './helpers/helpers'
-import type { DeepPartial } from './typings'
 
 export type CreateState<TState> = (
   stateCreator: StateCreator<TState>,
@@ -26,5 +25,5 @@ export type CustomEquality<TState> = (
 ) => boolean
 export type GetState<TState> = () => TState
 type Patch<TState> =
-  | DeepPartial<TState>
-  | ((prevState: TState) => DeepPartial<TState>)
+  | Partial<TState>
+  | ((state: TState, set: SetState<TState>) => Partial<TState>)

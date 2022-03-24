@@ -7,13 +7,17 @@ export const useRefState = <TState>(
   const state = useRef(initialState)
 
   const setState = useCallback(
-    (nextState: Partial<Record<PropertyKey, TState[keyof TState]>>) => {
-      state.current = { ...state.current, ...nextState }
+    (patch: Partial<Record<PropertyKey, TState[keyof TState]>>) => {
+      state.current = { ...state.current, ...patch }
 
       callback(state.current)
     },
     []
   )
 
-  return [state, setState] as const
+  const replaceState = useCallback((nextState: TState) => {
+    state.current = nextState
+  }, [])
+
+  return { state, setState, replaceState }
 }

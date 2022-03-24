@@ -46,6 +46,7 @@ export const useListener = <
     setState(initialState, undefined)
   }
 
+  const syncedState = { ...state.current, ...asyncSlice.current }
   const listener = useCallback(
     (nextState: TPlainState, prevState?: TPlainState) => {
       if (component.isMounted) {
@@ -57,5 +58,5 @@ export const useListener = <
     []
   )
 
-  return [state.current!, listener] as const
+  return [syncedState, listener] as const
 }
