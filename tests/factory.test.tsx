@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { render, fireEvent, act, waitFor } from '@testing-library/react'
+import { render, fireEvent, act } from '@testing-library/react'
 
 import { useDidMount } from '../src/hooks/hooks'
 import remind from '../src/factory'
-import { random, wait } from './tests.utils'
+import { wait } from './tests.utils'
 import type { Noop } from '../src/typings'
 
 describe('factory', () => {
@@ -211,11 +211,12 @@ describe('factory', () => {
     const { useRemind } = store
 
     const Counter = () => {
-      const [{ counter, increase }] = useRemind()
+      const { mind } = useRemind()
+      const [increase, status] = mind.increase
 
       return (
         <div>
-          <p>counter {counter}</p>
+          <p>counter {mind.counter}</p>
           <button onClick={increase}>increase</button>
         </div>
       )

@@ -1,4 +1,4 @@
-import { useCallback, useRef, useMemo } from 'react'
+import { useRef, useMemo } from 'react'
 
 import { createStore } from './store'
 import { useDidMount, useListener } from './hooks/hooks'
@@ -7,7 +7,7 @@ import { getPluginsMap } from './logic/logic'
 import type { StateCreator, Selector } from './store.types'
 import type { Config } from './factory.types'
 
-const factory = <TState extends Record<PropertyKey, any>>(
+const factory = <TState extends Record<PropertyKey, unknown>>(
   stateCreator: StateCreator<TState>
 ) => {
   const store = createStore<TState>(stateCreator)
@@ -21,18 +21,13 @@ const factory = <TState extends Record<PropertyKey, any>>(
     type Subscriber = ReturnType<typeof store['subscribe']>
     const savedSubscriber = useRef<Subscriber | null>(null)
 
-    const observer = useCallback(
-      (nextState: TState, state?: TState) => {
-        const keys = pickKeysByValue(config || {}, true)
-        const pickedPlugins = Object.values(pick(pluginsMap, keys))
-        const combinedPlugins = compose(...pickedPlugins)
+    const [mind, listener] = useListener(state, (nextState, state?) => {
+      const keys = pickKeysByValue(config || {}, true)
+      const pickedPlugins = Object.values(pick(pluginsMap, keys))
+      const combinedPlugins = compose(...pickedPlugins)
 
-        return combinedPlugins({ nextState, state }).nextState
-      },
-      [config]
-    )
-
-    const [mind, listener] = useListener(state, observer)
+      return combinedPlugins({ nextState, state }).nextState
+    })
 
     useDidMount(() => {
       const { equalityFn } = config || {}

@@ -1,3 +1,2 @@
-export const isFunction = <TValue extends Function>(
-  value: unknown
-): value is TValue => typeof value === 'function'
+export const isFunction = (value: unknown): value is Function =>
+  typeof value === 'function'
