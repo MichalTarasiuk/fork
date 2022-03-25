@@ -4,6 +4,6 @@ export type Note = {
   content: string
 }
 
-export type State = {
+export type Mind = {
   notes: Note[]
 }

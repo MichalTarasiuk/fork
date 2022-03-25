@@ -12,7 +12,7 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
 ) => {
   const store = createStore<TState>(stateCreator)
   const pluginsMap = getPluginsMap(store)
-  const state = store.get.state
+  const state = store.state
 
   const useRemind = <TSelector extends Selector<TState>>(
     selector?: TSelector,
@@ -52,12 +52,18 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
     return merge([handler.mind, handler.setMind] as const, handler)
   }
 
-  const { get, setState } = store
+  const { setState, subscribe } = store
 
   return {
+    get mind() {
+      return store.state
+    },
+    get listeners() {
+      return store.listeners
+    },
     useRemind,
-    get,
-    setState,
+    subscribe,
+    setMind: setState,
   }
 }
 

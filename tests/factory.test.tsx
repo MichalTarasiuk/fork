@@ -9,13 +9,13 @@ import type { Noop } from '../src/typings'
 describe('factory', () => {
   it('should rerender component', async () => {
     // arrange
-    type State = {
+    type Mind = {
       counter: number
       increase: Noop
     }
-    const { useRemind } = remind<State>((set) => ({
+    const { useRemind } = remind<Mind>((set) => ({
       counter: 0,
-      increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
+      increase: () => set((prevMind) => ({ counter: prevMind.counter + 1 })),
     }))
 
     const Counter = () => {
@@ -42,11 +42,11 @@ describe('factory', () => {
     })
 
     const Counter = () => {
-      const [mind, setMind] = useRemind((state) => state.darkMode)
+      const [mind, setMind] = useRemind((mind) => mind.darkMode)
 
       useDidMount(() => {
-        setMind((prevState) => ({
-          counter: prevState.counter + 1,
+        setMind((prevMind) => ({
+          counter: prevMind.counter + 1,
         }))
       })
 
@@ -108,19 +108,19 @@ describe('factory', () => {
     fireEvent.click(getByText('unmount child 1'))
 
     // then
-    expect(store.get.listeners).toHaveLength(1)
+    expect(store.listeners).toHaveLength(1)
   })
 
-  it('subscriber with selector should not rerender after invoke setState function outside component', async () => {
+  it('should not rerender component which use selector after invoke setMind action beyond component', async () => {
     // given
     const store = remind({
       counter: 0,
       darkMode: false,
     })
-    const { useRemind, setState } = store
+    const { useRemind, setMind } = store
 
     const Counter = () => {
-      const { mind } = useRemind((state) => state.darkMode)
+      const { mind } = useRemind((mind) => mind.darkMode)
 
       return <p>counter {mind.counter}</p>
     }
@@ -128,21 +128,21 @@ describe('factory', () => {
     const { findByText } = render(<Counter />)
 
     // when
-    setState((prevState) => ({
-      counter: prevState.counter + 1,
+    setMind((prevMind) => ({
+      counter: prevMind.counter + 1,
     }))
 
     // then
     await findByText('counter 0')
   })
 
-  it('subscriber should rerender after invoke setState function outside component', async () => {
+  it('should rerender component which use selector after invoke setMind action beyond component', async () => {
     // given
     const store = remind({
       counter: 0,
       darkMode: false,
     })
-    const { useRemind, setState } = store
+    const { useRemind, setMind } = store
 
     const Counter = () => {
       const [mind] = useRemind()
@@ -154,8 +154,8 @@ describe('factory', () => {
 
     // when
     act(() => {
-      setState((prevState) => ({
-        counter: prevState.counter + 1,
+      setMind((prevMind) => ({
+        counter: prevMind.counter + 1,
       }))
     })
 
@@ -163,13 +163,13 @@ describe('factory', () => {
     await findByText('counter 1')
   })
 
-  it('should not rerender listener when state after setState action is the same', () => {
+  it('should not rerender component when mind after setMind action is the same', () => {
     // given
-    type State = {
+    type Mind = {
       counter: number
       increase: Noop
     }
-    const store = remind<State>((set) => ({
+    const store = remind<Mind>((set) => ({
       counter: 0,
       increase: () => set({ counter: 0 }),
     }))
@@ -197,11 +197,11 @@ describe('factory', () => {
 
   it('should wait for async actions', async () => {
     // given
-    type State = {
+    type Mind = {
       counter: number
       increase: () => Promise<void>
     }
-    const store = remind<State>((set) => ({
+    const store = remind<Mind>((set) => ({
       counter: 0,
       increase: async () => {
         await wait(1000)
@@ -212,7 +212,7 @@ describe('factory', () => {
 
     const Counter = () => {
       const { mind } = useRemind()
-      const [increase, status] = mind.increase
+      const [increase] = mind.increase
 
       return (
         <div>
@@ -231,13 +231,13 @@ describe('factory', () => {
     await findByText('counter 1')
   })
 
-  it('should observe state on change', () => {
+  it('should observe mind by watch option', () => {
     // given
     const { useRemind } = remind({
       list: [] as number[],
     })
     const Todo = () => {
-      const { mind } = useRemind((state) => state.list, { watch: true })
+      const { mind } = useRemind((mind) => mind.list, { watch: true })
 
       const add = () => {
         mind.list.push(Math.random())
@@ -278,7 +278,7 @@ describe('factory', () => {
         )
       },
       Child1() {
-        const { mind } = useRemind((state) => state, { watch: true })
+        const { mind } = useRemind((mind) => mind, { watch: true })
 
         const add = () => {
           mind.list.push(Math.random())
@@ -287,7 +287,7 @@ describe('factory', () => {
         return <button onClick={add}>add</button>
       },
       Child2() {
-        const { mind } = useRemind((state) => state.list)
+        const { mind } = useRemind((mind) => mind.list)
 
         return (
           <ul data-testid="numbers-list">
@@ -309,11 +309,11 @@ describe('factory', () => {
 
   it('should unregister component', () => {
     // given
-    type State = {
+    type Mind = {
       counter: number
-      increase: () => void
+      increase: Noop
     }
-    const store = remind<State>((set) => ({
+    const store = remind<Mind>((set) => ({
       counter: 0,
       increase: () => {
         set({ counter: 1 })
@@ -349,16 +349,16 @@ describe('factory', () => {
     getByText('counter 1')
   })
 
-  it('it should return true when counter is divisible', () => {
+  it('it should return true when counter value is divisible', () => {
     // given
-    type State = {
+    type Mind = {
       counter: number
       increase: () => void
       isDivisible: () => boolean
     }
-    const { useRemind } = remind<State>((set, get) => ({
+    const { useRemind } = remind<Mind>((set, get) => ({
       counter: 0,
-      increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
+      increase: () => set((prevMind) => ({ counter: prevMind.counter + 1 })),
       isDivisible: () => get().counter % 2 === 0,
     }))
 
@@ -386,19 +386,19 @@ describe('factory', () => {
 
   it('should rerender component when next value is bigger', () => {
     // given
-    type State = {
+    type Mind = {
       counter: number
       increase: () => void
       decrease: () => void
     }
-    const { useRemind } = remind<State>((set) => ({
+    const { useRemind } = remind<Mind>((set) => ({
       counter: 0,
-      increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
-      decrease: () => set((prevState) => ({ counter: prevState.counter - 1 })),
+      increase: () => set((prevMind) => ({ counter: prevMind.counter + 1 })),
+      decrease: () => set((prevMind) => ({ counter: prevMind.counter - 1 })),
     }))
 
     const Counter = () => {
-      const { mind } = useRemind((state) => state.counter, {
+      const { mind } = useRemind((mind) => mind.counter, {
         equalityFn: (nextSlice, slice) => nextSlice > slice,
       })
 
@@ -426,13 +426,13 @@ describe('factory', () => {
     getByText('counter 1')
   })
 
-  it('should generate for new async actions', async () => {
+  it('should generate staus for new async actions', async () => {
     // given
-    type State = {
+    type Mind = {
       counter: number
       increase?: () => Promise<void>
     }
-    const store = remind<State>({
+    const store = remind<Mind>({
       counter: 0,
     })
     const { useRemind } = store

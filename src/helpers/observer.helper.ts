@@ -25,8 +25,8 @@ const createObserver = <TState>() => {
     get listeners() {
       return Array.from(_listeners)
     },
-    notify,
     destroy,
+    notify,
     subscribe,
   }
 }

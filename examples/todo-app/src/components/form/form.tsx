@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 
-import { useRemind } from 'store'
+import { useRemind } from 'store/store'
 import { useForm } from './useForm.hook'
 import './form.css'
 

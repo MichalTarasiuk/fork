@@ -3,7 +3,7 @@ import { wait } from './tests.utils'
 import type { Noop } from '../src/typings'
 
 describe('store', () => {
-  it('should subscriber invoke after state change', () => {
+  it('should invoke subscriber after state change', () => {
     // given
     type State = {
       counter: number
@@ -13,22 +13,19 @@ describe('store', () => {
       counter: 0,
       increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
     }))
-    const state = store.get.state
-    const spy = jest.fn()
 
     // when
+    const spy = jest.fn()
     store.subscribe(spy)
 
     // then
-    expect(store.get.listeners).toHaveLength(1)
+    expect(store.listeners).toHaveLength(1)
 
     // when
-    const ingredient = 1
-    const oldState = { ...state }
-    store.get.state.increase()
+    store.state.increase()
 
     // then
-    expect(state.counter).toBe(oldState.counter + ingredient)
+    expect(spy).toHaveBeenCalledTimes(1)
   })
 
   it('should not invoke subscriber which has selector', () => {
@@ -37,24 +34,23 @@ describe('store', () => {
       counter: 0,
       darkMode: false,
     })
-    const state = store.get.state
-    const spy = jest.fn()
+    const state = store.state
 
     // when
+    const spy = jest.fn()
     store.subscribe(spy, (state) => state.darkMode)
 
     // then
-    expect(store.get.listeners).toHaveLength(1)
+    expect(store.listeners).toHaveLength(1)
 
     // when
-    const ingredient = 1
     const oldState = { ...state }
     store.setState((prevState) => ({
-      counter: prevState.counter + ingredient,
+      counter: prevState.counter + 1,
     }))
 
     // then
-    expect(state.counter).toBe(oldState.counter + ingredient)
+    expect(state.counter).toBe(oldState.counter + 1)
     expect(spy).not.toHaveBeenCalled()
   })
 
@@ -64,14 +60,14 @@ describe('store', () => {
       counter: 0,
       darkMode: false,
     })
-    const state = store.get.state
-    const spy = jest.fn()
+    const state = store.state
 
     // when
+    const spy = jest.fn()
     store.subscribe(spy, (state) => state.darkMode)
 
     // then
-    expect(store.get.listeners).toHaveLength(1)
+    expect(store.listeners).toHaveLength(1)
 
     // when
     store.setState({
@@ -83,37 +79,7 @@ describe('store', () => {
     expect(spy).toHaveBeenCalled()
   })
 
-  it('should unsubscribe all listener before notify', () => {
-    // given
-    const store = createStore({
-      darkMode: false,
-    })
-    const state = store.get.state
-    const spy = jest.fn()
-
-    // when
-    store.subscribe(spy)
-
-    // then
-    expect(store.get.listeners).toHaveLength(1)
-
-    // when
-    store.destroy()
-
-    // then
-    expect(store.get.listeners).toHaveLength(0)
-
-    // when
-    store.setState({
-      darkMode: true,
-    })
-
-    // then
-    expect(spy).not.toHaveBeenCalled()
-    expect(state.darkMode).toBeTruthy()
-  })
-
-  it('should unsubscribe only dark mode listener', () => {
+  it('should unsubscribe only counter listener', () => {
     // given
     const store = createStore({
       counter: 0,
@@ -123,20 +89,20 @@ describe('store', () => {
     const counterSpy = jest.fn()
 
     // when
-    const dorkModeListener = store.subscribe(
-      darkModeSpy,
-      (state) => state.darkMode
+    const counterListener = store.subscribe(
+      counterSpy,
+      (state) => state.counter
     )
-    store.subscribe(counterSpy, (state) => state.counter)
+    store.subscribe(darkModeSpy, (state) => state.darkMode)
 
     // then
-    expect(store.get.listeners).toHaveLength(2)
+    expect(store.listeners).toHaveLength(2)
 
     // when
-    dorkModeListener.unsubscribe()
+    counterListener.unsubscribe()
 
     // then
-    expect(store.get.listeners).toHaveLength(1)
+    expect(store.listeners).toHaveLength(1)
   })
 
   it('should resolve initial state', () => {
@@ -147,33 +113,30 @@ describe('store', () => {
     const store = createStore(() => initialState)
 
     // assert
-    expect(store.get.state).toEqual(initialState)
+    expect(store.state).toEqual(initialState)
   })
 
-  it('should subscriber invoke after state change by inner setState', () => {
+  it('should invoke subscriber after state change by inner setState', () => {
     // given
     type State = { counter: number; increase: Noop }
-    const ingredient = 1
     const store = createStore<State>((set) => ({
       counter: 0,
-      increase: () =>
-        set((prevState) => ({ counter: prevState.counter + ingredient })),
+      increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
     }))
-    const state = store.get.state
-    const spy = jest.fn()
+    const state = store.state
 
     // when
     const prevState = { ...state }
+    const spy = jest.fn()
     store.subscribe(spy, (state) => state.counter)
 
     // then
-    expect(store.get.listeners).toHaveLength(1)
+    expect(store.listeners).toHaveLength(1)
 
     // when
     state.increase()
 
     // then
-    expect(state.counter).toBe(prevState.counter + ingredient)
     expect(spy).toHaveBeenCalled()
   })
 
@@ -183,41 +146,41 @@ describe('store', () => {
       counter: number
       increase: Noop
     }
-    const ingredient = 1
     const store = createStore<State>((set) => ({
       counter: 0,
       increase: () =>
         set((prevState) => ({
-          counter: prevState.counter + ingredient,
+          counter: prevState.counter + 1,
         })),
     }))
+    const state = store.state
 
     // when
-    const oldState = { ...store.get.state }
-    store.get.state.increase()
+    const oldState = { ...state }
+    state.increase()
 
     // then
-    expect(store.get.state.counter).toEqual(oldState.counter + ingredient)
+    expect(state.counter).toEqual(oldState.counter + 1)
 
     // when
     store.reset()
 
     // then
-    expect(store.get.state.counter).toEqual(oldState.counter)
+    expect(store.state)
   })
 
-  it('not invoke listener when state after setState action is the same', () => {
+  it('should not invoke listener when state after call setState action is the same', () => {
     // given
     const store = createStore({
       counter: 0,
     })
 
     // when
-    const listener = jest.fn()
-    store.subscribe(listener)
+    const spy = jest.fn()
+    store.subscribe(spy)
 
     // then
-    expect(store.get.listeners).toHaveLength(1)
+    expect(store.listeners).toHaveLength(1)
 
     // when
     store.setState({
@@ -225,7 +188,7 @@ describe('store', () => {
     })
 
     // then
-    expect(listener).not.toHaveBeenCalled()
+    expect(spy).not.toHaveBeenCalled()
   })
 
   it('should wait for async actions', async () => {
@@ -241,7 +204,7 @@ describe('store', () => {
         set((prevState) => ({ counter: prevState.counter + 1 }))
       },
     }))
-    const state = store.get.state
+    const state = store.state
 
     // when
     await state.increase()
@@ -262,17 +225,17 @@ describe('store', () => {
       increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
       isDivisible: () => get().counter % 2 === 0,
     }))
-    const state = store.get.state
+    const state = store.state
 
     // when
     state.increase()
     state.increase()
 
     // then
-    expect(store.get.state.isDivisible()).toBeTruthy()
+    expect(store.state.isDivisible()).toBeTruthy()
   })
 
-  it('should invoke listener when next value is bigger', () => {
+  it('should invoke listener when next counter value is bigger', () => {
     // given
     type State = {
       counter: number
@@ -284,7 +247,7 @@ describe('store', () => {
       increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
       decrease: () => set((prevState) => ({ counter: prevState.counter - 1 })),
     }))
-    const state = store.get.state
+    const state = store.state
 
     // when
     const logger = jest.fn()
@@ -295,7 +258,7 @@ describe('store', () => {
     )
 
     // then
-    expect(store.get.listeners).toHaveLength(1)
+    expect(store.listeners).toHaveLength(1)
 
     // when
     state.increase()

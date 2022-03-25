@@ -89,7 +89,7 @@ const createStore = <TState>(
     const restoredState = createState(stateCreator, setState, getState)
     const savedState = cloneObject(state.value)
 
-    state = restoredState
+    Object.assign(state.value, restoredState.value)
     observer.notify(restoredState.value, savedState)
 
     return restoredState.value
@@ -107,15 +107,12 @@ const createStore = <TState>(
   })
 
   return {
-    get: {
-      get state() {
-        return state.value
-      },
-      get listeners() {
-        return observer.listeners
-      },
+    get state() {
+      return state.value
     },
-    destroy: observer.destroy,
+    get listeners() {
+      return observer.listeners
+    },
     notify: observer.notify,
     reset,
     setState,

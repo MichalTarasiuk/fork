@@ -3,11 +3,12 @@ import remind from 'remind'
 const { useRemind } = remind((set) => ({
   counter: 0,
   setToInitial: () => set({ counter: 0 }),
-  increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
+  increase: () => set((prevMind) => ({ counter: prevMind.counter + 1 })),
 }))
 
 function App() {
-  const [mind] = useRemind()
+  const { mind } = useRemind()
+
   return (
     <div>
       <p>counter {mind.counter}</p>

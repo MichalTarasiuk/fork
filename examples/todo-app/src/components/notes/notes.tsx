@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react'
 
-import { useRemind } from 'store'
+import { useRemind } from 'store/store'
 import type { Note } from '../../store/store.types'
 import './notes.css'
 
@@ -61,8 +61,8 @@ export const Notes = () => {
 
   const removeHandler = useCallback(
     (id: number) => {
-      setMind((mind) => ({
-        notes: mind.notes.filter((note) => note.id !== id),
+      setMind((prevMind) => ({
+        notes: prevMind.notes.filter((note) => note.id !== id),
       }))
     },
     [setMind]
