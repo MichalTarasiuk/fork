@@ -11,24 +11,18 @@ export const findDiffrence = (
 ) =>
   [...new Set([...Object.keys(next), ...Object.keys(old)])].reduce<Mapper>(
     (acc, key) => {
-      switch (true) {
-        case !(key in old): {
-          acc[key] = {
-            to: next[key],
-          }
-          break
+      if (!(key in old)) {
+        acc[key] = {
+          to: next[key],
         }
-        case !(key in next): {
-          acc[key] = {
-            from: next[key],
-          }
-          break
+      } else if (!(key in next)) {
+        acc[key] = {
+          from: next[key],
         }
-        case next[key] !== old[key]: {
-          acc[key] = {
-            from: old[key],
-            to: next[key],
-          }
+      } else {
+        acc[key] = {
+          from: old[key],
+          to: next[key],
         }
       }
 

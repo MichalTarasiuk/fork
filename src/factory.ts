@@ -22,8 +22,9 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
     const savedSubscriber = useRef<Subscriber | null>(null)
 
     const [mind, listener] = useListener(state, (nextState, state?) => {
-      const keys = pickKeysByValue(config || {}, true)
-      const pickedPlugins = Object.values(pick(pluginsMap, keys))
+      const pickedPlugins = Object.values(
+        pick(pluginsMap, pickKeysByValue(config || {}, true))
+      )
       const combinedPlugins = compose(...pickedPlugins)
 
       return combinedPlugins({ nextState, state }).nextState
