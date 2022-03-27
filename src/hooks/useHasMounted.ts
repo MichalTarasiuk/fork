@@ -2,7 +2,7 @@ import { useRef } from 'react'
 
 import { useDidMount } from './hooks'
 
-export const useIsMounted = () => {
+export const useHasMounted = () => {
   const isMounted = useRef(false)
 
   useDidMount(() => {
@@ -14,7 +14,7 @@ export const useIsMounted = () => {
   })
 
   return {
-    get isMounted() {
+    get current() {
       return isMounted.current
     },
   }

@@ -1,6 +1,6 @@
 import { useCallback, useRef } from 'react'
 
-import { useFirstMountState, useForce, useIsMounted, useAsync } from './hooks'
+import { useFirstMountState, useForce, useHasMounted, useAsync } from './hooks'
 import { pickByValue, isAsyncFunction } from '../helpers/helpers'
 import type { PickByValue, AsyncFunction, AddByValue } from '../typings'
 import type { Status } from './useAsync.hook'
@@ -24,7 +24,7 @@ export const useListener = <
   )
 
   const force = useForce()
-  const component = useIsMounted()
+  const hasMounted = useHasMounted()
   const isFirstMount = useFirstMountState()
   const asyncSlice = useAsync<TPlainState>(
     pickByValue<PickByValue<TPlainState, AsyncFunction>>(
@@ -46,10 +46,10 @@ export const useListener = <
     setState(initialState, undefined)
   }
 
-  const syncedState = { ...state.current, ...asyncSlice.current }
+  const syncedState = { ...state.current, ...asyncSlice.current } as TState
   const listener = useCallback(
     (nextState: TPlainState, prevState?: TPlainState) => {
-      if (component.isMounted) {
+      if (hasMounted.current) {
         setState(nextState, prevState)
 
         force()
