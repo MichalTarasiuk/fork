@@ -14,7 +14,7 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
   const pluginsMap = getPluginsMap(store)
   const state = store.state
 
-  const useRemind = <TSelector extends Selector<TState>>(
+  const hook = <TSelector extends Selector<TState>>(
     selector?: TSelector,
     config?: Config<TState, TSelector>
   ) => {
@@ -62,9 +62,9 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
     get listeners() {
       return store.listeners
     },
-    useRemind,
-    subscribe,
+    useRemind: hook,
     setMind: setState,
+    subscribe,
   }
 }
 
