@@ -97,7 +97,7 @@ const createStore = <TState>(
 
   state = createState(stateCreator, setState, getState)
   state.setState((state) => {
-    const nextState = lifecycle.onMount()
+    const nextState = lifecycle.onMount(state)
 
     if (nextState) {
       return nextState

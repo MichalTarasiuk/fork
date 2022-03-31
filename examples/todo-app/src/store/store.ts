@@ -1,9 +1,15 @@
 import remind from 'remind'
 
-import { Mind } from './store.types'
+import { wait } from './store.helpers'
+import type { Mind } from './store.types'
 
 const { useRemind } = remind<Mind>((set) => ({
   block: true,
+  async unlock() {
+    await wait(1000)
+
+    set({ block: false })
+  },
   notes: [],
 }))
 

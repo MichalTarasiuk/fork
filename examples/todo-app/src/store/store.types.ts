@@ -6,4 +6,6 @@ export type Note = {
 
 export type Mind = {
   notes: Note[]
+  block: boolean
+  unlock: () => Promise<void>
 }

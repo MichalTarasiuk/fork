@@ -3,14 +3,30 @@ import { useRef, useMemo } from 'react'
 import { createStore } from './store'
 import { useDidMount, useListener } from './hooks/hooks'
 import { merge, pick, compose, noop, pickKeysByValue } from './helpers/helpers'
-import { getPluginsMap } from './logic/logic'
+import { getPluginsMap, createStash } from './logic/logic'
 import type { StateCreator, Selector } from './store.types'
 import type { Config } from './factory.types'
 
 const factory = <TState extends Record<PropertyKey, unknown>>(
   stateCreator: StateCreator<TState>
 ) => {
-  const store = createStore<TState>(stateCreator)
+  const stash = createStash<TState>()
+  const store = createStore<TState>(stateCreator, {
+    onMount(initialState) {
+      const deserialized = stash.read()
+
+      if (deserialized.success) {
+        return deserialized.value
+      }
+
+      stash.save(initialState)
+
+      return null
+    },
+    onUpdate(state) {
+      stash.save(state)
+    },
+  })
   const pluginsMap = getPluginsMap(store)
   const state = store.state
 
