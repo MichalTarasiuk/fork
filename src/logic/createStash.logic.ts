@@ -19,7 +19,7 @@ export const createStash = <TValue>() => {
   const id = window.location.hostname
   const storage = window.localStorage
 
-  const save = (value: unknown) => {
+  const save = (value: TValue) => {
     storage.setItem(id, JSON.stringify(value))
   }
 

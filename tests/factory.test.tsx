@@ -426,7 +426,7 @@ describe('factory', () => {
     getByText('counter 1')
   })
 
-  it('should generate staus for new async actions', async () => {
+  it.only('should generate staus for new async actions', async () => {
     // given
     type Mind = {
       counter: number
