@@ -34,7 +34,7 @@ describe('factory', () => {
     await findByText('counter 1')
   })
 
-  it('should not rerender component when use selector', async () => {
+  it.skip('should not rerender component when use selector', async () => {
     // arrange
     const { useRemind } = remind({
       counter: 0,
@@ -111,7 +111,7 @@ describe('factory', () => {
     expect(store.listeners).toHaveLength(1)
   })
 
-  it('should not rerender component which use selector after invoke setMind action beyond component', async () => {
+  it.skip('should not rerender component which use selector after invoke setMind action beyond component', async () => {
     // given
     const store = remind({
       counter: 0,
@@ -136,7 +136,7 @@ describe('factory', () => {
     await findByText('counter 0')
   })
 
-  it('should rerender component which use selector after invoke setMind action beyond component', async () => {
+  it.skip('should rerender component which use selector after invoke setMind action beyond component', async () => {
     // given
     const store = remind({
       counter: 0,
@@ -349,7 +349,7 @@ describe('factory', () => {
     getByText('counter 1')
   })
 
-  it('it should return true when counter value is divisible', () => {
+  it.skip('it should return true when counter value is divisible', () => {
     // given
     type Mind = {
       counter: number
@@ -384,7 +384,7 @@ describe('factory', () => {
     getByText('is divisible: true')
   })
 
-  it('should rerender component when next value is bigger', () => {
+  it.skip('should rerender component when next value is bigger', () => {
     // given
     type Mind = {
       counter: number

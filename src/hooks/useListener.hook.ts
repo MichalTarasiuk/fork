@@ -43,7 +43,7 @@ export const useListener = <
   )
 
   if (isFirstMount) {
-    setState(initialState, undefined)
+    setState(initialState)
   }
 
   const syncedState = { ...state.current, ...asyncSlice.current } as TState
