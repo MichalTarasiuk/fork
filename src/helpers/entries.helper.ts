@@ -1,5 +1,4 @@
-const hasIterator = (value: unknown) =>
-  typeof value === 'object' && value !== null && Symbol.iterator in value
+import { hasIterator } from '../helpers/helpers'
 
 export const entries = <TObject extends Record<PropertyKey, unknown>>(
   obj: TObject

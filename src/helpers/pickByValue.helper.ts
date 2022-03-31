@@ -1,10 +1,10 @@
-import { isFunction } from './helpers'
+import { isFunction, isPrimitive } from './helpers'
 
 export const pickByValue = <TObject extends Record<PropertyKey, unknown>>(
   object: TObject,
   value: ((item: unknown) => boolean) | unknown
 ) =>
-  Object.keys(object)
+  Object.keys(isPrimitive(object) ? {} : object)
     .filter((key) =>
       isFunction(value) ? value(object[key]) : object[key] === value
     )

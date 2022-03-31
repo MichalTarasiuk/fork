@@ -16,5 +16,6 @@ export { mapObject } from './mapObject.helper'
 export { isEmpty } from './isEmpty.helper'
 export { findDiffrence } from './findDiffrence.helper'
 export { set } from './set.helper'
+export { hasIterator } from './hasIterator.helper'
 
 export const noop = () => {}
