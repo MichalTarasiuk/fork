@@ -5,20 +5,25 @@ import { useHasMounted } from '../../src/hooks/hooks'
 describe('useHasMounted', () => {
   it('should return true if component is mounted', () => {
     // arrange
-    const { result } = renderHook(() => useHasMounted())
+    const {
+      result: { current: hook },
+    } = renderHook(() => useHasMounted())
 
     // assert
-    expect(result.current.isMounted).toBeTruthy()
+    expect(hook.current).toBeTruthy()
   })
 
   it('should return false if component is unmounted', () => {
     // given
-    const { unmount, result } = renderHook(() => useHasMounted())
+    const {
+      unmount,
+      result: { current: hook },
+    } = renderHook(() => useHasMounted())
 
     // when
     unmount()
 
     // then
-    expect(result.current.isMounted).toBeFalsy()
+    expect(hook.current).toBeFalsy()
   })
 })

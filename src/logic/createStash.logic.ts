@@ -1,3 +1,16 @@
+type ErrorWithMessage = {
+  message: string
+}
+
+function isErrorWithMessage(error: unknown): error is ErrorWithMessage {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'message' in error &&
+    typeof (error as Record<string, unknown>).message === 'string'
+  )
+}
+
 export const createStash = <TValue>() => {
   type Deserialized =
     | { success: true; value: TValue }
@@ -26,7 +39,7 @@ export const createStash = <TValue>() => {
         value: JSON.parse(item),
       }
     } catch (error) {
-      if (error instanceof Error) {
+      if (error instanceof Error && isErrorWithMessage(error)) {
         return {
           success: false,
           error,
