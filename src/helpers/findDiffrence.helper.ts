@@ -17,9 +17,9 @@ export const findDiffrence = (
         }
       } else if (!(key in next)) {
         acc[key] = {
-          from: next[key],
+          from: old[key],
         }
-      } else {
+      } else if (next[key] !== old[key]) {
         acc[key] = {
           from: old[key],
           to: next[key],
