@@ -27,6 +27,7 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
       stash.save(state)
     },
   })
+  // @ts-ignore
   const plugins = getPlugins(store)
   const state = store.state
 
