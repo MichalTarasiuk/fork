@@ -2,11 +2,7 @@ import { useCallback, useRef } from 'react'
 
 import { useFirstMountState, useForce, useHasMounted, useAsync } from './hooks'
 import { pickByValue, isAsyncFunction } from '../helpers/helpers'
-import type {
-  AddByValue,
-  AsyncFunction,
-  PickByValue,
-} from './../typings/typings'
+import type { AddByValue, AsyncFunction } from './../typings/typings'
 import type { Status } from './useAsync.hook'
 
 export const useListener = <
@@ -30,11 +26,8 @@ export const useListener = <
   const force = useForce()
   const hasMounted = useHasMounted()
   const isFirstMount = useFirstMountState()
-  const asyncSlice = useAsync<TPlainState>(
-    pickByValue<PickByValue<TPlainState, AsyncFunction>>(
-      initialState,
-      isAsyncFunction
-    ),
+  const asyncSlice = useAsync(
+    pickByValue(initialState, isAsyncFunction) as any,
     (nextAsyncSlice) => {
       if (state.current) {
         const nextState = { ...state.current, ...nextAsyncSlice }

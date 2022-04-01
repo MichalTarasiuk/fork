@@ -9,30 +9,23 @@ import {
   merge,
 } from '../helpers/helpers'
 import { useRefState } from '../hooks/hooks'
-import type { PickByValue, AsyncFunction, AddByValue } from '../typings/typings'
+import type { AsyncFunction } from '../typings/typings'
 
 export type Status = 'idle' | 'loading' | 'success' | 'error'
 
-export const useAsync = <
-  TPlainState extends Record<PropertyKey, unknown>,
-  TObject extends Record<PropertyKey, unknown> = PickByValue<
-    TPlainState,
-    AsyncFunction
-  >,
-  TAsyncActions extends Record<PropertyKey, unknown> = AddByValue<
-    TObject,
-    AsyncFunction,
-    Status
-  >
->(
+const initialStatus = 'idle' as Status
+
+export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
   object: TObject,
-  callback: (asyncActions: TAsyncActions) => void
+  callback: (
+    asyncActions: Record<PropertyKey, readonly [() => Promise<unknown>, Status]>
+  ) => void
 ) => {
   type State = typeof state['current']
   const { state, setState, replaceState } = useRefState(
-    mapObject<TObject, Status>(object, () => 'idle'),
+    mapObject(object, () => initialStatus),
     (nextState) => {
-      callback(merge(mutations, nextState, (a, b) => [a, b]) as TAsyncActions)
+      callback(merge(mutations, nextState, (a, b) => [a, b] as const))
     }
   )
   const savedObject = useRef(object)
@@ -40,7 +33,7 @@ export const useAsync = <
 
   if (!isEmpty(diffrence)) {
     const nextState = mapObject(set(state.current, diffrence), (_, value) =>
-      isFunction(value) ? 'idle' : value
+      isFunction(value) ? initialStatus : value
     )
 
     replaceState(nextState)
@@ -64,16 +57,13 @@ export const useAsync = <
   }, [])
 
   const mutations = useMemo(
-    () =>
-      mapObject<TObject, AsyncFunction>(object, (key, value) =>
-        createMutation(key, value as AsyncFunction)
-      ),
+    () => mapObject(object, (key, value) => createMutation(key, value)),
     [object]
   )
 
   return {
     get current() {
-      return merge(mutations, state.current, (a, b) => [a, b]) as TAsyncActions
+      return merge(mutations, state.current, (a, b) => [a, b] as const)
     },
   }
 }
