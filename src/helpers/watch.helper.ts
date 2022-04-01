@@ -1,5 +1,3 @@
-import type { Noop } from '../typings'
-
 const weakMap = new WeakMap()
 
 const isObject = (value: any): value is object =>

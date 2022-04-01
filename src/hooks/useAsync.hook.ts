@@ -8,7 +8,6 @@ import {
   isFunction,
 } from '../helpers/helpers'
 import { useRefState } from '../hooks/hooks'
-import type { PickByValue, AsyncFunction, AddByValue } from '../typings'
 
 export type Status = 'idle' | 'loading' | 'success' | 'error'
 

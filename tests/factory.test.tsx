@@ -4,7 +4,7 @@ import { render, fireEvent, act } from '@testing-library/react'
 import { useDidMount } from '../src/hooks/hooks'
 import remind from '../src/factory'
 import { wait } from './tests.utils'
-import type { Noop } from '../src/typings'
+import type { Noop } from './test.types'
 
 describe('factory', () => {
   it('should rerender component', async () => {

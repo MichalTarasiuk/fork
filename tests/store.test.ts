@@ -1,6 +1,6 @@
 import { createStore } from '../src/store'
 import { wait } from './tests.utils'
-import type { Noop } from '../src/typings'
+import type { Noop } from './test.types'
 
 describe('store', () => {
   it('should invoke subscriber after state change', () => {
