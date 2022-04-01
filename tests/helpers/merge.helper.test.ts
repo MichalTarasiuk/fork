@@ -1,12 +1,24 @@
-import { assign } from '../../src/helpers/helpers'
+import { merge } from '../../src/helpers/helpers'
 
-describe('assign', () => {
-  it('should assign array and plain object', () => {
-    // arrange
-    const result = assign([1], { first: 1 })
+describe('merge', () => {
+  it('should merge objects', () => {
+    // given
+    const obj1 = {
+      a: 1,
+      b: 2,
+    }
+    const obj2 = {
+      a: 3,
+      b: 4,
+    }
 
-    // assert
-    expect(result[0]).toBe(1)
-    expect(result.first).toBe(1)
+    // when
+    const merged = merge(obj1, obj2, (a, b) => a + b)
+
+    // then
+    expect(merged).toEqual({
+      a: 4,
+      b: 6,
+    })
   })
 })
