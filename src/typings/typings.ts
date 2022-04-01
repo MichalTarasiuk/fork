@@ -1,4 +1,4 @@
-declare type Primitive =
+export type Primitive =
   | null
   | undefined
   | string
@@ -7,7 +7,7 @@ declare type Primitive =
   | symbol
   | bigint
 
-declare type PickByValue<
+export type PickByValue<
   TObject extends Record<PropertyKey, unknown>,
   TValue
 > = {
@@ -16,7 +16,7 @@ declare type PickByValue<
     : never]: TObject[key]
 }
 
-declare type AddByValue<
+export type AddByValue<
   TObject extends Record<PropertyKey, unknown>,
   TValue,
   TNewValue
@@ -26,6 +26,6 @@ declare type AddByValue<
     : TObject[key]
 }
 
-declare type AsyncFunction = (...args: unknown[]) => Promise<unknown>
+export type AsyncFunction = (...args: unknown[]) => Promise<unknown>
 
-declare type Noop = () => void
+export type Noop = () => void
