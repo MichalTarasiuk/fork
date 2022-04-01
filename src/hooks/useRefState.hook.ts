@@ -11,12 +11,16 @@ export const useRefState = <TState>(
       state.current = { ...state.current, ...patch }
 
       callback(state.current)
+
+      return state.current
     },
     []
   )
 
   const replaceState = useCallback((nextState: TState) => {
     state.current = nextState
+
+    return state.current
   }, [])
 
   return { state, setState, replaceState }
