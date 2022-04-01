@@ -2,7 +2,7 @@ import { useRef, useMemo } from 'react'
 
 import { createStore } from './store'
 import { useDidMount, useListener } from './hooks/hooks'
-import { merge, pick, compose, noop, pickKeysByValue } from './helpers/helpers'
+import { assign, pick, compose, noop, pickKeysByValue } from './helpers/helpers'
 import { getPluginsMap, createStash } from './logic/logic'
 import type { StateCreator, Selector } from './store.types'
 import type { Config } from './factory.types'
@@ -66,7 +66,7 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
       [mind]
     )
 
-    return merge([handler.mind, handler.setMind] as const, handler)
+    return assign([handler.mind, handler.setMind] as const, handler)
   }
 
   const { setState, subscribe } = store

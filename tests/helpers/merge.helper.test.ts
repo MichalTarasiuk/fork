@@ -1,9 +1,9 @@
-import { merge } from '../../src/helpers/helpers'
+import { assign } from '../../src/helpers/helpers'
 
-describe('merge', () => {
-  it('should merge array and plain object', () => {
+describe('assign', () => {
+  it('should assign array and plain object', () => {
     // arrange
-    const result = merge([1], { first: 1 })
+    const result = assign([1], { first: 1 })
 
     // assert
     expect(result[0]).toBe(1)
