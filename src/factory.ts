@@ -3,7 +3,7 @@ import { useRef, useMemo } from 'react'
 import { createStore } from './store'
 import { useDidMount, useListener } from './hooks/hooks'
 import { assign, pick, compose, noop, pickKeysByValue } from './helpers/helpers'
-import { getPluginsMap, createStash } from './logic/logic'
+import { getPlugins, createStash } from './logic/logic'
 import type { StateCreator, Selector } from './store.types'
 import type { Config } from './factory.types'
 
@@ -27,7 +27,7 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
       stash.save(state)
     },
   })
-  const pluginsMap = getPluginsMap(store)
+  const plugins = getPlugins(store)
   const state = store.state
 
   const hook = <TSelector extends Selector<TState>>(
@@ -39,7 +39,7 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
 
     const [mind, listener] = useListener(state, (nextState, state?) => {
       const pickedPlugins = Object.values(
-        pick(pluginsMap, pickKeysByValue(config || {}, true))
+        pick(plugins, pickKeysByValue(config || {}, true))
       )
       const combinedPlugins = compose(...pickedPlugins)
 

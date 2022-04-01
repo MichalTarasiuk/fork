@@ -1,2 +1,2 @@
-export * from './getPluginsMap.logic'
+export * from './getPlugins.logic'
 export { createStash } from './createStash.logic'
