@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 
 import {
   mapObject,
@@ -8,7 +8,7 @@ import {
   isFunction,
   merge,
 } from '../helpers/helpers'
-import { useRefState, useMerge } from '../hooks/hooks'
+import { useRefState, useMerge, useCreation } from '../hooks/hooks'
 import type { AsyncFunction } from '../typings/typings'
 
 export type Status = 'idle' | 'loading' | 'success' | 'error'
@@ -28,13 +28,16 @@ export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
   const { state, setState, replaceState } = useRefState(
     mapObject(object, () => initialStatus),
     (nextState) => {
-      const merged = merge(mutations, nextState, (a, b) => [a, b] as const)
+      const merged = merge(
+        mutations.current,
+        nextState,
+        (a, b) => [a, b] as const
+      )
       callback(merged, 'set')
     }
   )
   const mergeObject = useMerge(object)
   const savedMergeObject = useRef(mergeObject.current)
-  const diffrence = findDiffrence(mergeObject.current, savedMergeObject.current)
 
   const createMutation = useCallback((key: keyof State, fn: AsyncFunction) => {
     const mutation = async () => {
@@ -53,20 +56,22 @@ export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
     return mutation
   }, [])
 
-  const mutations = useMemo(
+  const mutations = useCreation(
     () =>
       mapObject(mergeObject.current, (key, value) =>
         createMutation(key, value)
       ),
-    [mergeObject.current]
+    mergeObject.current
   )
+
+  const diffrence = findDiffrence(mergeObject.current, savedMergeObject.current)
 
   if (!isEmpty(diffrence)) {
     const nextState = mapObject(set(state.current, diffrence), (_, value) =>
       isFunction(value) ? initialStatus : value
     )
     const replaced = replaceState(nextState)
-    const merged = merge(mutations, replaced, (a, b) => [a, b] as const)
+    const merged = merge(mutations.current, replaced, (a, b) => [a, b] as const)
 
     callback(merged, 'replace')
     savedMergeObject.current = mergeObject.current
@@ -74,7 +79,7 @@ export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
 
   return {
     get current() {
-      return merge(mutations, state.current, (a, b) => [a, b] as const)
+      return merge(mutations.current, state.current, (a, b) => [a, b] as const)
     },
   }
 }

@@ -349,7 +349,7 @@ describe('factory', () => {
     getByText('counter 1')
   })
 
-  it.skip('it should return true when counter value is divisible', () => {
+  it.skip('should return true when counter value is divisible', () => {
     // given
     type Mind = {
       counter: number
