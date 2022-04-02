@@ -8,7 +8,7 @@ import {
   isFunction,
   merge,
 } from '../helpers/helpers'
-import { useRefState, useMerge, useCreation } from '../hooks/hooks'
+import { useRefState, useCreation } from '../hooks/hooks'
 import type { AsyncFunction } from '../typings/typings'
 
 export type Status = 'idle' | 'loading' | 'success' | 'error'
@@ -36,8 +36,7 @@ export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
       callback(merged, 'set')
     }
   )
-  const mergeObject = useMerge(object)
-  const savedMergeObject = useRef(mergeObject.current)
+  const savedObject = useRef(object)
 
   const createMutation = useCallback((key: keyof State, fn: AsyncFunction) => {
     const mutation = async () => {
@@ -57,14 +56,11 @@ export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
   }, [])
 
   const mutations = useCreation(
-    () =>
-      mapObject(mergeObject.current, (key, value) =>
-        createMutation(key, value)
-      ),
-    mergeObject.current
+    () => mapObject(object, (key, value) => createMutation(key, value)),
+    object
   )
 
-  const diffrence = findDiffrence(mergeObject.current, savedMergeObject.current)
+  const diffrence = findDiffrence(object, savedObject.current)
 
   if (!isEmpty(diffrence)) {
     const nextState = mapObject(set(state.current, diffrence), (_, value) =>
@@ -74,7 +70,7 @@ export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
     const merged = merge(mutations.current, replaced, (a, b) => [a, b] as const)
 
     callback(merged, 'replace')
-    savedMergeObject.current = mergeObject.current
+    savedObject.current = object
   }
 
   return {
