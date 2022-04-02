@@ -1,16 +1,23 @@
 import { useRef, useCallback } from 'react'
 
+import { useDidUpdate } from '../hooks/hooks'
+
 export const useRefState = <TState>(
   initialState: TState,
   callback: (state: TState) => void
 ) => {
   const state = useRef(initialState)
+  const savedCallback = useRef(callback)
+
+  useDidUpdate(() => {
+    savedCallback.current = callback
+  }, callback)
 
   const setState = useCallback(
     (patch: Partial<Record<PropertyKey, TState[keyof TState]>>) => {
       state.current = { ...state.current, ...patch }
 
-      callback(state.current)
+      savedCallback.current(state.current)
 
       return state.current
     },

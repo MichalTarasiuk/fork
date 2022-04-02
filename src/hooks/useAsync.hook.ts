@@ -33,7 +33,7 @@ export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
     }
   )
   const mergeObject = useMerge(object)
-  const savedMergeObject = useRef(object)
+  const savedMergeObject = useRef(mergeObject.current)
   const diffrence = findDiffrence(mergeObject.current, savedMergeObject.current)
 
   const createMutation = useCallback((key: keyof State, fn: AsyncFunction) => {

@@ -11,7 +11,7 @@ export const useListener = <
   TPlainState extends Record<PropertyKey, unknown>,
   TState extends AddByValue<TPlainState, AsyncFunction, Status>
 >(
-  initialState: TPlainState,
+  plainState: TPlainState,
   observer: (nextState: TState, state?: TState) => TState
 ) => {
   const state = useRef<TState | undefined>(undefined)
@@ -31,7 +31,7 @@ export const useListener = <
   const hasMounted = useHasMounted()
   const isFirstMount = useFirstMountState()
   const asyncSlice = useAsync(
-    pickByValue(state.current || initialState, isAsyncFunction) as any,
+    pickByValue(plainState, isAsyncFunction) as any,
     (nextAsyncSlice, action) => {
       if (state.current) {
         setState(
@@ -45,7 +45,7 @@ export const useListener = <
   )
 
   if (isFirstMount) {
-    setState({ nextState: initialState }, asyncSlice.current)
+    setState({ nextState: plainState }, asyncSlice.current)
   }
 
   const listener = useCallback(
