@@ -12,7 +12,10 @@ import { useRefState, useMerge } from '../hooks/hooks'
 import type { AsyncFunction } from '../typings/typings'
 
 export type Status = 'idle' | 'loading' | 'success' | 'error'
-type AsyncSlice = Record<PropertyKey, readonly [() => Promise<unknown>, Status]>
+export type AsyncSlice = Record<
+  PropertyKey,
+  readonly [() => Promise<unknown>, Status]
+>
 type Action = 'set' | 'replace'
 
 const initialStatus = 'idle' as Status

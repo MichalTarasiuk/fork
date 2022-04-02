@@ -3,7 +3,9 @@ import { useCallback, useRef } from 'react'
 import { useFirstMountState, useForce, useHasMounted, useAsync } from './hooks'
 import { pickByValue, isAsyncFunction } from '../helpers/helpers'
 import type { AddByValue, AsyncFunction } from './../typings/typings'
-import type { Status } from './useAsync.hook'
+import type { Status, AsyncSlice } from './useAsync.hook'
+
+type StateMap<TValue> = { nextState: TValue; prevState?: TValue }
 
 export const useListener = <
   TPlainState extends Record<PropertyKey, unknown>,
@@ -14,10 +16,12 @@ export const useListener = <
 ) => {
   const state = useRef<TState | undefined>(undefined)
   const setState = useCallback(
-    (nextState: TPlainState, prevState?: TPlainState) => {
+    (stateMap: StateMap<TPlainState | TState>, asyncSlice: AsyncSlice) => {
+      const { nextState, prevState } = stateMap
+
       state.current = observer(
-        { ...nextState, ...asyncSlice.current } as TState,
-        prevState && ({ ...prevState, ...asyncSlice.current } as TState)
+        { ...nextState, ...asyncSlice } as TState,
+        prevState && ({ ...prevState, ...asyncSlice } as TState)
       )
     },
     []
@@ -29,26 +33,25 @@ export const useListener = <
   const asyncSlice = useAsync(
     pickByValue(state.current || initialState, isAsyncFunction) as any,
     (nextAsyncSlice, action) => {
-      if (state.current && action === 'set') {
-        const nextState = { ...state.current, ...nextAsyncSlice } as TState
+      if (state.current) {
+        setState(
+          { nextState: state.current, prevState: state.current },
+          nextAsyncSlice
+        )
 
-        state.current = observer(nextState, state.current)
-
-        force()
+        action === 'set' && force()
       }
-
-      state.current = { ...state.current, ...nextAsyncSlice } as TState
     }
   )
 
   if (isFirstMount) {
-    setState(initialState)
+    setState({ nextState: initialState }, asyncSlice.current)
   }
 
   const listener = useCallback(
     (nextState: TPlainState, prevState?: TPlainState) => {
       if (hasMounted.current) {
-        setState(nextState, prevState)
+        setState({ nextState, prevState }, asyncSlice.current)
 
         force()
       }
