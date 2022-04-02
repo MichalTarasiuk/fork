@@ -28,16 +28,16 @@ export const useListener = <
   const isFirstMount = useFirstMountState()
   const asyncSlice = useAsync(
     pickByValue(initialState, isAsyncFunction) as any,
-    (mutationsMap, action) => {
+    (nextAsyncSlice, action) => {
       if (state.current && action === 'set') {
-        const nextState = { ...state.current, ...mutationsMap } as TState
+        const nextState = { ...state.current, ...nextAsyncSlice } as TState
 
         state.current = observer(nextState, state.current)
 
         force()
       }
 
-      state.current = { ...state.current, ...mutationsMap } as TState
+      state.current = { ...state.current, ...nextAsyncSlice } as TState
     }
   )
 
@@ -56,5 +56,5 @@ export const useListener = <
     []
   )
 
-  return [state.current, listener] as const
+  return [state.current!, listener] as const
 }

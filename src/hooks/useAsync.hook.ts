@@ -12,17 +12,14 @@ import { useRefState } from '../hooks/hooks'
 import type { AsyncFunction } from '../typings/typings'
 
 export type Status = 'idle' | 'loading' | 'success' | 'error'
-type MutationsMap = Record<
-  PropertyKey,
-  readonly [() => Promise<unknown>, Status]
->
+type AsyncSlice = Record<PropertyKey, readonly [() => Promise<unknown>, Status]>
 type Action = 'set' | 'replace'
 
 const initialStatus = 'idle' as Status
 
 export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
   object: TObject,
-  callback: (asyncSlice: MutationsMap, action: Action) => void
+  callback: (asyncSlice: AsyncSlice, action: Action) => void
 ) => {
   type State = typeof state['current']
   const { state, setState, replaceState } = useRefState(
