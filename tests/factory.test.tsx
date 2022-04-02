@@ -463,9 +463,18 @@ describe('factory', () => {
       return <button onClick={upgrade}>upgrade</button>
     }
 
-    const { getByText } = render(<Counter />)
+    const { getByText, findByText } = render(<Counter />)
 
     // when
     fireEvent.click(getByText('upgrade'))
+
+    // then
+    getByText('counter: 0')
+
+    // when
+    fireEvent.click(getByText('increase'))
+
+    // then
+    await findByText('counter: 1')
   })
 })

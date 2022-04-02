@@ -27,7 +27,7 @@ export const useListener = <
   const hasMounted = useHasMounted()
   const isFirstMount = useFirstMountState()
   const asyncSlice = useAsync(
-    pickByValue(initialState, isAsyncFunction) as any,
+    pickByValue(state.current || initialState, isAsyncFunction) as any,
     (nextAsyncSlice, action) => {
       if (state.current && action === 'set') {
         const nextState = { ...state.current, ...nextAsyncSlice } as TState
