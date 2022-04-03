@@ -1,7 +1,7 @@
 import { useCallback, useRef } from 'react'
 
 import { useFirstMountState, useForce, useHasMounted, useAsync } from './hooks'
-import { pickByValue, isAsyncFunction, pick } from '../helpers/helpers'
+import { pickByValue, isAsyncFunction } from '../helpers/helpers'
 import type { AddByValue, AsyncFunction } from './../typings/typings'
 import type { Status, AsyncSlice } from './useAsync.hook'
 
@@ -19,7 +19,6 @@ export const useListener = <
     (stateMap: StateMap<TPlainState | TState>, asyncSlice: AsyncSlice) => {
       const { nextState, prevState } = stateMap
 
-      // FIXME
       state.current = observer(
         { ...nextState, ...asyncSlice } as TState,
         prevState && ({ ...prevState, ...asyncSlice } as TState)
@@ -32,7 +31,8 @@ export const useListener = <
   const hasMounted = useHasMounted()
   const isFirstMount = useFirstMountState()
   const asyncSlice = useAsync(
-    pickByValue(plainState, isAsyncFunction) as any,
+    // @ts-ignore
+    pickByValue(plainState, isAsyncFunction),
     (nextAsyncSlice, action) => {
       if (state.current) {
         setState(
@@ -52,11 +52,7 @@ export const useListener = <
   const listener = useCallback(
     (nextState: TPlainState, prevState?: TPlainState) => {
       if (hasMounted.current) {
-        setState(
-          { nextState, prevState },
-          // FIXME
-          pick(asyncSlice.current, Object.keys(nextState))
-        )
+        setState({ nextState, prevState }, asyncSlice.current)
 
         force()
       }

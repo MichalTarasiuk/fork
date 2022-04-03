@@ -21,7 +21,7 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
 
       stash.save(initialState)
 
-      return null
+      return initialState
     },
     onUpdate(state) {
       stash.save(state)

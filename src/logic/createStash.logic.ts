@@ -23,6 +23,10 @@ export const createStash = <TValue>() => {
     storage.setItem(id, JSON.stringify(value))
   }
 
+  const clear = () => {
+    storage.clear()
+  }
+
   const read = (): Deserialized => {
     const item = localStorage.getItem(id)
 
@@ -53,5 +57,5 @@ export const createStash = <TValue>() => {
     }
   }
 
-  return { save, read }
+  return { save, read, clear }
 }
