@@ -19,5 +19,7 @@ export { set } from './set.helper'
 export { hasIterator } from './hasIterator.helper'
 export { merge } from './merge.helper'
 export { empty } from './empty.helper'
+export { omitByValue } from './omitByValue.helper'
+export { isPlainObject } from './isPlainObject.helper'
 
 export const noop = () => {}
