@@ -426,7 +426,7 @@ describe('factory', () => {
     getByText('counter 1')
   })
 
-  it.only('should generate staus for new async actions', async () => {
+  it.skip('should generate staus for new async actions', async () => {
     // given
     type Mind = {
       counter: number
@@ -476,5 +476,66 @@ describe('factory', () => {
 
     // then
     await findByText('counter: 1')
+  })
+
+  it(`should remove status when async action does't exist`, async () => {
+    // given
+    type Mind = {
+      counter: number
+      increase?: () => Promise<void>
+    }
+    const { useRemind } = remind<Mind>((set) => ({
+      counter: 0,
+      increase: async () => {
+        await wait(1000)
+        set((prevMind) => ({ counter: prevMind.counter + 1 }))
+      },
+    }))
+
+    const Counter = () => {
+      const { mind, setMind } = useRemind()
+
+      if (mind.increase) {
+        const [increase] = mind.increase
+
+        const remove = () => {
+          setMind(
+            (prevState) => ({
+              counter: prevState.counter,
+            }),
+            true
+          )
+        }
+
+        return (
+          <div>
+            <p>counter: {mind.counter}</p>
+            <button onClick={increase}>increase</button>
+            <button onClick={remove}>remove</button>
+          </div>
+        )
+      }
+
+      return <pre>{JSON.stringify(mind)}</pre>
+    }
+    const { getByText, findByText, container } = render(<Counter />)
+
+    // when
+    fireEvent.click(getByText('increase'))
+
+    // then
+    await findByText('counter: 1')
+
+    // when
+    fireEvent.click(getByText('remove'))
+
+    // then
+    expect(container).toMatchInlineSnapshot(`
+      <div>
+        <pre>
+          {"counter":1}
+        </pre>
+      </div>
+    `)
   })
 })

@@ -70,7 +70,7 @@ const createStore = <TState>(
 
     const { nextState, oldState } = state.setState((state) => {
       const nextState = replace
-        ? (patch as TState)
+        ? (resolvedPatch as TState)
         : { ...state, ...resolvedPatch }
 
       lifecycle.onUpdate(nextState)
