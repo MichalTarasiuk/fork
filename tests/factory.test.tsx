@@ -433,6 +433,60 @@ describe('factory', () => {
     getByText('counter 1')
   })
 
+  it('should replace state', () => {
+    // given
+    type Mind = {
+      counter: number
+      increase: Noop
+    }
+    const store = remind<Mind>((set) => ({
+      counter: 0,
+      increase: () => {
+        set((prevState) => ({ counter: prevState.counter + 1 }))
+      },
+    }))
+    const { useRemind } = store
+
+    const Counter = () => {
+      const { mind, setMind } = useRemind()
+
+      const block = () => {
+        setMind(
+          (prevMind) => ({
+            counter: prevMind.counter,
+          }),
+          true
+        )
+      }
+
+      if (mind.increase) {
+        return (
+          <div>
+            <p>counter: {mind.counter}</p>
+            <button onClick={mind.increase}>increase</button>
+            <button onClick={block}>block</button>
+          </div>
+        )
+      }
+
+      return null
+    }
+
+    const { getByText } = render(<Counter />)
+
+    // when
+    fireEvent.click(getByText('increase'))
+
+    // then
+    getByText('counter: 1')
+
+    // when
+    fireEvent.click(getByText('block'))
+
+    // then
+    expect(store.mind).toEqual({ counter: 1 })
+  })
+
   it('should generate staus for new async actions', async () => {
     // given
     type Mind = {
