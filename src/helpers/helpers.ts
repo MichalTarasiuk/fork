@@ -18,5 +18,6 @@ export { findDiffrence } from './findDiffrence.helper'
 export { set } from './set.helper'
 export { hasIterator } from './hasIterator.helper'
 export { merge } from './merge.helper'
+export { empty } from './empty.helper'
 
 export const noop = () => {}

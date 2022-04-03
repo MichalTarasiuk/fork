@@ -5,6 +5,7 @@ import {
   isFunction,
   cloneObject,
   noop,
+  empty,
 } from './helpers/helpers'
 import type { ResolvableState, Listener } from './helpers/helpers'
 import type {
@@ -24,7 +25,7 @@ const mockLifecycle = {
   onUpdate: noop,
 }
 
-const createStore = <TState>(
+const createStore = <TState extends Record<PropertyKey, unknown>>(
   stateCreator: StateCreator<TState>,
   lifecycle: Lifecycle<TState> = mockLifecycle
 ) => {
@@ -120,7 +121,7 @@ const createStore = <TState>(
   }
 }
 
-const createState = <TState>(
+const createState = <TState extends Record<PropertyKey, unknown>>(
   stateCreator: StateCreator<TState>,
   setState: SetState<TState>,
   getState: GetState<TState>
@@ -135,7 +136,7 @@ const createState = <TState>(
       const oldState = cloneObject(this.value)
       const nextState = resolveState(resolvableState, oldState)
 
-      Object.assign(this.value, nextState)
+      Object.assign(empty(this.value), nextState)
 
       return {
         nextState,

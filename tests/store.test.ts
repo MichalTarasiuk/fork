@@ -272,4 +272,27 @@ describe('store', () => {
     // then
     expect(logger).toHaveBeenCalledTimes(1)
   })
+
+  it('should replace state', () => {
+    // given
+    type State = {
+      counter: number
+      increase?: () => void
+    }
+    const store = createStore<State>((set) => ({
+      counter: 0,
+      increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
+    }))
+
+    // when
+    store.setState(
+      (prevState) => ({
+        counter: prevState.counter,
+      }),
+      true
+    )
+
+    // then
+    expect(store.state).toEqual({ counter: 0 })
+  })
 })

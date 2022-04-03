@@ -24,7 +24,6 @@ export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
   object: TObject,
   callback: (asyncSlice: AsyncSlice, action: Action) => void
 ) => {
-  type State = typeof state['current']
   const { state, setState, replaceState } = useRefState(
     mapObject(object, () => initialStatus),
     (nextState) => {
@@ -38,7 +37,7 @@ export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
   )
   const savedObject = useRef(object)
 
-  const createMutation = useCallback((key: keyof State, fn: AsyncFunction) => {
+  const createMutation = useCallback((key: PropertyKey, fn: AsyncFunction) => {
     const mutation = async () => {
       setState({ [key]: 'loading' as const })
 

@@ -19,6 +19,7 @@ export const useListener = <
     (stateMap: StateMap<TPlainState | TState>, asyncSlice: AsyncSlice) => {
       const { nextState, prevState } = stateMap
 
+      // FIXME
       state.current = observer(
         { ...nextState, ...asyncSlice } as TState,
         prevState && ({ ...prevState, ...asyncSlice } as TState)
@@ -53,6 +54,7 @@ export const useListener = <
       if (hasMounted.current) {
         setState(
           { nextState, prevState },
+          // FIXME
           pick(asyncSlice.current, Object.keys(nextState))
         )
 
