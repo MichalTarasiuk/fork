@@ -238,7 +238,7 @@ describe('factory', () => {
     await findByText('counter 1')
   })
 
-  it.skip('should observe mind by watch option', () => {
+  it('should observe mind by watch option', () => {
     // given
     const { useRemind } = remind({
       list: [] as number[],
@@ -270,7 +270,7 @@ describe('factory', () => {
     expect(getByTestId('list').children).toHaveLength(1)
   })
 
-  it.skip('should notify all subscribers by watch option', () => {
+  it('should notify all subscribers by watch option', () => {
     // given
     const { useRemind } = remind({
       list: [] as number[],

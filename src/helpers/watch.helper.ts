@@ -23,7 +23,7 @@ export const watch = <TValue extends object>(
     set(target, prop, value) {
       const ret = Reflect.set(target, prop, value)
 
-      if (prop !== 'length') {
+      if (prop !== 'length' && typeof prop !== 'symbol') {
         callback()
       }
 
