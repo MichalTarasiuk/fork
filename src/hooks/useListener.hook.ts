@@ -12,7 +12,8 @@ import {
   useFirstMountState,
   useAsync,
 } from '../hooks/hooks'
-import type { AsyncSlice } from '../hooks/useAsync.hook'
+import type { AsyncSlice, Status } from '../hooks/useAsync.hook'
+import type { AddByValue, AsyncFunction } from '../typings/typings'
 
 const createMind = <TState extends Record<PropertyKey, unknown>>(
   initialState: TState,
@@ -37,7 +38,8 @@ const createMind = <TState extends Record<PropertyKey, unknown>>(
 
   return {
     get value() {
-      return flatObject(mind, asyncSymbol) as TState
+      type FlattenObject = AddByValue<TState, AsyncFunction, Status>
+      return flatObject(mind, asyncSymbol) as FlattenObject
     },
     setMind,
     updateAsync,
@@ -71,6 +73,7 @@ export const useListener = <TState extends Record<PropertyKey, unknown>>(
   const listener = useCallback((nextState: TState, prevState?: TState) => {
     if (hasMounted.current) {
       mind.setMind(nextState, prevState)
+      mind.updateAsync(asyncSlice.current)
 
       force()
     }

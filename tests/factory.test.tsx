@@ -202,7 +202,7 @@ describe('factory', () => {
     getByText('counter 0')
   })
 
-  it.skip('should wait for async actions', async () => {
+  it('should wait for async actions', async () => {
     // given
     type Mind = {
       counter: number
@@ -212,7 +212,7 @@ describe('factory', () => {
       counter: 0,
       increase: async () => {
         await wait(1000)
-        set({ counter: 1 })
+        set((prevState) => ({ counter: prevState.counter + 1 }))
       },
     }))
     const { useRemind } = store
@@ -238,7 +238,7 @@ describe('factory', () => {
     await findByText('counter 1')
   })
 
-  it('should observe mind by watch option', () => {
+  it.skip('should observe mind by watch option', () => {
     // given
     const { useRemind } = remind({
       list: [] as number[],
@@ -270,7 +270,7 @@ describe('factory', () => {
     expect(getByTestId('list').children).toHaveLength(1)
   })
 
-  it('should notify all subscribers by watch option', () => {
+  it.skip('should notify all subscribers by watch option', () => {
     // given
     const { useRemind } = remind({
       list: [] as number[],
@@ -487,7 +487,7 @@ describe('factory', () => {
     expect(store.mind).toEqual({ counter: 1 })
   })
 
-  it.skip('should generate staus for new async actions', async () => {
+  it('should generate staus for new async actions', async () => {
     // given
     type Mind = {
       counter: number
@@ -539,7 +539,7 @@ describe('factory', () => {
     await findByText('counter: 1')
   })
 
-  it.skip(`should remove status when async action does't exist`, async () => {
+  it(`should remove status when async action does't exist`, async () => {
     // given
     type Mind = {
       counter: number
