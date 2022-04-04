@@ -22,6 +22,5 @@ export { empty } from './empty.helper'
 export { omitByValue } from './omitByValue.helper'
 export { isPlainObject } from './isPlainObject.helper'
 export { flatObject } from './flatObject.helper'
-export { nestObject } from './nestObject.helper'
 
 export const noop = () => {}

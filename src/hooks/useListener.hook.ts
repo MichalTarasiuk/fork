@@ -1,64 +1,81 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useMemo } from 'react'
 
-import { useFirstMountState, useForce, useHasMounted, useAsync } from './hooks'
-import { pickByValue, isAsyncFunction } from '../helpers/helpers'
-import type { AddByValue, AsyncFunction } from './../typings/typings'
-import type { Status, AsyncSlice } from './useAsync.hook'
+import {
+  empty,
+  pickByValue,
+  isAsyncFunction,
+  flatObject,
+  omitByValue,
+} from '../helpers/helpers'
+import {
+  useHasMounted,
+  useForce,
+  useFirstMountState,
+  useAsync,
+} from '../hooks/hooks'
+import type { AsyncSlice } from '../hooks/useAsync.hook'
 
-type StateMap<TValue> = { nextState: TValue; prevState?: TValue }
-
-export const useListener = <
-  TPlainState extends Record<PropertyKey, unknown>,
-  TState extends AddByValue<TPlainState, AsyncFunction, Status>
->(
-  plainState: TPlainState,
-  observer: (nextState: TState, state?: TState) => TState
+const createMind = <TState extends Record<PropertyKey, unknown>>(
+  initialState: TState,
+  callback: (nextState: TState, prevState?: TState) => TState
 ) => {
-  const state = useRef<TState | undefined>(undefined)
-  const setState = useCallback(
-    (stateMap: StateMap<TPlainState | TState>, asyncSlice: AsyncSlice) => {
-      const { nextState, prevState } = stateMap
+  const asyncSymbol = Symbol('async')
+  let mind = callback(omitByValue(initialState, isAsyncFunction))
 
-      state.current = observer(
-        { ...nextState, ...asyncSlice } as TState,
-        prevState && ({ ...prevState, ...asyncSlice } as TState)
-      )
+  const setMind = (nextState: TState, prevState?: TState) => {
+    const updatedState = callback(
+      omitByValue(nextState, isAsyncFunction),
+      prevState && omitByValue(prevState, isAsyncFunction)
+    )
+
+    mind = Object.assign(empty(mind), updatedState)
+  }
+
+  const updateAsync = (asyncSlice: AsyncSlice) => {
+    // @ts-ignore
+    mind[asyncSymbol] = asyncSlice
+  }
+
+  return {
+    get value() {
+      return flatObject(mind, asyncSymbol) as TState
     },
-    []
-  )
+    setMind,
+    updateAsync,
+  }
+}
 
-  const force = useForce()
+export const useListener = <TState extends Record<PropertyKey, unknown>>(
+  state: TState,
+  observer: (nextState: TState, prevState?: TState) => TState
+) => {
+  const mind = useMemo(() => createMind(state, observer), [])
   const hasMounted = useHasMounted()
+  const force = useForce()
   const isFirstMount = useFirstMountState()
   const asyncSlice = useAsync(
     // @ts-ignore
-    pickByValue(plainState, isAsyncFunction),
+    pickByValue(state, isAsyncFunction),
     (nextAsyncSlice, action) => {
-      if (state.current) {
-        setState(
-          { nextState: state.current, prevState: state.current },
-          nextAsyncSlice
-        )
+      mind.updateAsync(nextAsyncSlice)
 
-        action === 'set' && force()
+      if (action === 'set') {
+        force()
       }
     }
   )
 
   if (isFirstMount) {
-    setState({ nextState: plainState }, asyncSlice.current)
+    mind.updateAsync(asyncSlice.current)
   }
 
-  const listener = useCallback(
-    (nextState: TPlainState, prevState?: TPlainState) => {
-      if (hasMounted.current) {
-        setState({ nextState, prevState }, asyncSlice.current)
+  const listener = useCallback((nextState: TState, prevState?: TState) => {
+    if (hasMounted.current) {
+      mind.setMind(nextState, prevState)
 
-        force()
-      }
-    },
-    []
-  )
+      force()
+    }
+  }, [])
 
-  return [state.current!, listener] as const
+  return [mind.value, listener] as const
 }

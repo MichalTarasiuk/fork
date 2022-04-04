@@ -7,7 +7,7 @@ export type Config<TState, TSelector extends Selector<TState>> = {
     state: ReturnType<TSelector>
   ) => boolean
 }
-export type StateMap<TState extends object> = {
+export type StateMap<TState extends Record<PropertyKey, unknown>> = {
   nextState: TState
   state: TState
 }
