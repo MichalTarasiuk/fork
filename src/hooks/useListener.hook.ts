@@ -1,7 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
 import {
-  empty,
   pickByValue,
   isAsyncFunction,
   flatObject,
@@ -23,12 +22,12 @@ const createMind = <TState extends Record<PropertyKey, unknown>>(
   let mind = callback(omitByValue(initialState, isAsyncFunction))
 
   const setMind = (nextState: TState, prevState?: TState) => {
-    const updatedState = callback(
+    const updatedMind = callback(
       omitByValue(nextState, isAsyncFunction),
       prevState && omitByValue(prevState, isAsyncFunction)
     )
 
-    mind = Object.assign(empty(mind), updatedState)
+    mind = updatedMind
   }
 
   const updateAsync = (asyncSlice: AsyncSlice) => {
