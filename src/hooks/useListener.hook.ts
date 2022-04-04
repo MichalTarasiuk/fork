@@ -20,19 +20,24 @@ const createMind = <TState extends Record<PropertyKey, unknown>>(
   callback: (nextState: TState, prevState?: TState) => TState
 ) => {
   const asyncSymbol = Symbol('async')
-  let mind = callback(omitByValue(initialState, isAsyncFunction))
+
+  type Mind = TState & {
+    [asyncSymbol]: AsyncSlice
+  }
+  let mind = callback(omitByValue(initialState, isAsyncFunction)) as Mind
 
   const setMind = (nextState: TState, prevState?: TState) => {
+    const asyncSlice = mind[asyncSymbol]
     const updatedMind = callback(
       omitByValue(nextState, isAsyncFunction),
       prevState && omitByValue(prevState, isAsyncFunction)
-    )
+    ) as Mind
 
+    updatedMind[asyncSymbol] = asyncSlice
     mind = updatedMind
   }
 
   const updateAsync = (asyncSlice: AsyncSlice) => {
-    // @ts-ignore
     mind[asyncSymbol] = asyncSlice
   }
 
@@ -73,7 +78,6 @@ export const useListener = <TState extends Record<PropertyKey, unknown>>(
   const listener = useCallback((nextState: TState, prevState?: TState) => {
     if (hasMounted.current) {
       mind.setMind(nextState, prevState)
-      mind.updateAsync(asyncSlice.current)
 
       force()
     }
