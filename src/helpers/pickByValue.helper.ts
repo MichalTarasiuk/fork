@@ -1,7 +1,7 @@
 import { isFunction, isPrimitive } from './helpers'
 
-export const pickByValue = <TObject extends Record<PropertyKey, unknown>>(
-  object: TObject,
+export const pickByValue = <TReturnType extends Record<PropertyKey, unknown>>(
+  object: Record<PropertyKey, unknown>,
   value: ((item: unknown) => boolean) | unknown
 ) =>
   Object.keys(isPrimitive(object) ? {} : object)
@@ -12,4 +12,4 @@ export const pickByValue = <TObject extends Record<PropertyKey, unknown>>(
       acc[key] = object[key]
 
       return acc
-    }, {}) as TObject
+    }, {}) as TReturnType
