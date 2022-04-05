@@ -7,6 +7,8 @@ export type Primitive =
   | symbol
   | bigint
 
+export type Nill = undefined | null
+
 export type PickByValue<
   TObject extends Record<PropertyKey, unknown>,
   TValue
