@@ -1,3 +1,5 @@
+import { equals } from './helpers'
+
 type Mapper = {
   [key: string]: {
     from?: unknown
@@ -19,7 +21,7 @@ export const findDiffrence = (
         acc[key] = {
           from: old[key],
         }
-      } else if (next[key] !== old[key]) {
+      } else if (!equals(next[key], old[key])) {
         acc[key] = {
           from: old[key],
           to: next[key],

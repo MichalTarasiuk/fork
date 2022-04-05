@@ -5,7 +5,7 @@ import type { StateMap } from '../factory.types'
 export const getPlugins = <TStore extends ReturnType<typeof createStore>>(
   store: TStore
 ) => ({
-  watch({ nextState, state }: StateMap<object>) {
+  watch({ nextState, state }: StateMap<Record<PropertyKey, unknown>>) {
     const modifiedNextState = watch(nextState, () => {
       store.notify(nextState, state)
     })
