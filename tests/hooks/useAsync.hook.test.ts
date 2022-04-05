@@ -1,7 +1,9 @@
-import { renderHook } from '@testing-library/react-hooks'
+import { useState } from 'react'
+import { renderHook, act } from '@testing-library/react-hooks'
 
 import { useAsync } from '../../src/hooks/hooks'
 import { wait } from '../tests.utils'
+import type { AsyncFunction } from '../../src/typings/typings'
 
 const mockUser = {
   name: 'John',
@@ -70,5 +72,82 @@ describe('useAsync', () => {
     // then
     const [, status] = hook.current.getUser
     expect(status).toBe('success')
+  })
+
+  it('it should generate hook state after remove some props', () => {
+    // given
+    const {
+      result: { current: hook },
+    } = renderHook(() => {
+      const [state, setState] = useState<Partial<typeof object>>(object)
+      const async = useAsync(state, () => {})
+
+      const update = () => {
+        setState({})
+      }
+
+      return { async, update }
+    })
+
+    // when
+    act(() => {
+      hook.update()
+    })
+
+    // then
+    expect(hook.async.current).toEqual({})
+  })
+
+  it('it should generate hook state after add some props', () => {
+    // given
+    const {
+      result: { current: hook },
+    } = renderHook(() => {
+      type State = typeof object & { getName?: AsyncFunction }
+      const [state, setState] = useState<State>(object)
+      // @ts-ignore
+      const async = useAsync(state, () => {})
+
+      const update = () => {
+        const getName = async () => {
+          await wait(1000)
+
+          return 'John'
+        }
+        setState((prevState) => ({ ...prevState, getName }))
+      }
+
+      return { async, update }
+    })
+
+    // when
+    act(() => {
+      hook.update()
+    })
+
+    // then
+    expect(hook.async.current).toMatchInlineSnapshot(`
+      Object {
+        "getName": Array [
+          [Function],
+          "idle",
+        ],
+        "getUser": Array [
+          [Function],
+          "idle",
+        ],
+      }
+    `)
+  })
+
+  it('should generate status only for async action', () => {
+    // arrange
+    const {
+      result: { current: hook },
+      // @ts-ignore
+    } = renderHook(() => useAsync({ getName: () => 'John' }, () => {}))
+
+    // then
+    expect(hook.current).toEqual({})
   })
 })

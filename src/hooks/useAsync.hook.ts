@@ -1,4 +1,4 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useMemo } from 'react'
 
 import {
   mapObject,
@@ -7,6 +7,8 @@ import {
   set,
   isFunction,
   merge,
+  pickByValue,
+  isAsyncFunction,
 } from '../helpers/helpers'
 import { useRefState, useCreation } from '../hooks/hooks'
 import type { AsyncFunction } from '../typings/typings'
@@ -24,8 +26,12 @@ export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
   object: TObject,
   callback: (asyncSlice: AsyncSlice, action: Action) => void
 ) => {
+  const filteredObject = useMemo(
+    () => pickByValue<TObject>(object, isAsyncFunction),
+    [object]
+  )
   const { state, setState, replaceState } = useRefState(
-    mapObject(object, () => initialStatus),
+    mapObject(filteredObject, () => initialStatus),
     (nextState) => {
       const merged = merge(
         mutations.current,
@@ -35,7 +41,7 @@ export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
       callback(merged, 'set')
     }
   )
-  const savedObject = useRef(object)
+  const savedObject = useRef(filteredObject)
 
   const createMutation = useCallback((key: PropertyKey, fn: AsyncFunction) => {
     const mutation = async () => {
@@ -55,11 +61,11 @@ export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
   }, [])
 
   const mutations = useCreation(
-    () => mapObject(object, (key, value) => createMutation(key, value)),
-    object
+    () => mapObject(filteredObject, (key, value) => createMutation(key, value)),
+    filteredObject
   )
 
-  const diffrence = findDiffrence(object, savedObject.current)
+  const diffrence = findDiffrence(filteredObject, savedObject.current)
 
   if (!isEmpty(diffrence)) {
     const nextState = mapObject(set(state.current, diffrence), (_, value) =>

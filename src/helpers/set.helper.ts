@@ -16,9 +16,9 @@ export const set = <TValue extends Record<PropertyKey, unknown>>(
   for (const [key, value] of Object.entries(mapper)) {
     if (!('to' in value)) {
       delete clone[key]
+    } else {
+      clone[key] = value.to
     }
-
-    clone[key] = value.to
   }
 
   return clone as TValue
