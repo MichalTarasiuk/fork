@@ -42,7 +42,7 @@ const createMind = <TState extends Record<PropertyKey, unknown>>(
   }
 
   return {
-    get value() {
+    get current() {
       type FlattenObject = AddByValue<TState, AsyncFunction, Status>
       return flatObject(mind, asyncSymbol) as FlattenObject
     },
@@ -82,5 +82,5 @@ export const useListener = <TState extends Record<PropertyKey, unknown>>(
     }
   }, [])
 
-  return [mind.value, listener] as const
+  return [mind.current, listener] as const
 }
