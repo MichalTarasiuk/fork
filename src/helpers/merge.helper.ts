@@ -7,11 +7,12 @@ export const merge = <
   b: TB,
   fn: (a: TA[keyof TA], b: TB[keyof TB]) => TReturnType
 ) => {
-  const keys = [...new Set([...Object.keys(a), ...Object.keys(b)])]
+  type Keys = keyof TA & keyof TB
+  const keys = [...new Set([...Object.keys(a), ...Object.keys(b)])] as Keys[]
 
-  return keys.reduce<Record<PropertyKey, TReturnType>>((acc, key) => {
+  return keys.reduce((acc, key) => {
     acc[key] = fn(a[key], b[key])
 
     return acc
-  }, {})
+  }, {} as Record<keyof TA & keyof TB, TReturnType>)
 }
