@@ -38,6 +38,7 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
     type Subscriber = ReturnType<typeof store['subscribe']>
     const savedSubscriber = useRef<Subscriber | null>(null)
 
+    // @ts-ignore
     const [mind, listener] = useListener(state, (nextState, state) => {
       const pickedPlugins = Object.values(
         pick(plugins, pickKeysByValue(config || {}, true))

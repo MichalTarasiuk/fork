@@ -9,5 +9,5 @@ export type Config<TState, TSelector extends Selector<TState>> = {
 }
 export type StateMap<TState extends Record<PropertyKey, unknown>> = {
   nextState: TState
-  state: TState
+  state?: TState
 }
