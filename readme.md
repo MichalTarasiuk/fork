@@ -43,11 +43,9 @@ function MindCounter() {
 }
 
 function Controls() {
-  const [mind] = useStore((mind) => mind.increase)
+  const { mind } = useStore((mind) => mind.increase)
   return <button onClick={mind.increase}>one up</button>
 }
-
-You can pick your mind from array or plain object.
 ```
 
 ### Why remind over redux?
@@ -72,7 +70,13 @@ You can, but mind that it will cause the component to update on every state chan
 
 ```jsx
 const { mind } = useRemind()
+
+// or
+
+const [mind] = useRemind()
 ```
+
+You can pick your mind from array or plain object.
 
 ## Selecting multiple state slices
 
@@ -108,7 +112,7 @@ const { useRemind } = remind((set) => ({
 
 ## Async actions
 
-Just call `set` when you're ready, zustand doesn't care if your actions are async or not.
+Just call `set` when you're ready, remind doesn't care if your actions are async or not.
 
 ```jsx
 const { useRemind } = remind((set) => ({
@@ -118,11 +122,16 @@ const { useRemind } = remind((set) => ({
     set({ ideas: await response.json() })
   },
 }))
+```
 
+Remind generate you status for each async action.
+
+```jsx
 const MyComponent = () => {
-  const [] = useRemind()
+  const { mind } = useRemind()
+  const [fetch, status] = mind.fetch
 
-  return null
+  return <button>{status === 'idle' ? 'fetch' : status}</button>
 }
 ```
 
