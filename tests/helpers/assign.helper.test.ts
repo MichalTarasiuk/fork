@@ -10,7 +10,7 @@ describe('assign', () => {
     expect(result.first).toBe(1)
   })
 
-  it('it should return b if a is nill', () => {
+  it('should return b if a is nill', () => {
     // arrange
     const result = assign(undefined, 1)
 
@@ -18,7 +18,7 @@ describe('assign', () => {
     expect(result).toBe(1)
   })
 
-  it('it should return a if b is nill', () => {
+  it('should return a if b is nill', () => {
     // arrange
     const result = assign(1, undefined)
 

@@ -15,12 +15,14 @@ describe('omitByValue', () => {
   })
 
   it(`should pick values which are't 1`, () => {
+    // arrange
     const object = {
       a: 1,
       b: 2,
       c: 3,
     }
 
+    // assert
     expect(omitByValue(object, 1)).toEqual({
       b: 2,
       c: 3,
@@ -28,12 +30,14 @@ describe('omitByValue', () => {
   })
 
   it(`should pick values which are't match to the callback`, () => {
+    // arrange
     const object = {
       a: 1,
       b: 2,
       c: 3,
     }
 
+    // assert
     expect(omitByValue(object, (item) => item === 1)).toEqual({
       b: 2,
       c: 3,

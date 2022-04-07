@@ -2,29 +2,36 @@ import { compose } from '../../src/helpers/helpers'
 
 describe('compose', () => {
   it('composes from right to left', () => {
+    // arrange
     const double = (x: number) => x * 2
     const square = (x: number) => x * x
+
+    // assert
     expect(compose(square)(5)).toBe(25)
     expect(compose(square, double)(5)).toBe(100)
     expect(compose(double, square, double)(5)).toBe(200)
   })
 
   it('composes functions from right to left', () => {
+    // arrange
     const a = (next: (x: string) => string) => (x: string) => next(x + 'a')
     const b = (next: (x: string) => string) => (x: string) => next(x + 'b')
     const c = (next: (x: string) => string) => (x: string) => next(x + 'c')
     const final = (x: string) => x
 
+    // assert
     expect(compose(a, b, c)(final)('')).toBe('abc')
     expect(compose(b, c, a)(final)('')).toBe('bca')
     expect(compose(c, a, b)(final)('')).toBe('cab')
   })
 
   it('throws at runtime if argument is not a function', () => {
+    // arrange
     type Func = (x: number, y: number) => number
     const square = (x: number, _: number) => x * x
     const add = (x: number, y: number) => x + y
 
+    // assert
     expect(() => compose(square, add, false as unknown as Func)(1, 2)).toThrow()
     expect(() => compose(square, add, undefined)(1, 2)).toThrow()
     expect(() => compose(square, add, true as unknown as Func)(1, 2)).toThrow()
@@ -33,8 +40,11 @@ describe('compose', () => {
   })
 
   it('can be seeded with multiple arguments', () => {
+    // arrange
     const square = (x: number, _: number) => x * x
     const add = (x: number, y: number) => x + y
+
+    // assert
     expect(compose(square, add)(1, 2)).toBe(9)
   })
 
@@ -46,8 +56,10 @@ describe('compose', () => {
   })
 
   it('returns the first function if given only one', () => {
+    // arrange
     const fn = () => {}
 
+    // assert
     expect(compose(fn)).toBe(fn)
   })
 })

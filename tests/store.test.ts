@@ -3,7 +3,54 @@ import { wait } from './tests.utils'
 import type { Noop } from './test.types'
 
 describe('store', () => {
-  it('should invoke subscriber after state change', () => {
+  it('should resolve initial state', () => {
+    // arrange
+    const initialState = {
+      counter: 0,
+    }
+    const store = createStore(() => initialState)
+
+    // assert
+    expect(store.state).toEqual(initialState)
+  })
+
+  it('should set state after set state action', () => {
+    // given
+    const initialState = {
+      counter: 0,
+    }
+    const store = createStore(() => initialState)
+
+    // when
+    store.setState({
+      counter: 1,
+    })
+
+    // then
+    expect(store.state).toEqual({
+      counter: 1,
+    })
+  })
+
+  it('should set state after inner set state action', () => {
+    // arrange
+    type State = {
+      counter: number
+      increase: Noop
+    }
+    const store = createStore<State>((set) => ({
+      counter: 0,
+      increase: () => set((prevState) => ({ counter: prevState.counter + 1 })),
+    }))
+
+    // act
+    store.state.increase()
+
+    // assert
+    expect(store.state.counter).toEqual(1)
+  })
+
+  it('should invoke subscriber after set state action', () => {
     // given
     type State = {
       counter: number
@@ -28,7 +75,7 @@ describe('store', () => {
     expect(spy).toHaveBeenCalledTimes(1)
   })
 
-  it('should not invoke subscriber which has selector', () => {
+  it('should not invoke subscriber which has selector after set state action', () => {
     // given
     const store = createStore({
       counter: 0,
@@ -44,17 +91,16 @@ describe('store', () => {
     expect(store.listeners).toHaveLength(1)
 
     // when
-    const oldState = { ...state }
     store.setState((prevState) => ({
       counter: prevState.counter + 1,
     }))
 
     // then
-    expect(state.counter).toBe(oldState.counter + 1)
+    expect(state.counter).toBe(1)
     expect(spy).not.toHaveBeenCalled()
   })
 
-  it('should invoke subscriber which has selector', () => {
+  it('should invoke subscriber which has selector after set state action', () => {
     // given
     const store = createStore({
       counter: 0,
@@ -85,10 +131,11 @@ describe('store', () => {
       counter: 0,
       darkMode: false,
     })
+
+    // when
     const darkModeSpy = jest.fn()
     const counterSpy = jest.fn()
 
-    // when
     const counterListener = store.subscribe(
       counterSpy,
       (state) => state.counter
@@ -105,17 +152,6 @@ describe('store', () => {
     expect(store.listeners).toHaveLength(1)
   })
 
-  it('should resolve initial state', () => {
-    // arrange
-    const initialState = {
-      counter: 0,
-    }
-    const store = createStore(() => initialState)
-
-    // assert
-    expect(store.state).toEqual(initialState)
-  })
-
   it('should invoke subscriber after state change by inner setState', () => {
     // given
     type State = { counter: number; increase: Noop }
@@ -126,7 +162,6 @@ describe('store', () => {
     const state = store.state
 
     // when
-    const prevState = { ...state }
     const spy = jest.fn()
     store.subscribe(spy, (state) => state.counter)
 
@@ -156,11 +191,10 @@ describe('store', () => {
     const state = store.state
 
     // when
-    const oldState = { ...state }
     state.increase()
 
     // then
-    expect(state.counter).toEqual(oldState.counter + 1)
+    expect(state.counter).toEqual(1)
 
     // when
     store.reset()
@@ -169,7 +203,7 @@ describe('store', () => {
     expect(store.state)
   })
 
-  it('should not invoke listener when state after call setState action is the same', () => {
+  it('should not invoke subscriber when state after setState action is the same', () => {
     // given
     const store = createStore({
       counter: 0,
@@ -213,7 +247,7 @@ describe('store', () => {
     expect(state.counter).toBe(1)
   })
 
-  it('it should return true when counter is divisible', async () => {
+  it('should return true when counter is divisible', async () => {
     // given
     type State = {
       counter: number
@@ -235,7 +269,7 @@ describe('store', () => {
     expect(store.state.isDivisible()).toBeTruthy()
   })
 
-  it('should invoke listener when next counter value is bigger', () => {
+  it('should invoke subscriber when next counter value is bigger', () => {
     // given
     type State = {
       counter: number
@@ -250,9 +284,9 @@ describe('store', () => {
     const state = store.state
 
     // when
-    const logger = jest.fn()
+    const spy = jest.fn()
     store.subscribe(
-      logger,
+      spy,
       (state) => state.counter,
       (nextSlice, slice) => nextSlice > slice
     )
@@ -264,16 +298,16 @@ describe('store', () => {
     state.increase()
 
     // then
-    expect(logger).toHaveBeenCalled()
+    expect(spy).toHaveBeenCalled()
 
     // when
     state.decrease()
 
     // then
-    expect(logger).toHaveBeenCalledTimes(1)
+    expect(spy).toHaveBeenCalledTimes(1)
   })
 
-  it('should replace state', () => {
+  it('should replace state after set state action with replace option', () => {
     // given
     type State = {
       counter: number
@@ -294,5 +328,71 @@ describe('store', () => {
 
     // then
     expect(store.state).toEqual({ counter: 0 })
+  })
+
+  it('should invoke onMount lifecycle on create store', () => {
+    // arrange
+    const onMount = jest.fn()
+    const store = createStore(
+      {
+        counter: 0,
+      },
+      { onMount, onUpdate() {} }
+    )
+
+    // assert
+    expect(onMount).toHaveBeenCalled()
+    expect(onMount).toHaveBeenCalledWith(store.state)
+  })
+
+  it('should replace state on mount', () => {
+    // arrange
+    const onMount = jest.fn().mockImplementation(() => ({ counter: 1 }))
+    const store = createStore(
+      {
+        counter: 0,
+      },
+      { onMount, onUpdate() {} }
+    )
+
+    // assert
+    expect(store.state).toEqual({ counter: 1 })
+    expect(onMount).toHaveBeenCalled()
+  })
+
+  it('should invoke onUpdate lifecycle after set state action', () => {
+    // given
+    const onUpdate = jest.fn()
+    const store = createStore(
+      {
+        counter: 0,
+      },
+      {
+        onMount(state) {
+          return state
+        },
+        onUpdate,
+      }
+    )
+
+    // when
+    store.setState((prevState) => ({ counter: prevState.counter + 1 }))
+
+    // then
+    expect(onUpdate).toHaveBeenCalled()
+    expect(onUpdate).toHaveBeenCalledWith(store.state)
+  })
+
+  it('should state have the smae refference after set state action', () => {
+    // given
+    const store = createStore({
+      counter: 0,
+    })
+
+    // when
+    store.setState((prevState) => ({ counter: prevState.counter + 1 }))
+
+    // then
+    expect(store.state).toBe(store.state)
   })
 })

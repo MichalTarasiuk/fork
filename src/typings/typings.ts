@@ -18,7 +18,7 @@ export type PickByValue<
     : never]: TObject[key]
 }
 
-export type AddByValue<
+export type AddBy<
   TObject extends Record<PropertyKey, unknown>,
   TValue,
   TNewValue

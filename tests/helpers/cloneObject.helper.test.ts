@@ -2,6 +2,7 @@ import { cloneObject } from '../../src/helpers/helpers'
 
 describe('cloneObject', () => {
   it('should clone object and not mutate the original object', () => {
+    // arrange
     const data = {
       items: [],
       test: {
@@ -25,8 +26,9 @@ describe('cloneObject', () => {
     }
 
     const copy = cloneObject(data)
-    expect(cloneObject(data)).toEqual(copy)
 
+    // assert
+    expect(cloneObject(data)).toEqual(copy)
     // @ts-expect-error
     copy.test.what = '1243'
     copy.test.date = new Date('2020-10-16')

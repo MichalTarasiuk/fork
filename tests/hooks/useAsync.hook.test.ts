@@ -74,7 +74,7 @@ describe('useAsync', () => {
     expect(status).toBe('success')
   })
 
-  it('it should generate hook state after remove some props', () => {
+  it('should generate hook state after remove some props', () => {
     // given
     const {
       result: { current: hook },
@@ -98,7 +98,7 @@ describe('useAsync', () => {
     expect(hook.async.current).toEqual({})
   })
 
-  it('it should generate hook state after add some props', () => {
+  it('should generate hook state after add some props', () => {
     // given
     const {
       result: { current: hook },

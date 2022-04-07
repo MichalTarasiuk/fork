@@ -2,12 +2,12 @@ import { set } from '../../src/helpers/helpers'
 
 describe('set', () => {
   it('should set value', () => {
+    // arrange
     const value = {
       a: 1,
       b: 2,
       c: 3,
     }
-
     const mapper = {
       a: {
         to: 'A',
@@ -20,9 +20,8 @@ describe('set', () => {
       },
     }
 
-    const result = set(value, mapper)
-
-    expect(result).toEqual({
+    // assert
+    expect(set(value, mapper)).toEqual({
       a: 'A',
       b: 'B',
       c: 'C',
@@ -30,12 +29,12 @@ describe('set', () => {
   })
 
   it('should remove value', () => {
+    // arrange
     const value = {
       a: 1,
       b: 2,
       c: 3,
     }
-
     const mapper = {
       a: {
         to: 'A',
@@ -48,9 +47,8 @@ describe('set', () => {
       },
     }
 
-    const result = set(value, mapper)
-
-    expect(result).toEqual({
+    // assert
+    expect(set(value, mapper)).toEqual({
       a: 'A',
       b: 'B',
     })

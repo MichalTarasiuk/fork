@@ -1,6 +1,8 @@
 import { useState } from 'react'
 import { renderHook, act } from '@testing-library/react-hooks'
+import { waitFor } from '@testing-library/react'
 
+import { useFirstMountState } from '../../src/hooks/hooks'
 import { wait } from '../tests.utils'
 import { useListener } from '../../src/hooks/hooks'
 
@@ -44,7 +46,7 @@ describe('useListener', () => {
     expect(observer).toHaveBeenCalledTimes(3)
   })
 
-  it('should update mind on listener call', () => {
+  it('should update mind on invoke listener', () => {
     // given
     const { result: hook } = renderHook(() =>
       useListener({ a: 1 }, (state) => state)
@@ -102,7 +104,7 @@ describe('useListener', () => {
     `)
   })
 
-  it('should update mind on invoke async action', async () => {
+  it('should update status on invoke async action', async () => {
     // given
     const { result: hook } = renderHook(() =>
       useListener(
@@ -114,23 +116,20 @@ describe('useListener', () => {
     )
 
     // when
-    await act(async () => {
+    act(() => {
       const mind = hook.current[0]
       const [getUser] = mind.getUser
 
-      await getUser()
+      getUser()
     })
 
     // then
     const mind = hook.current[0]
-    expect(mind).toMatchInlineSnapshot(`
-      Object {
-        "getUser": Array [
-          [Function],
-          "success",
-        ],
-      }
-    `)
+    await waitFor(() => {
+      expect(mind.getUser[1]).toBe('loading')
+    })
+
+    expect(mind.getUser[1]).toBe('loading')
   })
 
   it('async slice should be the same after update mind', () => {
@@ -158,17 +157,20 @@ describe('useListener', () => {
     `)
   })
 
-  it('should not rerender on generate status for new async action', () => {
+  it('should not rerender component on generate status for new async action', () => {
     // given
     const object = {
       getUser,
     }
-    const renderSpy = jest.fn()
+    const rerender = jest.fn()
     const { result } = renderHook(() => {
       const [state, setState] = useState<Partial<typeof object>>({})
+      const firstMount = useFirstMountState()
       const hook = useListener(state, (state) => state)
 
-      renderSpy()
+      if (!firstMount) {
+        rerender()
+      }
 
       const update = () => {
         setState(object)
@@ -185,7 +187,7 @@ describe('useListener', () => {
 
     // then
     const mind = result.current.hook[0]
-    expect(renderSpy).toHaveBeenCalledTimes(2)
+    expect(rerender).toHaveBeenCalledTimes(1)
     expect(mind).toMatchInlineSnapshot(`
       Object {
         "getUser": Array [

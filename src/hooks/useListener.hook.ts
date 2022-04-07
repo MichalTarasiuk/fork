@@ -13,7 +13,7 @@ import {
   useAsync,
 } from '../hooks/hooks'
 import type { AsyncSlice, Status } from '../hooks/useAsync.hook'
-import type { AddByValue, AsyncFunction } from '../typings/typings'
+import type { AddBy, AsyncFunction } from '../typings/typings'
 
 const createMind = <TState extends Record<PropertyKey, unknown>>(
   initialState: TState,
@@ -43,7 +43,7 @@ const createMind = <TState extends Record<PropertyKey, unknown>>(
 
   return {
     get current() {
-      type FlattenObject = AddByValue<TState, AsyncFunction, Status>
+      type FlattenObject = AddBy<TState, AsyncFunction, Status>
       return flatObject(mind, asyncSymbol) as FlattenObject
     },
     setMind,

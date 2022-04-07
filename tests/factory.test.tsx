@@ -174,16 +174,20 @@ describe('factory', () => {
     // given
     type Mind = {
       counter: number
-      increase: Noop
     }
     const store = remind<Mind>((set) => ({
       counter: 0,
-      increase: () => set({ counter: 0 }),
     }))
     const { useRemind } = store
 
     const Counter = () => {
-      const [{ counter, increase }] = useRemind()
+      const [{ counter }] = useRemind()
+
+      const increase = () => {
+        store.setMind({
+          counter: 0,
+        })
+      }
 
       return (
         <div>
@@ -323,7 +327,7 @@ describe('factory', () => {
     const store = remind<Mind>((set) => ({
       counter: 0,
       increase: () => {
-        set({ counter: 1 })
+        set((prevState) => ({ counter: prevState.counter + 1 }))
       },
     }))
     const { useRemind } = store
@@ -516,7 +520,7 @@ describe('factory', () => {
         setMind((_, set) => ({
           increase: async () => {
             await wait(1000)
-            set({ counter: 1 })
+            set((prevMind) => ({ counter: prevMind.counter + 1 }))
           },
         }))
       }
