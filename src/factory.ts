@@ -1,4 +1,5 @@
 import { useRef, useMemo } from 'react'
+import { unstable_batchedUpdates } from 'react-dom'
 
 import { createStore } from './store'
 import { useDidMount, useListener } from './hooks/hooks'
@@ -31,7 +32,7 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
   const plugins = getPlugins(store)
   const state = store.state
 
-  const hook = <TSelector extends Selector<TState>>(
+  const useRemind = <TSelector extends Selector<TState>>(
     selector?: TSelector,
     config?: Config<TState, TSelector>
   ) => {
@@ -73,6 +74,12 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
 
   const { setState, subscribe } = store
 
+  const setMind = (...params: Parameters<typeof setState>) => {
+    unstable_batchedUpdates(() => {
+      setState(...params)
+    })
+  }
+
   return {
     get mind() {
       return store.state
@@ -80,8 +87,8 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
     get listeners() {
       return store.listeners
     },
-    useRemind: hook,
-    setMind: setState,
+    useRemind,
+    setMind,
     subscribe,
   }
 }
