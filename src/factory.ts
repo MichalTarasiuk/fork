@@ -19,9 +19,9 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
         return deserialized.value
       }
 
-      stash.save(initialState)
+      const savedState = stash.save(initialState)
 
-      return initialState
+      return savedState
     },
     onUpdate(state) {
       stash.save(state)

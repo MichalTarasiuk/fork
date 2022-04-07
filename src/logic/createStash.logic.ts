@@ -20,7 +20,13 @@ export const createStash = <TValue>() => {
   const storage = window.localStorage
 
   const save = (value: TValue) => {
-    storage.setItem(id, JSON.stringify(value))
+    try {
+      storage.setItem(id, JSON.stringify(value))
+
+      return value
+    } catch {
+      return null
+    }
   }
 
   const clear = () => {
