@@ -14,8 +14,22 @@ import remind from 'remind'
 const { useRemind } = remind((set) => ({
   mindLevel: 0,
   increase: () => set((mind) => ({ mindLevel: mind.mindLevel + 1 })),
-  decrease: () => set({ mindLevel: 0 }),
+  reset: () => set({ mindLevel: 0 }),
 }))
+
+// or
+
+const { useRemind, setMind } = remind({
+  mindLevel: 0,
+})
+
+const increase = () => {
+  setMind((mind) => ({ mindLevel: mind.mindLevel + 1 }))
+}
+
+const reset = () => {
+  setMind({ mindLevel: 0 })
+}
 ```
 
 ## Then bind your components, and that's it!
@@ -29,9 +43,11 @@ function MindCounter() {
 }
 
 function Controls() {
-  const { mind } = useStore((mind) => mind.increase)
+  const [mind] = useStore((mind) => mind.increase)
   return <button onClick={mind.increase}>one up</button>
 }
+
+You can pick your mind from array or plain object.
 ```
 
 ### Why remind over redux?
@@ -95,13 +111,19 @@ const { useRemind } = remind((set) => ({
 Just call `set` when you're ready, zustand doesn't care if your actions are async or not.
 
 ```jsx
-const useStore = remind((set) => ({
+const { useRemind } = remind((set) => ({
   ideas: {},
   fetch: async (path) => {
     const response = await fetch(path)
     set({ ideas: await response.json() })
   },
 }))
+
+const MyComponent = () => {
+  const [] = useRemind()
+
+  return null
+}
 ```
 
 ## Read from state in actions
