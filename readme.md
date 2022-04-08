@@ -9,7 +9,7 @@ npm install remind # or yarn add remind
 Your store is a hook! You can put anything in it: primitives, objects, functions. The `set` function _merges_ state.
 
 ```jsx
-import remind from 'remind'
+import remind from 'react-remind'
 
 const { useRemind } = remind((set) => ({
   mindLevel: 0,
@@ -91,7 +91,7 @@ For more control over re-rendering, you may provide any custom equality function
 ```jsx
 const { mind } = useRemind(
   (state) => state.mindLevel,
-  (oldLevel, newLevel) => compare(oldLevel, newLevel)
+  { equalityFn: (oldLevel, newLevel) => compare(oldLevel, newLevel) }
 )
 ```
 

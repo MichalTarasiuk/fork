@@ -21,7 +21,6 @@
   "contributors": [
     "Michał Tarasiuk (https://github.com/MichalTarasiuk)"
   ],
-  "private": true,
   "workspaces": [
     ".",
     "examples/*"
