@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Form, Notes } from 'components'
+import { Form, NotesList } from 'components'
 
 import { useRemind } from './store/store'
 import './app.css'
@@ -20,7 +20,7 @@ const App = () => {
             {status === 'idle' ? 'unlock' : status}
           </button>
         ) : (
-          <Notes />
+          <NotesList />
         )}
       </section>
     </main>
