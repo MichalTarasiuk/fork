@@ -1,7 +1,7 @@
 A small, fast and scalable state-management solution using simplified flux principles. Has a comfy api based on hooks, isn't boilerplatey or opinionated.
 
 ```bash
-npm install remind # or yarn add remind
+npm install react-remind # or yarn add react-remind
 ```
 
 ## First create a store
@@ -89,10 +89,9 @@ const { mind } = useRemind((mind) => mind.mindLevel)
 For more control over re-rendering, you may provide any custom equality function.
 
 ```jsx
-const { mind } = useRemind(
-  (state) => state.mindLevel,
-  { equalityFn: (oldLevel, newLevel) => compare(oldLevel, newLevel) }
-)
+const { mind } = useRemind((state) => state.mindLevel, {
+  equalityFn: (oldLevel, newLevel) => compare(oldLevel, newLevel),
+})
 ```
 
 ## Overwriting state
