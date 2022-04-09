@@ -16,7 +16,7 @@ describe('useDidUpdate', () => {
     renderHook(() => useDidUpdate(mockEffectCallback))
 
     // assert
-    expect(mockEffectCallback).toHaveBeenCalledTimes(1)
+    expect(mockEffectCallback).toHaveBeenCalledTimes(0)
   })
 
   it('should effect callback call on update', () => {
@@ -29,6 +29,6 @@ describe('useDidUpdate', () => {
     rerender()
 
     // assert
-    expect(mockEffectCallback).toHaveBeenCalledTimes(2)
+    expect(mockEffectCallback).toHaveBeenCalledTimes(1)
   })
 })

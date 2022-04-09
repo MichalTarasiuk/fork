@@ -1,16 +1,16 @@
 import { useEffect } from 'react'
 import type { EffectCallback } from 'react'
 
-import { useHasMounted } from '../hooks/hooks'
+import { useFirstMountState } from '../hooks/hooks'
 
 export const useDidUpdate = (
   effectCallback: EffectCallback,
   ...dependencies: unknown[]
 ) => {
-  const hasMounted = useHasMounted()
+  const isFirstMount = useFirstMountState()
 
   useEffect(() => {
-    if (hasMounted.current) {
+    if (!isFirstMount) {
       return effectCallback()
     }
   }, dependencies)
