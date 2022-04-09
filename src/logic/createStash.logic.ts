@@ -16,12 +16,12 @@ export const createStash = <TValue>() => {
     | { success: true; value: TValue }
     | { success: false; error: Error }
 
-  const id = window.location.hostname
+  const name = window.location.hostname
   const storage = window.localStorage
 
   const save = (value: TValue) => {
     try {
-      storage.setItem(id, JSON.stringify(value))
+      storage.setItem(name, JSON.stringify(value))
 
       return value
     } catch {
@@ -34,12 +34,12 @@ export const createStash = <TValue>() => {
   }
 
   const read = (): Deserialized => {
-    const item = localStorage.getItem(id)
+    const item = localStorage.getItem(name)
 
     if (item === null) {
       return {
         success: false,
-        error: new Error(`Item with key "${id}" does not exist`),
+        error: new Error(`Item with key "${name}" does not exist`),
       }
     }
 
@@ -58,7 +58,7 @@ export const createStash = <TValue>() => {
 
       return {
         success: false,
-        error: new Error(`Unable to parse item with key "${id}"`),
+        error: new Error(`Unable to parse item with key "${name}"`),
       }
     }
   }

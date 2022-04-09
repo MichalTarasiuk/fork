@@ -56,9 +56,11 @@ export const useListener = <TState extends Record<PropertyKey, unknown>>(
   observer: (nextState: TState, prevState?: TState) => TState
 ) => {
   const mind = useMemo(() => createMind(state, observer), [])
+
   const hasMounted = useHasMounted()
-  const force = useForce()
   const isFirstMount = useFirstMountState()
+  const force = useForce()
+
   const asyncSlice = useAsync(
     pickByValue<Record<PropertyKey, AsyncFunction>>(state, isAsyncFunction),
     (nextAsyncSlice, action) => {

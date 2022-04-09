@@ -17,6 +17,7 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
       const deserialized = stash.read()
 
       if (deserialized.success) {
+        // FIXME
         return { ...initialState, ...deserialized.value }
       }
 
@@ -37,8 +38,8 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
     config?: Config<TState, TSelector>
   ) => {
     type Subscriber = ReturnType<typeof store['subscribe']>
-    const savedSubscriber = useRef<Subscriber | null>(null)
 
+    const savedSubscriber = useRef<Subscriber | null>(null)
     // @ts-ignore
     const [mind, listener] = useListener(state, (nextState, state) => {
       const pickedPlugins = Object.values(
