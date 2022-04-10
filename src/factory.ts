@@ -4,21 +4,24 @@ import { unstable_batchedUpdates } from 'react-dom'
 import { createStore } from './store'
 import { useDidMount, useListener } from './hooks/hooks'
 import { assign, pick, compose, noop, pickKeysByValue } from './helpers/helpers'
-import { getPlugins, createStash } from './logic/logic'
+import { getPlugins, createStash, createTabIndex } from './logic/logic'
+import { SHOULD_UPDATE_COMPONENT, HOSTNAME } from './constants'
 import type { StateCreator, Selector } from './store.types'
 import type { Config } from './factory.types'
+
+export const { useTabIndex, setTabIndex } = createTabIndex(HOSTNAME)
 
 const factory = <TState extends Record<PropertyKey, unknown>>(
   stateCreator: StateCreator<TState>
 ) => {
-  const stash = createStash<TState>()
+  const stash = createStash<TState>(HOSTNAME)
   const store = createStore<TState>(stateCreator, {
     onMount(initialState) {
       const deserialized = stash.read()
 
       if (deserialized.success) {
         // FIXME
-        return { ...initialState, ...deserialized.value }
+        return { ...initialState, ...deserialized.current }
       }
 
       stash.save(initialState)
@@ -27,6 +30,7 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
     },
     onUpdate(state) {
       stash.save(state)
+      setTabIndex(SHOULD_UPDATE_COMPONENT)
     },
   })
   // @ts-ignore
@@ -65,7 +69,7 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
       () => ({
         mind,
         setMind: store.setState,
-        unregister: savedSubscriber.current?.unsubscribe || noop,
+        unregister: savedSubscriber.current?.unsubscribe ?? noop,
       }),
       [mind]
     )
