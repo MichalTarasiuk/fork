@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
-import { useTabIndex } from '../factory'
+import { useTabIndex, stash } from '../factory'
 import {
   pickByValue,
   isAsyncFunction,
@@ -13,8 +13,7 @@ import {
   useFirstMountState,
   useAsync,
 } from '../hooks/hooks'
-import { SHOULD_UPDATE_COMPONENT, HOSTNAME } from '../constants'
-import { createStash } from '../logic/logic'
+import { SHOULD_UPDATE_COMPONENT } from '../constants'
 import type { AsyncSlice, Status } from '../hooks/useAsync.hook'
 import type { AddBy, AsyncFunction } from '../typings/typings'
 
@@ -59,7 +58,6 @@ export const useListener = <TState extends Record<PropertyKey, unknown>>(
   observer: (nextState: TState, prevState?: TState) => TState
 ) => {
   const mind = useMemo(() => createMind(state, observer), [])
-  const stash = useMemo(() => createStash<TState>(HOSTNAME), [])
 
   const hasMounted = useHasMounted()
   const isFirstMount = useFirstMountState()
@@ -80,7 +78,7 @@ export const useListener = <TState extends Record<PropertyKey, unknown>>(
     const deserialized = stash.read()
 
     if (tabIndex === SHOULD_UPDATE_COMPONENT && deserialized.success) {
-      mind.setMind(deserialized.current)
+      mind.setMind(deserialized.current as TState)
 
       force()
     }

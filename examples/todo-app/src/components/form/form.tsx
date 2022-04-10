@@ -6,11 +6,11 @@ import './form.css'
 
 const Form = () => {
   const [values, handler] = useForm({ title: '', content: '' })
-  const { setMind, unregister } = useRemind()
+  const { setMind, unsubscribe } = useRemind()
 
   useEffect(() => {
-    unregister()
-  }, [unregister])
+    unsubscribe()
+  }, [unsubscribe])
 
   const submit = (formValues: typeof values) => {
     if (handler.isFilled()) {

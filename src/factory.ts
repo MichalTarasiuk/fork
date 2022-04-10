@@ -10,17 +10,16 @@ import type { StateCreator, Selector } from './store.types'
 import type { Config } from './factory.types'
 
 export const { useTabIndex, setTabIndex } = createTabIndex(HOSTNAME)
+export const stash = createStash<Record<PropertyKey, unknown>>(HOSTNAME)
 
 const factory = <TState extends Record<PropertyKey, unknown>>(
   stateCreator: StateCreator<TState>
 ) => {
-  const stash = createStash<TState>(HOSTNAME)
   const store = createStore<TState>(stateCreator, {
     onMount(initialState) {
       const deserialized = stash.read()
 
       if (deserialized.success) {
-        // FIXME
         return { ...initialState, ...deserialized.current }
       }
 
@@ -69,7 +68,7 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
       () => ({
         mind,
         setMind: store.setState,
-        unregister: savedSubscriber.current?.unsubscribe ?? noop,
+        unsubscribe: savedSubscriber.current?.unsubscribe ?? noop,
       }),
       [mind]
     )

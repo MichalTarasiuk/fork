@@ -1,14 +1,15 @@
 import { useState } from 'react'
 import { render, fireEvent, act } from '@testing-library/react'
 
+import remind from '../src/factory'
 import { useDidMount } from '../src/hooks/hooks'
 import { createStash } from '../src/logic/logic'
-import remind from '../src/factory'
+import { HOSTNAME } from '../src/constants'
 import { wait } from './tests.utils'
 import type { Noop } from './test.types'
 
 describe('factory', () => {
-  const stash = createStash()
+  const stash = createStash<Record<PropertyKey, unknown>>(HOSTNAME)
 
   afterEach(() => {
     stash.clear()
@@ -318,7 +319,7 @@ describe('factory', () => {
     expect(getByTestId('numbers-list').children).toHaveLength(1)
   })
 
-  it('should unregister component', () => {
+  it('should unsubscribe component', () => {
     // given
     type Mind = {
       counter: number
@@ -333,13 +334,13 @@ describe('factory', () => {
     const { useRemind } = store
 
     const Counter = () => {
-      const { mind, unregister } = useRemind()
+      const { mind, unsubscribe } = useRemind()
 
       return (
         <div>
           <p>counter {mind.counter}</p>
           <button onClick={mind.increase}>increase</button>
-          <button onClick={unregister}>unregister</button>
+          <button onClick={unsubscribe}>unsubscribe</button>
         </div>
       )
     }
@@ -353,7 +354,7 @@ describe('factory', () => {
     getByText('counter 1')
 
     // when
-    fireEvent.click(getByText('unregister'))
+    fireEvent.click(getByText('unsubscribe'))
     fireEvent.click(getByText('increase'))
 
     // then

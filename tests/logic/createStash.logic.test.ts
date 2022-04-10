@@ -1,7 +1,7 @@
 import { createStash } from '../../src/logic/logic'
 
 describe('createStash', () => {
-  const stash = createStash()
+  const stash = createStash<Record<PropertyKey, unknown>>('test')
 
   afterEach(() => {
     stash.clear()
@@ -17,7 +17,7 @@ describe('createStash', () => {
     // then
     expect(stash.read()).toEqual({
       success: true,
-      value,
+      current: value,
     })
   })
 
@@ -32,7 +32,7 @@ describe('createStash', () => {
     // then
     expect(stash.read()).toEqual({
       success: false,
-      error: new Error('Item with key "localhost" does not exist'),
+      error: new Error('Item with key "test" does not exist'),
     })
   })
 })
