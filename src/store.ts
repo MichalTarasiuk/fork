@@ -66,7 +66,7 @@ const createStore = <TState extends Record<PropertyKey, unknown>>(
 
   const setState: SetState<TState> = (patch, replace = false) => {
     const resolvedPatch = isFunction(patch)
-      ? patch(state.value, setState)
+      ? patch(state.current, setState)
       : patch
 
     const { nextState, oldState } = state.setState((state) => {
@@ -84,16 +84,16 @@ const createStore = <TState extends Record<PropertyKey, unknown>>(
     }
   }
 
-  const getState = () => state.value
+  const getState = () => state.current
 
   const reset = () => {
     const restoredState = createState(stateCreator, setState, getState)
-    const savedState = cloneObject(state.value)
+    const savedState = cloneObject(state.current)
 
-    Object.assign(state.value, restoredState.value)
-    observer.notify(restoredState.value, savedState)
+    Object.assign(state.current, restoredState.current)
+    observer.notify(restoredState.current, savedState)
 
-    return restoredState.value
+    return restoredState.current
   }
 
   state = createState(stateCreator, setState, getState)
@@ -109,7 +109,7 @@ const createStore = <TState extends Record<PropertyKey, unknown>>(
 
   return {
     get state() {
-      return state.value
+      return state.current
     },
     get listeners() {
       return observer.listeners
@@ -131,12 +131,12 @@ const createState = <TState extends Record<PropertyKey, unknown>>(
     : stateCreator
 
   return {
-    value: resolvedState,
+    current: resolvedState,
     setState(resolvableState: ResolvableState<TState>) {
-      const oldState = cloneObject(this.value)
+      const oldState = cloneObject(this.current)
       const nextState = resolveState(resolvableState, oldState)
 
-      Object.assign(empty(this.value), nextState)
+      Object.assign(empty(this.current), nextState)
 
       return {
         nextState,

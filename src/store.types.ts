@@ -4,7 +4,7 @@ export type CreateState<TState> = (
   stateCreator: StateCreator<TState>,
   setState: SetState<TState>
 ) => {
-  value: TState
+  current: TState
   setState: (resolvableState: ResolvableState<TState>) => {
     nextState: TState
     oldState: TState
