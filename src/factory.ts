@@ -5,19 +5,19 @@ import { createStore } from './store'
 import { useDidMount, useListener } from './hooks/hooks'
 import { assign, pick, compose, noop, pickKeysByValue } from './helpers/helpers'
 import { getPlugins, createStash, createTabIndex } from './logic/logic'
-import { SHOULD_UPDATE_COMPONENT, HOSTNAME } from './constants'
+import { SHOULD_UPDATE_COMPONENT } from './constants'
 import type { StateCreator, Selector } from './store.types'
 import type { Config } from './factory.types'
 
-export const { useTabIndex, setTabIndex } = createTabIndex(HOSTNAME)
-export const stash = createStash<Record<PropertyKey, unknown>>(HOSTNAME)
+export const { useTabIndex, setTabIndex } = createTabIndex()
+export const stash = createStash()
 
 const factory = <TState extends Record<PropertyKey, unknown>>(
   stateCreator: StateCreator<TState>
 ) => {
   const store = createStore<TState>(stateCreator, {
     onMount(initialState) {
-      const deserialized = stash.read()
+      const deserialized = stash.read<TState>()
 
       if (deserialized.success) {
         return { ...initialState, ...deserialized.current }
@@ -29,11 +29,11 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
     },
     onUpdate(state) {
       stash.save(state)
+
       setTabIndex(SHOULD_UPDATE_COMPONENT)
     },
   })
-  // @ts-ignore
-  const plugins = getPlugins(store)
+  const plugins = getPlugins<TState>(store)
   const state = store.state
 
   const useRemind = <TSelector extends Selector<TState>>(
@@ -43,7 +43,6 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
     type Subscriber = ReturnType<typeof store['subscribe']>
 
     const savedSubscriber = useRef<Subscriber | null>(null)
-    // @ts-ignore
     const [mind, listener] = useListener(state, (nextState, state) => {
       const pickedPlugins = Object.values(
         pick(plugins, pickKeysByValue(config || {}, true))
@@ -64,7 +63,7 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
       }
     })
 
-    const handler = useMemo(
+    const output = useMemo(
       () => ({
         mind,
         setMind: store.setState,
@@ -73,7 +72,7 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
       [mind]
     )
 
-    return assign([handler.mind, handler.setMind] as const, handler)
+    return assign([output.mind, output.setMind] as const, output)
   }
 
   const { setState, subscribe } = store

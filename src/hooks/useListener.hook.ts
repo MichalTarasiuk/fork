@@ -74,11 +74,11 @@ export const useListener = <TState extends Record<PropertyKey, unknown>>(
     }
   )
 
-  useTabIndex<string>((tabIndex) => {
-    const deserialized = stash.read()
+  useTabIndex((tabIndex) => {
+    const deserialized = stash.read<TState>()
 
     if (tabIndex === SHOULD_UPDATE_COMPONENT && deserialized.success) {
-      mind.setMind(deserialized.current as TState)
+      mind.setMind(deserialized.current)
 
       force()
     }

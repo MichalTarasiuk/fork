@@ -4,12 +4,11 @@ import { render, fireEvent, act } from '@testing-library/react'
 import remind from '../src/factory'
 import { useDidMount } from '../src/hooks/hooks'
 import { createStash } from '../src/logic/logic'
-import { HOSTNAME } from '../src/constants'
 import { wait } from './tests.utils'
 import type { Noop } from './test.types'
 
 describe('factory', () => {
-  const stash = createStash<Record<PropertyKey, unknown>>(HOSTNAME)
+  const stash = createStash()
 
   afterEach(() => {
     stash.clear()

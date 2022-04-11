@@ -11,28 +11,23 @@ function isErrorWithMessage(error: unknown): error is ErrorWithMessage {
   )
 }
 
-export const createStash = <TValue>(name: string) => {
-  type Deserialized =
+export const createStash = () => {
+  type Deserialized<TValue> =
     | { success: true; current: TValue }
     | { success: false; error: Error }
 
+  const name = window.location.hostname
   const storage = window.localStorage
 
-  const save = (value: TValue) => {
-    try {
-      storage.setItem(name, JSON.stringify(value))
-
-      return value
-    } catch {
-      return null
-    }
+  const save = (value: unknown) => {
+    storage.setItem(name, JSON.stringify(value))
   }
 
   const clear = () => {
     storage.clear()
   }
 
-  const read = (): Deserialized => {
+  const read = <TState>(): Deserialized<TState> => {
     const item = localStorage.getItem(name)
 
     if (item === null) {
