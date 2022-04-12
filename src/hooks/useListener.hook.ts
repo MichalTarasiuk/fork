@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
-import { useTabIndex, stash } from '../factory'
+import { useTabIndex } from '../factory'
 import {
   pickByValue,
   isAsyncFunction,
@@ -75,12 +75,7 @@ export const useListener = <TState extends Record<PropertyKey, unknown>>(
   )
 
   useTabIndex((tabIndex) => {
-    const deserialized = stash.read<TState>()
-
-    if (tabIndex === SHOULD_UPDATE_COMPONENT && deserialized.success) {
-      mind.setMind(deserialized.current)
-
-      force()
+    if (tabIndex === SHOULD_UPDATE_COMPONENT) {
     }
   })
 

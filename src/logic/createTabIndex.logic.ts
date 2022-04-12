@@ -2,27 +2,35 @@ import { useDidMount } from '../hooks/hooks'
 
 export const createTabIndex = () => {
   const name = window.location.hostname
-  const broadcastChannel = new BroadcastChannel(name)
+  const TabIndex: typeof BroadcastChannel | undefined = window.BroadcastChannel
+  const tabIndex = TabIndex ? new TabIndex(name) : undefined
 
   const setTabIndex = (value: unknown) => {
-    const tabIndex = JSON.stringify(value)
+    const message = JSON.stringify(value)
 
-    broadcastChannel.postMessage(tabIndex)
+    if (tabIndex) {
+      tabIndex.postMessage(message)
+    }
   }
 
   const useTabIndex = (callback: (value: unknown) => void) => {
     useDidMount(() => {
       const listener = (event: MessageEvent<string>) => {
-        const tabIndex = JSON.parse(event.data)
-        callback(tabIndex)
+        const message = JSON.parse(event.data)
+
+        callback(message)
       }
 
-      broadcastChannel.addEventListener('message', listener)
+      if (tabIndex) {
+        tabIndex.addEventListener('message', listener)
 
-      return () => {
-        broadcastChannel.removeEventListener('message', listener)
-        broadcastChannel.close()
+        return () => {
+          tabIndex.removeEventListener('message', listener)
+          tabIndex.close()
+        }
       }
+
+      return () => {}
     })
 
     return { setTabIndex }

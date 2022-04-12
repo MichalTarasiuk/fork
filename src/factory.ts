@@ -17,19 +17,9 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
 ) => {
   const store = createStore<TState>(stateCreator, {
     onMount(initialState) {
-      const deserialized = stash.read<TState>()
-
-      if (deserialized.success) {
-        return { ...initialState, ...deserialized.current }
-      }
-
-      stash.save(initialState)
-
       return initialState
     },
-    onUpdate(state) {
-      stash.save(state)
-
+    onUpdate() {
       setTabIndex(SHOULD_UPDATE_COMPONENT)
     },
   })
