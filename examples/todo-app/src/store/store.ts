@@ -1,4 +1,4 @@
-import remind from 'remind'
+import remind from 'react-remind'
 
 import { wait } from './store.helpers'
 import type { Mind } from './store.types'

@@ -1,4 +1,4 @@
-import remind from 'remind'
+import remind from 'react-remind'
 
 const { useRemind } = remind((set) => ({
   counter: 0,
