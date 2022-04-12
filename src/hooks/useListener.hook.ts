@@ -75,7 +75,11 @@ export const useListener = <TState extends Record<PropertyKey, unknown>>(
   )
 
   useTabIndex((tabIndex) => {
+    // const cachedState = stash.read()
+
     if (tabIndex === SHOULD_UPDATE_COMPONENT) {
+      // mind.setMind(cachedState)
+      // force()
     }
   })
 

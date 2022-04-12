@@ -17,9 +17,19 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
 ) => {
   const store = createStore<TState>(stateCreator, {
     onMount(initialState) {
+      // const cachedState = stash.read()
+
+      // if (cachedState) {
+      //   return cachedState
+      // }
+
+      // const cachedInitialState = stash.save(initialState)
+
       return initialState
     },
     onUpdate() {
+      // stash.save(state)
+
       setTabIndex(SHOULD_UPDATE_COMPONENT)
     },
   })
