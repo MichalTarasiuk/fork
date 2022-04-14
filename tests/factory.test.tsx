@@ -594,4 +594,61 @@ describe('factory', () => {
     // when
     fireEvent.click(getByText('remove'))
   })
+
+  it('should immer work with setMind action', () => {
+    // given
+    const { useRemind } = remind({
+      counter: 0,
+    })
+
+    const Counter = () => {
+      const { mind, setMind } = useRemind()
+
+      const increase = () => {
+        setMind((prevMind) => {
+          prevMind.counter++
+        })
+      }
+
+      return (
+        <div>
+          <p>counter: {mind.counter}</p>
+          <button onClick={increase}>increase</button>
+        </div>
+      )
+    }
+    const { getByText } = render(<Counter />)
+
+    // when
+    fireEvent.click(getByText('increase'))
+
+    // then
+    getByText('counter: 1')
+  })
+
+  it('should immer work with setMind action from outside component', () => {
+    // given
+    const { useRemind, setMind } = remind({
+      counter: 0,
+    })
+
+    const Counter = () => {
+      const { mind } = useRemind()
+
+      return (
+        <div>
+          <p>counter: {mind.counter}</p>
+        </div>
+      )
+    }
+    const { getByText } = render(<Counter />)
+
+    // when
+    setMind((prevMind) => {
+      prevMind.counter++
+    })
+
+    // then
+    getByText('counter: 1')
+  })
 })
