@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react'
+import { StrictMode, useRef, useEffect } from 'react'
 import { render } from 'react-dom'
 import remind from 'react-remind'
 
@@ -84,4 +84,9 @@ const App = () => {
   )
 }
 
-render(<App />, document.querySelector('#app'))
+render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+  document.querySelector('#app')
+)

@@ -1,4 +1,5 @@
 import type { ResolvableState } from './helpers/helpers'
+import type { Draft } from 'immer'
 
 export type CreateState<TState> = (
   stateCreator: StateCreator<TState>,
@@ -26,4 +27,4 @@ export type CustomEquality<TState> = (
 export type GetState<TState> = () => TState
 type Patch<TState> =
   | Partial<TState>
-  | ((state: TState, set: SetState<TState>) => Partial<TState>)
+  | ((state: Draft<TState>, set: SetState<TState>) => Partial<TState> | void)

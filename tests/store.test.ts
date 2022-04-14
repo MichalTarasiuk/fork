@@ -395,4 +395,19 @@ describe('store', () => {
     // then
     expect(store.state).toBe(store.state)
   })
+
+  it('should set state action work with immer', () => {
+    // given
+    const store = createStore({
+      counter: 0,
+    })
+
+    // when
+    store.setState((prevState) => {
+      prevState.counter++
+    })
+
+    // then
+    expect(store.state).toEqual({ counter: 1 })
+  })
 })

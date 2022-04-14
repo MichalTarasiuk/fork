@@ -1,3 +1,5 @@
+import produce from 'immer'
+
 import {
   createObserver,
   resolveState,
@@ -65,18 +67,18 @@ const createStore = <TState extends Record<PropertyKey, unknown>>(
   }
 
   const setState: SetState<TState> = (patch, replace = false) => {
-    const resolvedPatch = isFunction(patch)
-      ? patch(state.current, setState)
-      : patch
-
     const { nextState, oldState } = state.setState((state) => {
-      const nextState = replace
-        ? (resolvedPatch as TState)
-        : { ...state, ...resolvedPatch }
+      const updatedState = produce(state, (draft) => {
+        const resolvedPatch = isFunction(patch) ? patch(draft, setState) : patch
 
-      lifecycle.onUpdate(nextState)
+        if (resolvedPatch) {
+          Object.assign(replace ? empty(draft) : draft, resolvedPatch)
+        }
+      })
 
-      return nextState
+      lifecycle.onUpdate(updatedState)
+
+      return updatedState
     })
 
     if (!equals(nextState, oldState)) {
