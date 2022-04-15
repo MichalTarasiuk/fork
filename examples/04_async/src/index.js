@@ -8,12 +8,9 @@ const { useRemind } = remind((set) => ({
   counter: 0,
   increase: async () => {
     await wait()
-    set(
-      (mind) => {
-        mind.counter++
-      },
-      { notify: false }
-    )
+    set((mind) => {
+      mind.counter++
+    })
   },
 }))
 

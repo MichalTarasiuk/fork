@@ -1,25 +1,17 @@
-import { useRef, useMemo, useCallback } from 'react'
+import { useRef, useMemo } from 'react'
 import { unstable_batchedUpdates } from 'react-dom'
 
 import { createStore } from './store'
 import { useDidMount, useListener } from './hooks/hooks'
 import { assign, pick, compose, noop, pickKeysByValue } from './helpers/helpers'
-import { getPlugins, createStash, createTabIndex } from './logic/logic'
-import { SHOULD_UPDATE_COMPONENT } from './constants'
+import { getPlugins } from './logic/logic'
 import type { StateCreator, Selector } from './store.types'
-import type { Config, SetMind } from './factory.types'
-
-export const { useTabIndex, setTabIndex } = createTabIndex()
-export const stash = createStash()
+import type { Config } from './factory.types'
 
 const factory = <TState extends Record<PropertyKey, unknown>>(
   stateCreator: StateCreator<TState>
 ) => {
-  const store = createStore<TState>(stateCreator, {
-    onUpdate() {
-      setTabIndex(SHOULD_UPDATE_COMPONENT)
-    },
-  })
+  const store = createStore<TState>(stateCreator)
   const plugins = getPlugins<TState>(store)
   const state = store.state
 
@@ -50,17 +42,10 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
       }
     })
 
-    const setMind: SetMind<TState> = useCallback((patch, config) => {
-      const { notify = true, ...restConfig } = config || {}
-      const emitter = notify ? undefined : listener
-
-      setState(patch, restConfig, emitter)
-    }, [])
-
     const output = useMemo(
       () => ({
         mind,
-        setMind,
+        setMind: store.setState,
         unsubscribe: savedSubscriber.current?.unsubscribe ?? noop,
       }),
       [mind]
