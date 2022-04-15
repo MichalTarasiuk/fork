@@ -1,11 +1,7 @@
-import { isPrimitive } from './helpers'
-
 export const cloneObject = <TValue>(value: TValue): TValue => {
   let clone: any
 
-  if (isPrimitive(value)) {
-    return value
-  } else if (value instanceof Date) {
+  if (value instanceof Date) {
     clone = new Date(value)
     return clone
   } else if (value instanceof Set) {
@@ -23,7 +19,6 @@ export const cloneObject = <TValue>(value: TValue): TValue => {
   if (Array.isArray(value)) {
     clone.length = value.length
     clone = Array.from(clone)
-    return clone
   }
 
   return clone
