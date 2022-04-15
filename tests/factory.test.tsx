@@ -5,7 +5,7 @@ import remind from '../src/factory'
 import { useDidMount } from '../src/hooks/hooks'
 import { createStash } from '../src/logic/logic'
 import { wait } from './tests.utils'
-import type { Noop } from './test.types'
+import type { Noop } from './tests.types'
 
 describe('factory', () => {
   const stash = createStash()
@@ -216,9 +216,7 @@ describe('factory', () => {
       counter: 0,
       increase: async () => {
         await wait(1000)
-        set((prevState) => ({ counter: prevState.counter + 1 }), {
-          notify: false,
-        })
+        set((prevState) => ({ counter: prevState.counter + 1 }))
       },
     }))
     const { useRemind } = store
@@ -522,9 +520,7 @@ describe('factory', () => {
         setMind((_, set) => ({
           increase: async () => {
             await wait(1000)
-            set((prevMind) => ({ counter: prevMind.counter + 1 }), {
-              notify: false,
-            })
+            set((prevMind) => ({ counter: prevMind.counter + 1 }))
           },
         }))
       }
@@ -557,9 +553,7 @@ describe('factory', () => {
       counter: 0,
       increase: async () => {
         await wait(1000)
-        set((prevMind) => ({ counter: prevMind.counter + 1 }), {
-          notify: false,
-        })
+        set((prevMind) => ({ counter: prevMind.counter + 1 }))
       },
     }))
 

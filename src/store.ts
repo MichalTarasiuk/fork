@@ -20,17 +20,12 @@ import type {
   Lifecycle,
 } from './store.types'
 
-const mockLifecycle = {
-  onMount() {
-    return null
-  },
-  onUpdate: noop,
-}
-
 const createStore = <TState extends Record<PropertyKey, unknown>>(
   stateCreator: StateCreator<TState>,
-  lifecycle: Lifecycle<TState> = mockLifecycle
+  lifecycle?: Lifecycle<TState>
 ) => {
+  const { onMount = () => null, onUpdate = noop } = lifecycle || {}
+
   let state: ReturnType<CreateState<TState>>
   const observer = createObserver<TState>()
 
@@ -69,7 +64,7 @@ const createStore = <TState extends Record<PropertyKey, unknown>>(
   const setState: SetState<TState> = (patch, config, emitter) => {
     const { replace = false } = config || {}
 
-    const { nextState, oldState } = state.setState((state) => {
+    const { nextState, oldState } = state.set((state) => {
       const updatedState = produce(state, (draft) => {
         const resolvedPatch = isFunction(patch) ? patch(draft, setState) : patch
 
@@ -78,7 +73,7 @@ const createStore = <TState extends Record<PropertyKey, unknown>>(
         }
       })
 
-      lifecycle.onUpdate(updatedState)
+      onUpdate(updatedState)
 
       return updatedState
     })
@@ -101,8 +96,8 @@ const createStore = <TState extends Record<PropertyKey, unknown>>(
   }
 
   state = createState(stateCreator, setState, getState)
-  state.setState((state) => {
-    const nextState = lifecycle.onMount(state)
+  state.set((state) => {
+    const nextState = onMount(state)
 
     if (nextState) {
       return nextState
@@ -136,7 +131,7 @@ const createState = <TState extends Record<PropertyKey, unknown>>(
 
   return {
     current: resolvedState,
-    setState(resolvableState: ResolvableState<TState>) {
+    set(resolvableState: ResolvableState<TState>) {
       const oldState = cloneObject(this.current)
       const nextState = resolveState(resolvableState, oldState)
 

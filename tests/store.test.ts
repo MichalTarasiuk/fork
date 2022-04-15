@@ -1,6 +1,6 @@
 import { createStore } from '../src/store'
 import { wait } from './tests.utils'
-import type { Noop } from './test.types'
+import type { Noop } from './tests.types'
 
 describe('store', () => {
   it('should resolve initial state', () => {

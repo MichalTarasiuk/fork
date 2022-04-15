@@ -6,8 +6,8 @@ import { useDidMount, useListener } from './hooks/hooks'
 import { assign, pick, compose, noop, pickKeysByValue } from './helpers/helpers'
 import { getPlugins, createStash, createTabIndex } from './logic/logic'
 import { SHOULD_UPDATE_COMPONENT } from './constants'
-import type { StateCreator, Selector, Patch } from './store.types'
-import type { Config, SetMindConfig } from './factory.types'
+import type { StateCreator, Selector } from './store.types'
+import type { Config, SetMind } from './factory.types'
 
 export const { useTabIndex, setTabIndex } = createTabIndex()
 export const stash = createStash()
@@ -16,20 +16,7 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
   stateCreator: StateCreator<TState>
 ) => {
   const store = createStore<TState>(stateCreator, {
-    onMount(initialState) {
-      // const cachedState = stash.read()
-
-      // if (cachedState) {
-      //   return cachedState
-      // }
-
-      // const cachedInitialState = stash.save(initialState)
-
-      return initialState
-    },
     onUpdate() {
-      // stash.save(state)
-
       setTabIndex(SHOULD_UPDATE_COMPONENT)
     },
   })
@@ -63,15 +50,12 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
       }
     })
 
-    const setMind = useCallback(
-      (patch: Patch<TState>, config?: SetMindConfig) => {
-        const { notify = true, ...restConifg } = config || {}
-        const emitter = notify ? undefined : listener
+    const setMind: SetMind<TState> = useCallback((patch, config) => {
+      const { notify = true, ...restConfig } = config || {}
+      const emitter = notify ? undefined : listener
 
-        setState(patch, restConifg, emitter)
-      },
-      []
-    )
+      setState(patch, restConfig, emitter)
+    }, [])
 
     const output = useMemo(
       () => ({

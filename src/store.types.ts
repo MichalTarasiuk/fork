@@ -1,19 +1,20 @@
-import type { ResolvableState, Listener } from './helpers/helpers'
 import type { Draft } from 'immer'
+
+import type { ResolvableState, Listener } from './helpers/helpers'
 
 export type CreateState<TState> = (
   stateCreator: StateCreator<TState>,
   setState: SetState<TState>
 ) => {
   current: TState
-  setState: (resolvableState: ResolvableState<TState>) => {
+  set: (resolvableState: ResolvableState<TState>) => {
     nextState: TState
     oldState: TState
   }
 }
 export type Lifecycle<TState> = {
-  onMount: (state: TState) => TState | null
-  onUpdate: (state: TState) => void
+  onMount?: (state: TState) => TState | null
+  onUpdate?: (state: TState) => void
 }
 export type Selector<TState> = (state: TState) => any
 export type StateCreator<TState> =
