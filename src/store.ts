@@ -66,7 +66,9 @@ const createStore = <TState extends Record<PropertyKey, unknown>>(
     return subscriber
   }
 
-  const setState: SetState<TState> = (patch, replace = false) => {
+  const setState: SetState<TState> = (patch, config) => {
+    const { replace = false, notify = true } = config || {}
+
     const { nextState, oldState } = state.setState((state) => {
       const updatedState = produce(state, (draft) => {
         const resolvedPatch = isFunction(patch) ? patch(draft, setState) : patch
@@ -81,7 +83,7 @@ const createStore = <TState extends Record<PropertyKey, unknown>>(
       return updatedState
     })
 
-    if (!equals(nextState, oldState)) {
+    if (!equals(nextState, oldState) && notify) {
       observer.notify(nextState, oldState)
     }
   }

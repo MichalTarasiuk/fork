@@ -3,7 +3,11 @@ export const equals = (a: any, b: any): boolean => {
     return true
   }
 
-  if (typeof a === 'function' && typeof b === 'function') {
+  if (
+    typeof a === 'function' &&
+    typeof b === 'function' &&
+    a.toString() === b.toString()
+  ) {
     return true
   }
 

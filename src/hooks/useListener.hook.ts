@@ -6,12 +6,15 @@ import {
   isAsyncFunction,
   flatObject,
   omitByValue,
+  equals,
+  cloneObject,
 } from '../helpers/helpers'
 import {
   useHasMounted,
   useForce,
   useFirstMountState,
   useAsync,
+  usePrevious,
 } from '../hooks/hooks'
 import { SHOULD_UPDATE_COMPONENT } from '../constants'
 import type { AsyncSlice, Status } from '../hooks/useAsync.hook'
@@ -62,6 +65,7 @@ export const useListener = <TState extends Record<PropertyKey, unknown>>(
   const hasMounted = useHasMounted()
   const isFirstMount = useFirstMountState()
   const force = useForce()
+  const previousState = usePrevious(cloneObject(state))
 
   const asyncSlice = useAsync(
     pickByValue<Record<PropertyKey, AsyncFunction>>(state, isAsyncFunction),
@@ -85,6 +89,8 @@ export const useListener = <TState extends Record<PropertyKey, unknown>>(
 
   if (isFirstMount) {
     mind.updateAsync(asyncSlice.current)
+  } else if (!equals(state, previousState)) {
+    mind.setMind(state, previousState)
   }
 
   const listener = useCallback((nextState: TState, prevState?: TState) => {

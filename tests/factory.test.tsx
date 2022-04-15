@@ -459,7 +459,7 @@ describe('factory', () => {
           (prevMind) => ({
             counter: prevMind.counter,
           }),
-          true
+          { replace: true }
         )
       }
 
@@ -568,7 +568,7 @@ describe('factory', () => {
             (prevMind) => ({
               counter: prevMind.counter,
             }),
-            true
+            { replace: true }
           )
         }
 

@@ -323,7 +323,7 @@ describe('store', () => {
       (prevState) => ({
         counter: prevState.counter,
       }),
-      true
+      { replace: true }
     )
 
     // then
