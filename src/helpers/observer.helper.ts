@@ -7,6 +7,7 @@ const createObserver = <TState>() => {
     _listeners.add(observer)
 
     return {
+      body: observer,
       unsubscribe() {
         _listeners.delete(observer)
       },
@@ -15,9 +16,15 @@ const createObserver = <TState>() => {
 
   const destroy = () => _listeners.clear()
 
-  const notify = (nextState: TState, state?: TState) => {
+  const notify = (
+    nextState: TState,
+    state?: TState,
+    emitter?: Listener<TState>
+  ) => {
     for (const listener of _listeners) {
-      listener(nextState, state)
+      if (emitter !== listener) {
+        listener(nextState, state)
+      }
     }
   }
 

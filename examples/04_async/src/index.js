@@ -17,24 +17,28 @@ const { useRemind } = remind((set) => ({
   },
 }))
 
-const Counter = () => {
+const CounterDisplay = () => {
+  const [mind] = useRemind()
+
+  return <h1>Counter {mind.counter}</h1>
+}
+
+const CounterManager = () => {
   const [mind] = useRemind()
   const [increase, status] = mind.increase
 
   return (
-    <div>
-      <h1>Counter {mind.counter}</h1>
-      <button onClick={increase}>
-        {status === 'loading' ? status : 'click'}
-      </button>
-    </div>
+    <button onClick={increase}>
+      {status === 'loading' ? status : 'increase'}
+    </button>
   )
 }
 
 const App = () => {
   return (
     <StrictMode>
-      <Counter />
+      <CounterDisplay />
+      <CounterManager />
     </StrictMode>
   )
 }

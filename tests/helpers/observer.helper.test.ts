@@ -51,4 +51,30 @@ describe('observer', () => {
     // then
     expect(spy).toHaveBeenCalledTimes(fruits.length)
   })
+
+  it('should not invoke emitter when is defined', () => {
+    //given
+    const observer = createObserver<string>()
+
+    // when
+    const spy1 = jest.fn()
+    observer.subscribe(spy1)
+
+    // then
+    expect(observer.listeners).toHaveLength(1)
+
+    // when
+    const spy2 = jest.fn()
+    observer.subscribe(spy2)
+
+    // then
+    expect(observer.listeners).toHaveLength(2)
+
+    // when
+    observer.notify('apple', undefined, spy1)
+
+    // then
+    expect(spy1).toHaveBeenCalledTimes(0)
+    expect(spy2).toHaveBeenCalledTimes(1)
+  })
 })

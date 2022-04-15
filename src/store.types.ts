@@ -1,4 +1,4 @@
-import type { ResolvableState } from './helpers/helpers'
+import type { ResolvableState, Listener } from './helpers/helpers'
 import type { Draft } from 'immer'
 
 export type CreateState<TState> = (
@@ -21,13 +21,14 @@ export type StateCreator<TState> =
   | TState
 export type SetState<TState> = (
   patch: Patch<TState>,
-  config?: { notify?: boolean; replace?: boolean }
+  config?: { replace?: boolean },
+  emitter?: Listener<TState>
 ) => void
 export type CustomEquality<TState> = (
   nextState: TState,
   state: TState
 ) => boolean
 export type GetState<TState> = () => TState
-type Patch<TState> =
+export type Patch<TState> =
   | Partial<TState>
   | ((state: Draft<TState>, set: SetState<TState>) => Partial<TState> | void)

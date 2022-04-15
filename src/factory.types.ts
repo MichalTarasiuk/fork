@@ -11,3 +11,7 @@ export type StateMap<TState extends Record<PropertyKey, unknown>> = {
   nextState: TState
   state?: TState
 }
+export type SetMindConfig = {
+  notify?: boolean
+  replace?: boolean
+}

@@ -410,4 +410,52 @@ describe('store', () => {
     // then
     expect(store.state).toEqual({ counter: 1 })
   })
+
+  it('should not invoke emitter when is defined', () => {
+    // given
+    const store = createStore({
+      counter: 0,
+    })
+
+    // when
+    const spy = jest.fn()
+    const subscriber = store.subscribe(spy)
+
+    // then
+    expect(store.listeners).toHaveLength(1)
+
+    // when
+    store.setState(
+      (prevState) => ({ counter: prevState.counter + 1 }),
+      undefined,
+      subscriber.body
+    )
+
+    // then
+    expect(spy).not.toHaveBeenCalled()
+  })
+
+  it('should not invoke emitter with selector when is defined', () => {
+    // given
+    const store = createStore({
+      counter: 0,
+    })
+
+    // when
+    const spy = jest.fn()
+    const subscriber = store.subscribe(spy, (state) => state.counter)
+
+    // then
+    expect(store.listeners).toHaveLength(1)
+
+    // when
+    store.setState(
+      (prevState) => ({ counter: prevState.counter + 1 }),
+      undefined,
+      subscriber.body
+    )
+
+    // then
+    expect(spy).not.toHaveBeenCalled()
+  })
 })
