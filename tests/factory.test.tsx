@@ -216,7 +216,9 @@ describe('factory', () => {
       counter: 0,
       increase: async () => {
         await wait(1000)
-        set((prevState) => ({ counter: prevState.counter + 1 }))
+        set((prevState) => ({ counter: prevState.counter + 1 }), {
+          notify: false,
+        })
       },
     }))
     const { useRemind } = store
@@ -520,7 +522,9 @@ describe('factory', () => {
         setMind((_, set) => ({
           increase: async () => {
             await wait(1000)
-            set((prevMind) => ({ counter: prevMind.counter + 1 }))
+            set((prevMind) => ({ counter: prevMind.counter + 1 }), {
+              notify: false,
+            })
           },
         }))
       }
@@ -528,7 +532,7 @@ describe('factory', () => {
       return <button onClick={upgrade}>upgrade</button>
     }
 
-    const { getByText, findByText, container } = render(<Counter />)
+    const { getByText, findByText } = render(<Counter />)
 
     // when
     fireEvent.click(getByText('upgrade'))
@@ -553,7 +557,9 @@ describe('factory', () => {
       counter: 0,
       increase: async () => {
         await wait(1000)
-        set((prevMind) => ({ counter: prevMind.counter + 1 }))
+        set((prevMind) => ({ counter: prevMind.counter + 1 }), {
+          notify: false,
+        })
       },
     }))
 
