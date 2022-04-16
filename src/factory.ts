@@ -12,7 +12,7 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
   stateCreator: StateCreator<TState>
 ) => {
   const store = createStore<TState>(stateCreator)
-  const plugins = getPlugins<TState>(store)
+  const plugins = getPlugins(store)
   const state = store.state
 
   const useRemind = <TSelector extends Selector<TState>>(

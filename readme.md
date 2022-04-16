@@ -112,15 +112,13 @@ const { useRemind } = remind((set) => ({
 ## Async actions
 
 Just call `set` when you're ready, remind doesn't care if your actions are async or not.
-Invoke set inside body of async function can cause additional rerender. 
-You have to add ```{ notify: false } ``` as a second param.
 
 ```jsx
 const { useRemind } = remind((set) => ({
   ideas: {},
   fetch: async (path) => {
     const response = await fetch(path)
-    set({ ideas: await response.json() }, { notify: false })
+    set({ ideas: await response.json() })
   },
 }))
 ```
