@@ -1,7 +1,7 @@
 A small, fast and scalable state-management solution using simplified flux principles. Has a comfy api based on hooks, isn't boilerplatey or opinionated.
 
 ```bash
-npm install remind-me # or yarn add remind-me
+npm install my-remind # or yarn add my-remind
 ```
 
 ## First create a store
@@ -9,7 +9,7 @@ npm install remind-me # or yarn add remind-me
 Your store is a hook! You can put anything in it: primitives, objects, functions. The `set` function _merges_ state.
 
 ```jsx
-import remind from 'remind-me'
+import remind from 'my-remind'
 
 const { useRemind } = remind((set) => ({
   mindLevel: 0,
