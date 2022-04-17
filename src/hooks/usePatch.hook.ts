@@ -1,8 +1,8 @@
 import { useRef, useCallback } from 'react'
 
-import { useDidUpdate } from '../hooks/hooks'
+import { useDidUpdate } from './hooks'
 
-export const useRefState = <TState>(
+export const usePatch = <TState>(
   initialState: TState,
   callback: (state: TState) => void
 ) => {

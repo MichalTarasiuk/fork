@@ -10,7 +10,7 @@ import {
   pickByValue,
   isAsyncFunction,
 } from '../helpers/helpers'
-import { useRefState, useCreation, usePrevious } from '../hooks/hooks'
+import { usePatch, useCreation, usePrevious } from '../hooks/hooks'
 import type { AsyncFunction } from '../typings/typings'
 
 export type Status = 'idle' | 'loading' | 'success' | 'error'
@@ -30,7 +30,7 @@ export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
     () => pickByValue<TObject>(object, isAsyncFunction),
     [object]
   )
-  const { state, setState, replaceState } = useRefState(
+  const { state, setState, replaceState } = usePatch(
     mapObject(filteredObject, () => initialStatus),
     (nextState) => {
       const merged = merge(

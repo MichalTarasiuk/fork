@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks'
 
-import { useRefState } from '../../src/hooks/hooks'
+import { usePatch } from '../../src/hooks/hooks'
 
 describe('useRefState', () => {
   it('should change state after setState action', () => {
@@ -8,7 +8,7 @@ describe('useRefState', () => {
     const callback = jest.fn()
     const {
       result: { current: hook },
-    } = renderHook(() => useRefState({ a: 1, b: 2 }, callback))
+    } = renderHook(() => usePatch({ a: 1, b: 2 }, callback))
 
     // when
     hook.setState({ a: 2 })
@@ -22,7 +22,7 @@ describe('useRefState', () => {
     const callback = jest.fn()
     const {
       result: { current: hook },
-    } = renderHook(() => useRefState({ a: 1 }, callback))
+    } = renderHook(() => usePatch({ a: 1 }, callback))
 
     // when
     hook.setState({ a: 2 })
@@ -36,7 +36,7 @@ describe('useRefState', () => {
     const callback = jest.fn()
     const {
       result: { current: hook },
-    } = renderHook(() => useRefState({ a: 1 }, callback))
+    } = renderHook(() => usePatch({ a: 1 }, callback))
 
     // when
     hook.replaceState({ a: 2 })

@@ -15,6 +15,8 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
   const plugins = getPlugins(store)
   const state = store.state
 
+  const { setState, subscribe } = store
+
   const useRemind = <TSelector extends Selector<TState>>(
     selector?: TSelector,
     config?: Config<TState, TSelector>
@@ -26,6 +28,7 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
       const pickedPlugins = Object.values(
         pick(plugins, pickKeysByValue(config || {}, true))
       )
+      // @ts-ignore
       const combinedPlugins = compose(...pickedPlugins)
 
       return combinedPlugins({ nextState, state }).nextState
@@ -53,8 +56,6 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
 
     return assign([output.mind, output.setMind] as const, output)
   }
-
-  const { setState, subscribe } = store
 
   const setMind = (...params: Parameters<typeof setState>) => {
     unstable_batchedUpdates(() => {

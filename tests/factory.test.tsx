@@ -3,17 +3,10 @@ import { render, fireEvent, act, waitFor } from '@testing-library/react'
 
 import remind from '../src/factory'
 import { useDidMount } from '../src/hooks/hooks'
-import { createStash } from '../src/logic/logic'
 import { wait } from './tests.utils'
 import type { Noop } from './tests.types'
 
 describe('factory', () => {
-  const stash = createStash()
-
-  afterEach(() => {
-    stash.clear()
-  })
-
   it('should rerender component', async () => {
     // arrange
     type Mind = {
