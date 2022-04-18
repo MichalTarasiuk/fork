@@ -1,22 +1,22 @@
-import { isNil } from '../../src/helpers/helpers'
+import { isNill } from '../../src/helpers/helpers'
 
-describe('isNil', () => {
+describe('isNill', () => {
   it('should return true if value is null', () => {
-    expect(isNil(null)).toBe(true)
+    expect(isNill(null)).toBe(true)
   })
 
   it('should return true if value is undefined', () => {
-    expect(isNil(undefined)).toBe(true)
+    expect(isNill(undefined)).toBe(true)
   })
 
   it('should return false if value is not null or undefined', () => {
-    expect(isNil(0)).toBe(false)
-    expect(isNil('')).toBe(false)
-    expect(isNil(false)).toBe(false)
-    expect(isNil(true)).toBe(false)
-    expect(isNil(NaN)).toBe(false)
-    expect(isNil(Infinity)).toBe(false)
-    expect(isNil({})).toBe(false)
-    expect(isNil([])).toBe(false)
+    expect(isNill(0)).toBe(false)
+    expect(isNill('')).toBe(false)
+    expect(isNill(false)).toBe(false)
+    expect(isNill(true)).toBe(false)
+    expect(isNill(NaN)).toBe(false)
+    expect(isNill(Infinity)).toBe(false)
+    expect(isNill({})).toBe(false)
+    expect(isNill([])).toBe(false)
   })
 })

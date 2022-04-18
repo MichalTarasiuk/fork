@@ -1,4 +1,4 @@
-import { isNil } from './helpers'
+import { isNill } from './helpers'
 import type { Nill } from '../typings/typings'
 
 export function assign<TB>(a: Nill, b: TB): TB
@@ -6,7 +6,7 @@ export function assign<TA>(a: TA, b: Nill): TA
 export function assign<TA, TB>(a: TA, b: TB): TA & TB
 
 export function assign(a: unknown, b: unknown) {
-  if (isNil(a) || isNil(b)) {
+  if (isNill(a) || isNill(b)) {
     return a || b
   }
 

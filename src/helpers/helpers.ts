@@ -17,7 +17,7 @@ export { merge } from './merge.helper'
 export { empty } from './empty.helper'
 export { isPlainObject } from './isPlainObject.helper'
 export { flatObject } from './flatObject.helper'
-export { isNil } from './isNill.helper'
+export { isNill } from './isNill.helper'
 export { filterObject } from './filterObject.helper'
 
 export const noop = () => {}
