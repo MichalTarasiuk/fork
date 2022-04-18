@@ -1,5 +1,5 @@
 export * from './observer.helper'
-export * from './resolveState.helper'
+export * from './resolve.helper'
 export * from './entries.helper'
 export { isPrimitive } from './isPrimitive.helper'
 export { equals } from './equals.helper'

@@ -1,12 +1,12 @@
-import { resolveState } from '../../src/helpers/helpers'
+import { resolve } from '../../src/helpers/helpers'
 
-describe('resolveState', () => {
+describe('resolve', () => {
   it('should resolve state which is function', () => {
     // arrange
     const initialState = {
       counter: 0,
     }
-    const resolvedState = resolveState(() => initialState)
+    const resolvedState = resolve(() => initialState)
 
     // assert
     expect(resolvedState).toEqual(resolvedState)
@@ -17,7 +17,7 @@ describe('resolveState', () => {
     const initialState = {
       counter: 0,
     }
-    const resolvedState = resolveState(initialState)
+    const resolvedState = resolve(initialState)
 
     // assert
     expect(resolvedState).toEqual(resolvedState)
