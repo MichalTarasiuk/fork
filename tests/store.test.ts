@@ -427,7 +427,7 @@ describe('store', () => {
     // when
     store.setState(
       (prevState) => ({ counter: prevState.counter + 1 }),
-      undefined,
+      { emitt: false },
       subscriber.body
     )
 
@@ -451,7 +451,7 @@ describe('store', () => {
     // when
     store.setState(
       (prevState) => ({ counter: prevState.counter + 1 }),
-      undefined,
+      { emitt: false },
       subscriber.body
     )
 

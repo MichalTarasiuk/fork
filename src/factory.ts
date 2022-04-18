@@ -1,11 +1,11 @@
-import { useRef, useMemo } from 'react'
+import { useRef, useMemo, useCallback } from 'react'
 import { unstable_batchedUpdates } from 'react-dom'
 
 import { createStore } from './store'
 import { useDidMount, useListener } from './hooks/hooks'
 import { assign, pick, compose, noop, pickKeysByValue } from './helpers/helpers'
 import { getPlugins } from './logic/logic'
-import type { StateCreator, Selector } from './store.types'
+import type { StateCreator, Selector, Patch, SetConfig } from './store.types'
 import type { Config } from './factory.types'
 
 const factory = <TState extends Record<PropertyKey, unknown>>(
@@ -23,6 +23,13 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
   ) => {
     type Subscriber = ReturnType<typeof store['subscribe']>
 
+    // const { state, setEmitter } = useMemo(() => store.getState(), [])
+
+    // const savedSubscriber = useFollow<Subscriber | null>(null, (subscriber) => {
+    //   if (subscriber) {
+    //     setEmitter(subscriber)
+    //   }
+    // })
     const savedSubscriber = useRef<Subscriber | null>(null)
     const [mind, listener] = useListener(state, (nextState, state) => {
       const pickedPlugins = Object.values(
@@ -45,10 +52,16 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
       }
     })
 
+    const setMind = useCallback((patch: Patch<TState>, config: SetConfig) => {
+      const emitter = savedSubscriber.current?.body
+
+      setState(patch, config, emitter)
+    }, [])
+
     const output = useMemo(
       () => ({
         mind,
-        setMind: store.setState,
+        setMind,
         unsubscribe: savedSubscriber.current?.unsubscribe ?? noop,
       }),
       [mind]

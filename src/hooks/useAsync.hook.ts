@@ -38,6 +38,7 @@ export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
         nextState,
         (a, b) => [a, b] as const
       )
+
       callback(merged, 'set')
     }
   )

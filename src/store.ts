@@ -2,14 +2,14 @@ import produce from 'immer'
 
 import {
   createObserver,
-  resolveState,
+  resolve,
   equals,
   isFunction,
   cloneObject,
   noop,
   empty,
 } from './helpers/helpers'
-import type { ResolvableState, Listener } from './helpers/helpers'
+import type { Resolvable, Listener } from './helpers/helpers'
 import type {
   CreateState,
   StateCreator,
@@ -62,7 +62,7 @@ const createStore = <TState extends Record<PropertyKey, unknown>>(
   }
 
   const setState: SetState<TState> = (patch, config, emitter) => {
-    const { replace = false } = config || {}
+    const { replace = false, emitt = true } = config || {}
 
     const { nextState, oldState } = state.set((state) => {
       const updatedState = produce(state, (draft) => {
@@ -79,7 +79,7 @@ const createStore = <TState extends Record<PropertyKey, unknown>>(
     })
 
     if (!equals(nextState, oldState)) {
-      observer.notify(nextState, oldState, emitter)
+      observer.notify(nextState, oldState, emitt ? undefined : emitter)
     }
   }
 
@@ -125,15 +125,15 @@ const createState = <TState extends Record<PropertyKey, unknown>>(
   setState: SetState<TState>,
   getState: GetState<TState>
 ) => {
-  const resolvedState = isFunction(stateCreator)
+  const state = isFunction(stateCreator)
     ? stateCreator(setState, getState)
     : stateCreator
 
   return {
-    current: resolvedState,
-    set(resolvableState: ResolvableState<TState>) {
+    current: state,
+    set(resolvableState: Resolvable<TState>) {
       const oldState = cloneObject(this.current)
-      const nextState = resolveState(resolvableState, oldState)
+      const nextState = resolve(resolvableState, oldState)
 
       Object.assign(empty(this.current), nextState)
 

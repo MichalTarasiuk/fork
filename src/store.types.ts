@@ -20,7 +20,7 @@ export type Selector<TState> = (state: TState) => any
 export type StateCreator<TState> =
   | ((set: SetState<TState>, get: GetState<TState>) => TState)
   | TState
-export type SetConfig = { replace?: boolean; notify?: boolean }
+export type SetConfig = { replace?: boolean; emitt?: boolean }
 export type SetState<TState> = (
   patch: Patch<TState>,
   config?: SetConfig,
