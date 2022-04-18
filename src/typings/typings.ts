@@ -9,15 +9,6 @@ export type Primitive =
 
 export type Nill = undefined | null
 
-export type PickByValue<
-  TObject extends Record<PropertyKey, unknown>,
-  TValue
-> = {
-  [key in keyof TObject as TObject[key] extends TValue
-    ? key
-    : never]: TObject[key]
-}
-
 export type AddBy<
   TObject extends Record<PropertyKey, unknown>,
   TValue,

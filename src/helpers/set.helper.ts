@@ -11,7 +11,7 @@ export const set = <TValue extends Record<PropertyKey, unknown>>(
   value: TValue,
   mapper: Mapper
 ) => {
-  const clone = cloneObject(value) as Record<string, unknown>
+  const clone = cloneObject(value) as Record<PropertyKey, unknown>
 
   for (const [key, value] of Object.entries(mapper)) {
     if (!('to' in value)) {

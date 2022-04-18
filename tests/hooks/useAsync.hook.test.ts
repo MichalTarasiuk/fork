@@ -139,15 +139,4 @@ describe('useAsync', () => {
       }
     `)
   })
-
-  it('should generate status only for async action', () => {
-    // arrange
-    const {
-      result: { current: hook },
-      // @ts-ignore
-    } = renderHook(() => useAsync({ getName: () => 'John' }, () => {}))
-
-    // then
-    expect(hook.current).toEqual({})
-  })
 })

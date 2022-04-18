@@ -1,11 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
-import {
-  pickByValue,
-  isAsyncFunction,
-  flatObject,
-  omitByValue,
-} from '../helpers/helpers'
+import { isAsyncFunction, flatObject, filterObject } from '../helpers/helpers'
 import {
   useHasMounted,
   useForce,
@@ -24,13 +19,16 @@ const createMind = <TState extends Record<PropertyKey, unknown>>(
   type Mind = TState & {
     [asyncSymbol]?: AsyncSlice
   }
-  let mind: Mind = callback(omitByValue(initialState, isAsyncFunction))
+  let mind: Mind = callback(
+    filterObject(initialState, (_, value) => !isAsyncFunction(value))
+  )
 
   const setMind = (nextState: TState, prevState?: TState) => {
     const asyncSlice = mind[asyncSymbol]
     const updatedMind: Mind = callback(
-      omitByValue(nextState, isAsyncFunction),
-      prevState && omitByValue(prevState, isAsyncFunction)
+      filterObject(nextState, (_, value) => !isAsyncFunction(value)),
+      prevState &&
+        filterObject(prevState, (_, value) => !isAsyncFunction(value))
     )
 
     updatedMind[asyncSymbol] = asyncSlice
@@ -62,7 +60,10 @@ export const useListener = <TState extends Record<PropertyKey, unknown>>(
   const force = useForce()
 
   const asyncSlice = useAsync(
-    pickByValue<Record<PropertyKey, AsyncFunction>>(state, isAsyncFunction),
+    filterObject(state, (_, value) => isAsyncFunction(value)) as Record<
+      PropertyKey,
+      AsyncFunction
+    >,
     (nextAsyncSlice, action) => {
       mind.updateAsync(nextAsyncSlice)
 

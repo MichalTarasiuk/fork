@@ -3,7 +3,7 @@ import { unstable_batchedUpdates } from 'react-dom'
 
 import { createStore } from './store'
 import { useDidMount, useListener, useFollow } from './hooks/hooks'
-import { assign, pick, compose, noop, pickKeysByValue } from './helpers/helpers'
+import { assign, compose, noop, filterObject } from './helpers/helpers'
 import { getPlugins } from './logic/logic'
 import type { StateCreator, Selector, Patch, SetConfig } from './store.types'
 import type { Config } from './remind.types'
@@ -26,7 +26,7 @@ const remind = <TState extends Record<PropertyKey, unknown>>(
     const savedSubscriber = useFollow<Subscriber | null>(null, () => {})
     const [mind, listener] = useListener(state, (nextState, state) => {
       const pickedPlugins = Object.values(
-        pick(plugins, pickKeysByValue(config || {}, true))
+        filterObject(plugins, (_, value) => value === true)
       )
       // @ts-ignore
       const combinedPlugins = compose(...pickedPlugins)
@@ -45,7 +45,7 @@ const remind = <TState extends Record<PropertyKey, unknown>>(
       }
     })
 
-    const setMind = useCallback((patch: Patch<TState>, config: SetConfig) => {
+    const setMind = useCallback((patch: Patch<TState>, config?: SetConfig) => {
       const emitter = savedSubscriber.current?.body
 
       setState(patch, config, emitter)
