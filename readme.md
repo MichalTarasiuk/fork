@@ -201,6 +201,6 @@ const { useRemind } = remind((set) => ({
   dispatch: (args) => set((mind) => reducer(mind, args)),
 }))
 
-const { mind } = useStore((mind) => mind.dispatch)
+const { mind } = useRemind((mind) => mind.dispatch)
 mind.dispatch({ type: types.increase, by: 2 })
 ```
