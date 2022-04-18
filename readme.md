@@ -37,13 +37,13 @@ const reset = () => {
 Use the hook anywhere, no providers needed. Select your state and the component will re-render on changes.
 
 ```jsx
-function MindCounter() {
+function CounterDisplay() {
   const { mind } = useRemind((mind) => mind.mindLevel)
   return <h1>mind level: {mind.mindLevel}</h1>
 }
 
 function Controls() {
-  const { mind } = useStore((mind) => mind.increase)
+  const { mind } = useRemind((mind) => mind.increase)
   return <button onClick={mind.increase}>one up</button>
 }
 ```
@@ -179,7 +179,7 @@ If you need to subscribe with selector,
 With this middleware `subscribe` accepts an additional signature:
 
 ```ts
-subscribe(listener, selector?, customEquality?): { unsubscribe }
+subscribe(listener, selector?, customEquality?): { unsubscribe, body }
 ```
 
 ## Can't live without redux-like reducers and action types?

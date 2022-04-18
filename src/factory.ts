@@ -1,8 +1,8 @@
-import { useRef, useMemo, useCallback } from 'react'
+import { useMemo, useCallback } from 'react'
 import { unstable_batchedUpdates } from 'react-dom'
 
 import { createStore } from './store'
-import { useDidMount, useListener } from './hooks/hooks'
+import { useDidMount, useListener, useFollow } from './hooks/hooks'
 import { assign, pick, compose, noop, pickKeysByValue } from './helpers/helpers'
 import { getPlugins } from './logic/logic'
 import type { StateCreator, Selector, Patch, SetConfig } from './store.types'
@@ -25,12 +25,12 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
 
     // const { state, setEmitter } = useMemo(() => store.getState(), [])
 
-    // const savedSubscriber = useFollow<Subscriber | null>(null, (subscriber) => {
-    //   if (subscriber) {
-    //     setEmitter(subscriber)
-    //   }
-    // })
-    const savedSubscriber = useRef<Subscriber | null>(null)
+    const savedSubscriber = useFollow<Subscriber | null>(null, (subscriber) => {
+      //   if (subscriber) {
+      //     const emitter = subscriber.body
+      //     setEmitter(emitter)
+      //   }
+    })
     const [mind, listener] = useListener(state, (nextState, state) => {
       const pickedPlugins = Object.values(
         pick(plugins, pickKeysByValue(config || {}, true))
