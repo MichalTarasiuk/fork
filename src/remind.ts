@@ -6,9 +6,9 @@ import { useDidMount, useListener, useFollow } from './hooks/hooks'
 import { assign, pick, compose, noop, pickKeysByValue } from './helpers/helpers'
 import { getPlugins } from './logic/logic'
 import type { StateCreator, Selector, Patch, SetConfig } from './store.types'
-import type { Config } from './factory.types'
+import type { Config } from './remind.types'
 
-const factory = <TState extends Record<PropertyKey, unknown>>(
+const remind = <TState extends Record<PropertyKey, unknown>>(
   stateCreator: StateCreator<TState>
 ) => {
   const store = createStore<TState>(stateCreator)
@@ -23,14 +23,7 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
   ) => {
     type Subscriber = ReturnType<typeof store['subscribe']>
 
-    // const { state, setEmitter } = useMemo(() => store.getState(), [])
-
-    const savedSubscriber = useFollow<Subscriber | null>(null, (subscriber) => {
-      //   if (subscriber) {
-      //     const emitter = subscriber.body
-      //     setEmitter(emitter)
-      //   }
-    })
+    const savedSubscriber = useFollow<Subscriber | null>(null, () => {})
     const [mind, listener] = useListener(state, (nextState, state) => {
       const pickedPlugins = Object.values(
         pick(plugins, pickKeysByValue(config || {}, true))
@@ -89,4 +82,4 @@ const factory = <TState extends Record<PropertyKey, unknown>>(
   }
 }
 
-export default factory
+export default remind
