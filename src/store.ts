@@ -34,9 +34,9 @@ const createStore = <TState extends Record<PropertyKey, unknown>>(
     selector: Selector<TState>,
     equality?: Equality<ReturnType<TSelector>>
   ) => {
-    return (state: TState | undefined, nextState: TState) => {
+    return (state: TState, nextState: TState) => {
       const nextSlice = selector(nextState)
-      const slice = state && selector(state)
+      const slice = selector(state)
       const notify = equality
         ? equality(slice, nextSlice)
         : !equals(slice, nextSlice)

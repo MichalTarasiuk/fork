@@ -77,16 +77,13 @@ export const useListener = <TState extends Record<PropertyKey, unknown>>(
     mind.updateAsync(asyncSlice.current)
   }
 
-  const listener = useCallback(
-    (state: TState | undefined, nextState: TState) => {
-      if (hasMounted.current) {
-        mind.setMind(state, nextState)
+  const listener = useCallback((state: TState, nextState: TState) => {
+    if (hasMounted.current) {
+      mind.setMind(state, nextState)
 
-        force()
-      }
-    },
-    []
-  )
+      force()
+    }
+  }, [])
 
   return [mind.current, listener] as const
 }

@@ -1,7 +1,4 @@
-export type Listener<TState> = (
-  state: TState | undefined,
-  nextState: TState
-) => void
+export type Listener<TState> = (state: TState, nextState: TState) => void
 
 const createObserver = <TState>() => {
   const _listeners: Set<Listener<TState>> = new Set()
@@ -20,7 +17,7 @@ const createObserver = <TState>() => {
   const destroy = () => _listeners.clear()
 
   const notify = (
-    state: TState | undefined,
+    state: TState,
     nextState: TState,
     emitter?: Listener<TState>
   ) => {

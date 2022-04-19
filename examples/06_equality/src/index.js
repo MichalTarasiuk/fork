@@ -29,7 +29,7 @@ const useReRender = (name) => {
 
 const Counter = () => {
   const { mind } = useRemind((mind) => mind.counter, {
-    equality: (nextSlice, slice) => nextSlice > slice,
+    equality: (slice, nextSlice) => nextSlice > slice,
   })
 
   useReRender('Counter')
