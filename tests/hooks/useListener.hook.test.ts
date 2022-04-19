@@ -24,13 +24,13 @@ async function getUser() {
 describe('useListener', () => {
   it('should invoke observer on each update mind', () => {
     // given
-    const observer = jest.fn().mockImplementation((state) => state)
+    const observer = jest.fn().mockImplementation((_, nextState) => nextState)
     const { result: hook } = renderHook(() => useListener({ a: 1 }, observer))
 
     // when
     act(() => {
       const listener = hook.current[1]
-      listener({ a: 2 }, { a: 1 })
+      listener({ a: 1 }, { a: 2 })
     })
 
     // then
@@ -39,7 +39,7 @@ describe('useListener', () => {
     // when
     act(() => {
       const listener = hook.current[1]
-      listener({ a: 3 }, { a: 2 })
+      listener({ a: 2 }, { a: 3 })
     })
 
     // then
@@ -49,13 +49,13 @@ describe('useListener', () => {
   it('should update mind on invoke listener', () => {
     // given
     const { result: hook } = renderHook(() =>
-      useListener({ a: 1 }, (state) => state)
+      useListener({ a: 1 }, (_, nextState) => nextState)
     )
 
     // when
     act(() => {
       const listener = hook.current[1]
-      listener({ a: 2 }, { a: 1 })
+      listener({ a: 1 }, { a: 2 })
     })
 
     // then
@@ -66,7 +66,7 @@ describe('useListener', () => {
   it('should not update mind on listener call when component is not mounted', () => {
     // given
     const { result: hook, unmount } = renderHook(() =>
-      useListener({ a: 1 }, (state) => state)
+      useListener({ a: 1 }, (_, nextState) => nextState)
     )
 
     // when
@@ -88,7 +88,7 @@ describe('useListener', () => {
         {
           getUser,
         },
-        (state) => state
+        (_, nextState) => nextState
       )
     )
 
@@ -111,7 +111,7 @@ describe('useListener', () => {
         {
           getUser,
         },
-        (state) => state
+        (_, nextState) => nextState
       )
     )
 
@@ -135,13 +135,13 @@ describe('useListener', () => {
   it('async slice should be the same after update mind', () => {
     // given
     const { result: hook } = renderHook(() =>
-      useListener({ a: 1, getUser }, (state) => state)
+      useListener({ a: 1, getUser }, (_, nextState) => nextState)
     )
 
     // when
     act(() => {
       const listener = hook.current[1]
-      listener({ a: 2, getUser }, { a: 1, getUser })
+      listener({ a: 1, getUser }, { a: 2, getUser })
     })
 
     // then
@@ -166,7 +166,7 @@ describe('useListener', () => {
     const { result } = renderHook(() => {
       const [state, setState] = useState<Partial<typeof object>>({})
       const firstMount = useFirstMountState()
-      const hook = useListener(state, (state) => state)
+      const hook = useListener(state, (_, nextState) => nextState)
 
       if (!firstMount) {
         rerender()

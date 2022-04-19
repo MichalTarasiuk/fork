@@ -6,7 +6,7 @@ import { useDidMount } from '../src/hooks/hooks'
 import { wait } from './tests.utils'
 import type { Noop } from './tests.types'
 
-describe('factory', () => {
+describe('remind', () => {
   it('should rerender component', async () => {
     // arrange
     type Mind = {
@@ -327,7 +327,7 @@ describe('factory', () => {
 
     const Counter = () => {
       const { mind } = useRemind((mind) => mind.counter, {
-        equalityFn: (nextSlice, slice) => nextSlice > slice,
+        equality: (slice, nextSlice) => nextSlice > slice,
       })
 
       return (

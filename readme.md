@@ -90,7 +90,7 @@ For more control over re-rendering, you may provide any custom equality function
 
 ```jsx
 const { mind } = useRemind((state) => state.mindLevel, {
-  equalityFn: (oldLevel, newLevel) => compare(oldLevel, newLevel),
+  equality: (oldLevel, newLevel) => compare(oldLevel, newLevel),
 })
 ```
 
@@ -179,7 +179,7 @@ If you need to subscribe with selector,
 With this middleware `subscribe` accepts an additional signature:
 
 ```ts
-subscribe(listener, selector?, customEquality?): { unsubscribe, body }
+subscribe(listener, selector?, equality?): { unsubscribe, body }
 ```
 
 ## Can't live without redux-like reducers and action types?

@@ -288,7 +288,7 @@ describe('store', () => {
     store.subscribe(
       spy,
       (state) => state.counter,
-      (nextSlice, slice) => nextSlice > slice
+      (slice, nextSlice) => nextSlice > slice
     )
 
     // then

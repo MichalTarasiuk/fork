@@ -23,27 +23,20 @@ const remind = <TState extends Record<PropertyKey, unknown>>(
   ) => {
     type Subscriber = ReturnType<typeof store['subscribe']>
 
-    // const { state, setEmitter } = useMemo(() => store.getState(), [])
-
-    const savedSubscriber = useFollow<Subscriber | null>(null, () => {
-      //   if (subscriber) {
-      //     const emitter = subscriber.body
-      //     setEmitter(emitter)
-      //   }
-    })
-    const [mind, listener] = useListener(state, (nextState, state) => {
+    const savedSubscriber = useFollow<Subscriber | null>(null, () => {})
+    const [mind, listener] = useListener(state, (state, nextState) => {
       const pickedPlugins = Object.values(
         filterObject(plugins, (key) => config[key] === true)
       )
       // @ts-ignore
       const combinedPlugins = compose(...pickedPlugins)
 
-      return combinedPlugins({ nextState, state }).nextState
+      return combinedPlugins({ state, nextState }).nextState
     })
 
     useDidMount(() => {
-      const { equalityFn } = config || {}
-      const subscriber = store.subscribe(listener, selector, equalityFn)
+      const { equality } = config || {}
+      const subscriber = store.subscribe(listener, selector, equality)
 
       savedSubscriber.current = subscriber
 

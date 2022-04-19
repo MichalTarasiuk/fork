@@ -12,7 +12,7 @@ import type { AddBy, AsyncFunction } from '../typings/typings'
 
 const createMind = <TState extends Record<PropertyKey, unknown>>(
   initialState: TState,
-  callback: (nextState: TState, prevState?: TState) => TState
+  callback: (state: TState | undefined, nextState: TState) => TState
 ) => {
   const asyncSymbol = Symbol('async')
 
@@ -20,15 +20,15 @@ const createMind = <TState extends Record<PropertyKey, unknown>>(
     [asyncSymbol]?: AsyncSlice
   }
   let mind: Mind = callback(
+    undefined,
     filterObject(initialState, (_, value) => !isAsyncFunction(value))
   )
 
-  const setMind = (nextState: TState, prevState?: TState) => {
+  const setMind = (state: TState | undefined, nextState: TState) => {
     const asyncSlice = mind[asyncSymbol]
     const updatedMind: Mind = callback(
-      filterObject(nextState, (_, value) => !isAsyncFunction(value)),
-      prevState &&
-        filterObject(prevState, (_, value) => !isAsyncFunction(value))
+      state && filterObject(state, (_, value) => !isAsyncFunction(value)),
+      filterObject(nextState, (_, value) => !isAsyncFunction(value))
     )
 
     updatedMind[asyncSymbol] = asyncSlice
@@ -51,7 +51,7 @@ const createMind = <TState extends Record<PropertyKey, unknown>>(
 
 export const useListener = <TState extends Record<PropertyKey, unknown>>(
   state: TState,
-  observer: (nextState: TState, prevState?: TState) => TState
+  observer: (state: TState | undefined, nextState: TState) => TState
 ) => {
   const mind = useMemo(() => createMind(state, observer), [])
 
@@ -77,13 +77,16 @@ export const useListener = <TState extends Record<PropertyKey, unknown>>(
     mind.updateAsync(asyncSlice.current)
   }
 
-  const listener = useCallback((nextState: TState, prevState?: TState) => {
-    if (hasMounted.current) {
-      mind.setMind(nextState, prevState)
+  const listener = useCallback(
+    (state: TState | undefined, nextState: TState) => {
+      if (hasMounted.current) {
+        mind.setMind(state, nextState)
 
-      force()
-    }
-  }, [])
+        force()
+      }
+    },
+    []
+  )
 
   return [mind.current, listener] as const
 }

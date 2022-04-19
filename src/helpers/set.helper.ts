@@ -1,4 +1,4 @@
-import { cloneObject } from '../helpers/helpers'
+import { copy } from '../helpers/helpers'
 
 type Mapper = {
   [key: string]: {
@@ -11,7 +11,7 @@ export const set = <TValue extends Record<PropertyKey, unknown>>(
   value: TValue,
   mapper: Mapper
 ) => {
-  const clone = cloneObject(value) as Record<PropertyKey, unknown>
+  const clone = copy(value) as Record<PropertyKey, unknown>
 
   for (const [key, value] of Object.entries(mapper)) {
     if (!('to' in value)) {

@@ -1,6 +1,6 @@
-import { cloneObject } from '../../src/helpers/helpers'
+import { copy } from '../../src/helpers/helpers'
 
-describe('cloneObject', () => {
+describe('copy', () => {
   it('should clone object and not mutate the original object', () => {
     // arrange
     const data = {
@@ -25,15 +25,15 @@ describe('cloneObject', () => {
       ]),
     }
 
-    const copy = cloneObject(data)
+    const copy1 = copy(data)
 
     // assert
-    expect(cloneObject(data)).toEqual(copy)
+    expect(copy(data)).toEqual(copy1)
     // @ts-expect-error
-    copy.test.what = '1243'
-    copy.test.date = new Date('2020-10-16')
+    copy1.test.what = '1243'
+    copy1.test.date = new Date('2020-10-16')
     // @ts-ignore
-    copy.items[0] = 2
+    copy1.items[0] = 2
 
     expect(data).toEqual({
       items: [],
@@ -60,6 +60,6 @@ describe('cloneObject', () => {
     // @ts-ignore
     data.items = [1, 2, 3]
 
-    expect(copy.items).toEqual([2])
+    expect(copy1.items).toEqual([2])
   })
 })

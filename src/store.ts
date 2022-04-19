@@ -5,7 +5,7 @@ import {
   resolve,
   equals,
   isFunction,
-  cloneObject,
+  copy,
   noop,
   empty,
 } from './helpers/helpers'
@@ -16,7 +16,7 @@ import type {
   Selector,
   SetState,
   GetState,
-  CustomEquality,
+  Equality,
   Lifecycle,
 } from './store.types'
 
@@ -32,17 +32,17 @@ const createStore = <TState extends Record<PropertyKey, unknown>>(
   const customListener = <TSelector extends Selector<TState>>(
     listener: Listener<TState>,
     selector: Selector<TState>,
-    customEquality?: CustomEquality<ReturnType<TSelector>>
+    equality?: Equality<ReturnType<TSelector>>
   ) => {
-    return (nextState: TState, state?: TState) => {
+    return (state: TState | undefined, nextState: TState) => {
       const nextSlice = selector(nextState)
       const slice = state && selector(state)
-      const notify = customEquality
-        ? customEquality(nextSlice, slice)
-        : !equals(nextSlice, slice)
+      const notify = equality
+        ? equality(slice, nextSlice)
+        : !equals(slice, nextSlice)
 
       if (notify) {
-        listener(nextState, state)
+        listener(state, nextState)
       }
     }
   }
@@ -50,10 +50,10 @@ const createStore = <TState extends Record<PropertyKey, unknown>>(
   const subscribe = <TSelector extends Selector<TState>>(
     listener: Listener<TState>,
     selector?: TSelector,
-    customEquality?: CustomEquality<ReturnType<TSelector>>
+    equality?: Equality<ReturnType<TSelector>>
   ) => {
     const readydListener = selector
-      ? customListener(listener, selector, customEquality)
+      ? customListener(listener, selector, equality)
       : listener
 
     const subscriber = observer.subscribe(readydListener)
@@ -64,7 +64,7 @@ const createStore = <TState extends Record<PropertyKey, unknown>>(
   const setState: SetState<TState> = (patch, config, emitter) => {
     const { replace = false, emitt = true } = config || {}
 
-    const { nextState, oldState } = state.set((state) => {
+    const { oldState, nextState } = state.set((state) => {
       const updatedState = produce(state, (draft) => {
         const resolvedPatch = isFunction(patch) ? patch(draft, setState) : patch
 
@@ -78,8 +78,8 @@ const createStore = <TState extends Record<PropertyKey, unknown>>(
       return updatedState
     })
 
-    if (!equals(nextState, oldState)) {
-      observer.notify(nextState, oldState, emitt ? undefined : emitter)
+    if (!equals(oldState, nextState)) {
+      observer.notify(oldState, nextState, emitt ? undefined : emitter)
     }
   }
 
@@ -87,10 +87,10 @@ const createStore = <TState extends Record<PropertyKey, unknown>>(
 
   const reset = () => {
     const restoredState = createState(stateCreator, setState, getState)
-    const savedState = cloneObject(state.current)
+    const savedState = copy(state.current)
 
     Object.assign(state.current, restoredState.current)
-    observer.notify(restoredState.current, savedState)
+    observer.notify(savedState, restoredState.current)
 
     return restoredState.current
   }
@@ -132,7 +132,7 @@ const createState = <TState extends Record<PropertyKey, unknown>>(
   return {
     current: state,
     set(resolvableState: Resolvable<TState>) {
-      const oldState = cloneObject(this.current)
+      const oldState = copy(this.current)
       const nextState = resolve(resolvableState, oldState)
 
       Object.assign(empty(this.current), nextState)
