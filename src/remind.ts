@@ -19,7 +19,7 @@ const remind = <TState extends Record<PropertyKey, unknown>>(
 
   const useRemind = <TSelector extends Selector<TState>>(
     selector?: TSelector,
-    config?: Config<TState, TSelector>
+    config: Config<TState, TSelector> = {}
   ) => {
     type Subscriber = ReturnType<typeof store['subscribe']>
 
@@ -33,7 +33,7 @@ const remind = <TState extends Record<PropertyKey, unknown>>(
     })
     const [mind, listener] = useListener(state, (nextState, state) => {
       const pickedPlugins = Object.values(
-        filterObject(plugins, (_, value) => value === true)
+        filterObject(plugins, (key) => config[key] === true)
       )
       // @ts-ignore
       const combinedPlugins = compose(...pickedPlugins)
