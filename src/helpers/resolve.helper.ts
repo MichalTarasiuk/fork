@@ -1,13 +1,9 @@
-export type Resolvable<TValue> = TValue | ((prevState: TValue) => TValue)
-
-export function resolve<TState>(
-  resolvable: Resolvable<TState>,
-  value?: TState
-): TState {
+export function resolve<TValue, TArgs extends unknown[]>(
+  resolvable: TValue | ((...args: TArgs) => TValue),
+  ...args: TArgs
+): TValue {
   if (typeof resolvable === 'function') {
-    return resolvable.length
-      ? (resolvable as Function)(value)
-      : (resolvable as Function)()
+    return (resolvable as Function)(...args)
   }
 
   return resolvable

@@ -1,13 +1,13 @@
 import type { Draft } from 'immer'
 
-import type { Resolvable, Listener } from './helpers/helpers'
+import type { Listener, RefObject } from './helpers/helpers'
 
 export type CreateState<TState> = (
   stateCreator: StateCreator<TState>,
   setState: SetState<TState>
 ) => {
   current: TState
-  set: (resolvableState: Resolvable<TState>) => {
+  set: (resolvableState: ResolvableState<TState>) => {
     nextState: TState
     oldState: TState
   }
@@ -28,7 +28,7 @@ export type SetConfig = { replace?: boolean; emitt?: boolean }
 export type SetState<TState> = (
   patch: Patch<TState>,
   config?: SetConfig,
-  emitter?: Listener<TState>
+  emitter?: RefObject<Listener<TState> | undefined> | Listener<TState>
 ) => void
 
 export type Equality<TState> = (nextState: TState, state: TState) => boolean
@@ -38,3 +38,5 @@ export type GetState<TState> = () => TState
 export type Patch<TState> =
   | Partial<TState>
   | ((state: Draft<TState>, set: SetState<TState>) => Partial<TState> | void)
+
+export type ResolvableState<TValue> = TValue | ((prevState: TValue) => TValue)

@@ -1,6 +1,7 @@
 export * from './observer.helper'
 export * from './resolve.helper'
 export * from './entries.helper'
+export * from './refObject.helper'
 export { isPrimitive } from './isPrimitive.helper'
 export { equals } from './equals.helper'
 export { copy } from './copy.helper'

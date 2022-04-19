@@ -4,12 +4,12 @@ import {
   createObserver,
   resolve,
   equals,
-  isFunction,
   copy,
   noop,
   empty,
+  inferRefObject,
 } from './helpers/helpers'
-import type { Resolvable, Listener } from './helpers/helpers'
+import type { Listener } from './helpers/helpers'
 import type {
   CreateState,
   StateCreator,
@@ -18,6 +18,9 @@ import type {
   GetState,
   Equality,
   Lifecycle,
+  Patch,
+  SetConfig,
+  ResolvableState,
 } from './store.types'
 
 const createStore = <TState extends Record<PropertyKey, unknown>>(
@@ -66,7 +69,7 @@ const createStore = <TState extends Record<PropertyKey, unknown>>(
 
     const { oldState, nextState } = state.set((state) => {
       const updatedState = produce(state, (draft) => {
-        const resolvedPatch = isFunction(patch) ? patch(draft, setState) : patch
+        const resolvedPatch = resolve(patch, draft, setState)
 
         if (resolvedPatch) {
           Object.assign(replace ? empty(draft) : draft, resolvedPatch)
@@ -79,7 +82,9 @@ const createStore = <TState extends Record<PropertyKey, unknown>>(
     })
 
     if (!equals(oldState, nextState)) {
-      observer.notify(oldState, nextState, emitt ? undefined : emitter)
+      const inferedEmitter = inferRefObject(emitter)
+
+      observer.notify(oldState, nextState, emitt ? undefined : inferedEmitter)
     }
   }
 
@@ -125,21 +130,36 @@ const createState = <TState extends Record<PropertyKey, unknown>>(
   setState: SetState<TState>,
   getState: GetState<TState>
 ) => {
-  const state = isFunction(stateCreator)
-    ? stateCreator(setState, getState)
-    : stateCreator
+  const resolveState = (stateCreator: StateCreator<TState>) => {
+    const emitter = {
+      current: undefined as Listener<TState> | undefined,
+      set(listener: Listener<TState> | undefined) {
+        this.current = listener
+      },
+    }
+
+    const customSetState = (patch: Patch<TState>, config?: SetConfig) => {
+      setState(patch, config, emitter)
+    }
+
+    const state = resolve(stateCreator, customSetState, getState)
+
+    return { state }
+  }
+
+  const { state } = resolveState(stateCreator)
 
   return {
     current: state,
-    set(resolvableState: Resolvable<TState>) {
+    set(resolvableState: ResolvableState<TState>) {
       const oldState = copy(this.current)
       const nextState = resolve(resolvableState, oldState)
 
       Object.assign(empty(this.current), nextState)
 
       return {
-        nextState,
         oldState,
+        nextState,
       }
     },
   }
