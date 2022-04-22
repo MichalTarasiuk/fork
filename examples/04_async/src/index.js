@@ -4,8 +4,7 @@ import remind from 'react-remind'
 
 const wait = (ms = 1000) => new Promise((res) => setTimeout(res, ms))
 
-const { useRemind } = remind((set) => ({
-  counter: 0,
+const { useRemind } = remind({ counter: 0 }, (set) => ({
   increase: async () => {
     await wait()
     set((mind) => {

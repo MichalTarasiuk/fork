@@ -2,12 +2,12 @@ import { StrictMode, useRef, useEffect } from 'react'
 import { render } from 'react-dom'
 import remind from 'react-remind'
 
-const { useRemind } = remind((set) => ({
-  counter: 0,
+const { useRemind } = remind({ counter: 0 }, (set) => ({
   increase: () => set((prevMind) => ({ counter: prevMind.counter + 1 })),
   decrease: () => set((prevMind) => ({ counter: prevMind.counter - 1 })),
 }))
-const useIsFirstMount = () => {
+
+const useFirstMount = () => {
   const ref = useRef(true)
 
   useEffect(() => {
@@ -20,7 +20,7 @@ const useIsFirstMount = () => {
 }
 
 const useReRender = (name) => {
-  const isFirstMount = useIsFirstMount()
+  const isFirstMount = useFirstMount()
 
   if (!isFirstMount) {
     console.log(`${name} rerendered`)
@@ -43,12 +43,10 @@ const Counter = () => {
   )
 }
 
-const App = () => {
-  return (
-    <StrictMode>
-      <Counter />
-    </StrictMode>
-  )
-}
+const App = () => (
+  <StrictMode>
+    <Counter />
+  </StrictMode>
+)
 
 render(<App />, document.querySelector('#app'))

@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef } from 'react'
 
-import type { Note as Data } from 'store/store.types'
+import type { Note as Data } from 'store/store'
 import './notes.css'
 
 type Props = {

@@ -1,16 +1,19 @@
 import remind from 'react-remind'
 
 import { wait } from './store.helpers'
-import type { Mind } from './store.types'
 
-const { useRemind } = remind<Mind>((set) => ({
-  block: true,
+export type Note = {
+  id: number
+  title: string
+  content: string
+}
+
+const { useRemind } = remind({ block: true, notes: [] as Note[] }, (set) => ({
   async unlock() {
     await wait(1000)
 
     set({ block: false })
   },
-  notes: [],
 }))
 
 export { useRemind }

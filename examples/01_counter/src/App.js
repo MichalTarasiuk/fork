@@ -1,7 +1,6 @@
 import remind from 'react-remind'
 
-const { useRemind } = remind((set) => ({
-  counter: 0,
+const { useRemind } = remind({ counter: 0 }, (set) => ({
   setToInitial: () => set({ counter: 0 }),
   increase: () => set((prevMind) => ({ counter: prevMind.counter + 1 })),
 }))

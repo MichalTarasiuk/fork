@@ -2,7 +2,7 @@ import { StrictMode, useRef, useEffect } from 'react'
 import { render } from 'react-dom'
 import remind from 'react-remind'
 
-const useIsFirstMount = () => {
+const useFirstMount = () => {
   const ref = useRef(true)
 
   useEffect(() => {
@@ -16,7 +16,7 @@ const useIsFirstMount = () => {
 
 const useReRenderCount = () => {
   const ref = useRef(0)
-  const isFirstMount = useIsFirstMount()
+  const isFirstMount = useFirstMount()
 
   if (!isFirstMount) {
     ref.current++
@@ -45,7 +45,7 @@ const reducer = (counter, action) => {
   }
 }
 
-const { useRemind } = remind((set, get) => ({
+const { useRemind } = remind({ counter: 0 }, (set, get) => ({
   counter: 0,
   setCounter: (action) => {
     set((state) => reducer(state.counter, action))
