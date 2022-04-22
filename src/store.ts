@@ -1,34 +1,25 @@
 import produce from 'immer'
 
-import {
-  createObserver,
-  resolve,
-  equals,
-  copy,
-  noop,
-  empty,
-  inferRefObject,
-} from './helpers/helpers'
+import { createObserver, resolve, equals, copy, empty } from './helpers/helpers'
 import type { Listener } from './helpers/helpers'
 import type {
   CreateState,
-  StateCreator,
+  ActionsCreator,
   Selector,
   SetState,
-  GetState,
   Equality,
-  Lifecycle,
-  Patch,
-  SetConfig,
   ResolvableState,
+  SetConfig,
+  Patch,
 } from './store.types'
 
-const createStore = <TState extends Record<PropertyKey, unknown>>(
-  stateCreator: StateCreator<TState>,
-  lifecycle?: Lifecycle<TState>
+const createStore = <
+  TState extends Record<PropertyKey, unknown>,
+  TActions extends Record<PropertyKey, Function>
+>(
+  initialState: TState,
+  actionsCreator: ActionsCreator<TState, TActions>
 ) => {
-  const { onMount = () => null, onUpdate = noop } = lifecycle || {}
-
   let state: ReturnType<CreateState<TState>>
   const observer = createObserver<TState>()
 
@@ -58,10 +49,13 @@ const createStore = <TState extends Record<PropertyKey, unknown>>(
     const readydListener = selector
       ? customListener(listener, selector, equality)
       : listener
-
     const subscriber = observer.subscribe(readydListener)
+    const customSetState = (patch: Patch<TState>, config?: SetConfig) => {
+      setState(patch, config, subscriber.body)
+    }
+    const actions = resolve(actionsCreator, customSetState, getState)
 
-    return subscriber
+    return { actions, ...subscriber }
   }
 
   const setState: SetState<TState> = (patch, config, emitter) => {
@@ -76,93 +70,43 @@ const createStore = <TState extends Record<PropertyKey, unknown>>(
         }
       })
 
-      onUpdate(updatedState)
-
       return updatedState
     })
 
     if (!equals(oldState, nextState)) {
-      const inferedEmitter = inferRefObject(emitter)
-
-      observer.notify(oldState, nextState, emitt ? undefined : inferedEmitter)
+      observer.notify(oldState, nextState, emitt ? undefined : emitter)
     }
   }
 
   const getState = () => state.current
 
-  const reset = () => {
-    const restoredState = createState(stateCreator, setState, getState)
-    const savedState = copy(state.current)
-
-    Object.assign(state.current, restoredState.current)
-    observer.notify(savedState, restoredState.current)
-
-    return restoredState.current
-  }
-
-  state = createState(stateCreator, setState, getState)
-  state.set((state) => {
-    const nextState = onMount(state)
-
-    if (nextState) {
-      return nextState
-    }
-
-    return state
-  })
+  state = createState(initialState)
 
   return {
-    get state() {
-      return state.current
-    },
     get listeners() {
       return observer.listeners
     },
     notify: observer.notify,
-    reset,
     setState,
     subscribe,
   }
 }
 
 const createState = <TState extends Record<PropertyKey, unknown>>(
-  stateCreator: StateCreator<TState>,
-  setState: SetState<TState>,
-  getState: GetState<TState>
-) => {
-  const resolveState = (stateCreator: StateCreator<TState>) => {
-    const emitter = {
-      current: undefined as Listener<TState> | undefined,
-      set(listener: Listener<TState> | undefined) {
-        this.current = listener
-      },
+  initialState: TState
+) => ({
+  current: initialState as TState,
+  set(resolvableState: ResolvableState<TState>) {
+    const oldState = copy(this.current)
+    const nextState = resolve(resolvableState, oldState)
+
+    Object.assign(empty(this.current), nextState)
+
+    return {
+      oldState,
+      nextState,
     }
-
-    const customSetState = (patch: Patch<TState>, config?: SetConfig) => {
-      setState(patch, config, emitter)
-    }
-
-    const state = resolve(stateCreator, customSetState, getState)
-
-    return { state }
-  }
-
-  const { state } = resolveState(stateCreator)
-
-  return {
-    current: state,
-    set(resolvableState: ResolvableState<TState>) {
-      const oldState = copy(this.current)
-      const nextState = resolve(resolvableState, oldState)
-
-      Object.assign(empty(this.current), nextState)
-
-      return {
-        oldState,
-        nextState,
-      }
-    },
-  }
-}
+  },
+})
 
 export { createStore }
