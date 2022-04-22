@@ -1,52 +1,73 @@
-import { useState } from 'react'
-import { render, fireEvent, act, waitFor } from '@testing-library/react'
+import { render, fireEvent, waitFor } from '@testing-library/react'
+import { wait } from './tests.utils'
 
 import remind from '../src/remind'
 import { useDidMount } from '../src/hooks/hooks'
-import { wait } from './tests.utils'
-import type { Noop } from './tests.types'
 
 describe('remind', () => {
-  it('should rerender component', async () => {
+  it('should rerender component', () => {
     // arrange
-    type Mind = {
-      counter: number
-      increase: Noop
-    }
-    const { useRemind } = remind<Mind>((set) => ({
-      counter: 0,
-      increase: () => set((prevMind) => ({ counter: prevMind.counter + 1 })),
+    const { useRemind } = remind({ counter: 0 }, (set) => ({
+      increase: () => {
+        set((mind) => ({ counter: mind.counter + 1 }))
+      },
     }))
-
     const Counter = () => {
-      const [{ counter, increase }] = useRemind()
+      const { mind } = useRemind()
 
       useDidMount(() => {
-        increase()
+        mind.increase()
       })
 
-      return <p>counter {counter}</p>
+      return (
+        <div>
+          <p>counter: {mind.counter}</p>
+          <button onClick={mind.increase}>increase</button>
+        </div>
+      )
     }
-
-    const { findByText } = render(<Counter />)
+    const { getByText } = render(<Counter />)
 
     // assert
-    await findByText('counter 1')
+    getByText('counter: 1')
   })
 
-  it('should not rerender component when use selector', async () => {
+  it('should not rerender component when state is not changed', () => {
     // arrange
-    const { useRemind } = remind({
-      counter: 0,
-      darkMode: false,
-    })
+    const spy = jest.fn()
+    const { useRemind } = remind({ counter: 0 }, (set) => ({}))
+    const Counter = () => {
+      const { setMind } = useRemind()
 
+      spy()
+
+      useDidMount(() => {
+        setMind((mind) => mind)
+      })
+
+      return null
+    }
+    render(<Counter />)
+
+    // assert
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
+
+  it('should not rerender component when scope state is the same', async () => {
+    // arrange
+    const { useRemind } = remind(
+      {
+        counter: 0,
+        darkMode: false,
+      },
+      () => ({})
+    )
     const Counter = () => {
       const [mind, setMind] = useRemind((mind) => mind.darkMode)
 
       useDidMount(() => {
-        setMind((prevMind) => ({
-          counter: prevMind.counter + 1,
+        setMind((mind) => ({
+          counter: mind.counter + 1,
         }))
       })
 
@@ -59,233 +80,162 @@ describe('remind', () => {
     await findByText('counter 0')
   })
 
-  it('should remove listener from component which is not mounted', () => {
-    // given
-    const store = remind({
-      counter: 0,
-    })
-    const { useRemind } = store
+  it('should not rerender component when scope state is not the same', async () => {
+    // arrange
+    const { useRemind } = remind(
+      {
+        counter: 0,
+        darkMode: false,
+      },
+      () => ({})
+    )
+    const Counter = () => {
+      const [mind, setMind] = useRemind((mind) => mind.counter)
 
+      useDidMount(() => {
+        setMind((mind) => ({
+          counter: mind.counter + 1,
+        }))
+      })
+
+      return <p>counter {mind.counter}</p>
+    }
+
+    const { findByText } = render(<Counter />)
+
+    // assert
+    await findByText('counter 1')
+  })
+
+  it('should rerender component when scope state is not the same after setState action from beyond component', () => {
+    // given
+    const { useRemind, setMind } = remind(
+      {
+        counter: 0,
+        darkMode: false,
+      },
+      () => ({})
+    )
+    const spy = jest.fn()
+    const Counter = () => {
+      const [mind] = useRemind((mind) => mind.counter)
+
+      spy()
+
+      return <p>counter {mind.counter}</p>
+    }
+
+    render(<Counter />)
+
+    // when
+    setMind((mind) => mind)
+
+    // then
+    expect(spy).toHaveBeenCalledTimes(1)
+  })
+
+  it('should unsubscribe after unmount', () => {
+    // given
+    const { useRemind } = remind({ isUnmount: false, counter: 0 }, (set) => ({
+      unmount: () => {
+        set({ isUnmount: true })
+      },
+      increase: () => {
+        set((mind) => ({ counter: mind.counter + 1 }))
+      },
+    }))
+    const spy1 = jest.fn()
+    const spy2 = jest.fn()
     const Root = {
       Parent() {
-        const [isMounted, setIsMounted] = useState(true)
-
-        const unmount = () => setIsMounted(false)
+        const { mind } = useRemind()
 
         return (
           <>
-            {isMounted && <Root.Child1 />}
-            <Root.Child2 />
-            <button onClick={unmount}>unmount child 1</button>
+            <Root.Child spy={spy1} />
+            {mind.isUnmount && <Root.Child spy={spy2} />}
+            <button onClick={mind.unmount}>unmount</button>
+            <button onClick={mind.increase}>increase</button>
           </>
         )
       },
-      Child1() {
-        const [mind] = useRemind()
+      Child({ spy }) {
+        useRemind()
 
-        return (
-          <div>
-            <p>component: Child1</p>
-            <p>counter {mind.counter}</p>
-          </div>
-        )
-      },
-      Child2() {
-        const [mind] = useRemind()
+        spy()
 
-        return (
-          <div>
-            <p>component: Child2</p>
-            <p>counter {mind.counter}</p>
-          </div>
-        )
+        return null
       },
     }
-
     const { getByText } = render(<Root.Parent />)
 
     // when
-    fireEvent.click(getByText('unmount child 1'))
+    fireEvent.click(getByText('unmount'))
+    fireEvent.click(getByText('increase'))
 
     // then
-    expect(store.listeners).toHaveLength(1)
+    expect(spy1).toHaveBeenCalledTimes(3)
+    expect(spy2).toHaveBeenCalledTimes(1)
   })
 
-  it('should not rerender component which use selector after invoke setMind action beyond component', async () => {
+  it('should update async action status', () => {
     // given
-    const store = remind({
-      counter: 0,
-      darkMode: false,
-    })
-    const { useRemind, setMind } = store
+    const { useRemind } = remind({ counter: 0 }, (set) => ({
+      increase: async () => {
+        await wait(1000)
 
-    const Counter = () => {
-      const { mind } = useRemind((mind) => mind.darkMode)
-
-      return <p>counter {mind.counter}</p>
-    }
-
-    const { findByText } = render(<Counter />)
-
-    // when
-    setMind((prevMind) => ({
-      counter: prevMind.counter + 1,
+        set((mind) => ({ counter: mind.counter + 1 }))
+      },
     }))
-
-    // then
-    await findByText('counter 0')
-  })
-
-  it('should rerender component which use selector after invoke setMind action beyond component', async () => {
-    // given
-    const store = remind({
-      counter: 0,
-      darkMode: false,
-    })
-    const { useRemind, setMind } = store
-
+    const spy = jest.fn()
     const Counter = () => {
-      const [mind] = useRemind()
+      const { mind } = useRemind()
+      const [increase, status] = mind.increase
 
-      return <p>counter {mind.counter}</p>
+      spy(status)
+
+      return <button onClick={increase}>increase</button>
     }
-
-    const { findByText } = render(<Counter />)
-
-    // when
-    act(() => {
-      setMind((prevMind) => ({
-        counter: prevMind.counter + 1,
-      }))
-    })
-
-    // then
-    await findByText('counter 1')
-  })
-
-  it('should not rerender component when mind after setMind action is the same', () => {
-    // given
-    type Mind = {
-      counter: number
-    }
-    const store = remind<Mind>((set) => ({
-      counter: 0,
-    }))
-    const { useRemind } = store
-
-    const Counter = () => {
-      const [{ counter }] = useRemind()
-
-      const increase = () => {
-        store.setMind({
-          counter: 0,
-        })
-      }
-
-      return (
-        <div>
-          <p>counter {counter}</p>
-          <button onClick={increase}>increase</button>
-        </div>
-      )
-    }
-
     const { getByText } = render(<Counter />)
 
     // when
     fireEvent.click(getByText('increase'))
 
-    // then
-    getByText('counter 0')
-  })
-
-  it('should wait for async actions', async () => {
-    // given
-    type Mind = {
-      counter: number
-      increase: () => Promise<void>
-    }
-    const store = remind<Mind>((set) => ({
-      counter: 0,
-      increase: async () => {
-        await wait(1000)
-        set((prevState) => ({ counter: prevState.counter + 1 }))
-      },
-    }))
-    const { useRemind } = store
-
-    const Counter = () => {
-      const { mind } = useRemind()
-      const [increase] = mind.increase
-
-      return (
-        <div>
-          <p>counter {mind.counter}</p>
-          <button onClick={increase}>increase</button>
-        </div>
-      )
-    }
-
-    const { findByText, getByText } = render(<Counter />)
-
     // when
-    fireEvent.click(getByText('increase'))
-
-    // then
-    await findByText('counter 1')
+    expect(spy).toHaveBeenCalledTimes(2)
   })
 
-  it('should unsubscribe component', () => {
+  it('should remove listener after unsubscribe', () => {
     // given
-    type Mind = {
-      counter: number
-      increase: Noop
-    }
-    const store = remind<Mind>((set) => ({
-      counter: 0,
+    const { useRemind } = remind({ counter: 0 }, (set) => ({
       increase: () => {
-        set((prevState) => ({ counter: prevState.counter + 1 }))
+        set((mind) => ({ counter: mind.counter + 1 }))
       },
     }))
-    const { useRemind } = store
-
+    const spy = jest.fn()
     const Counter = () => {
       const { mind, unsubscribe } = useRemind()
 
-      return (
-        <div>
-          <p>counter {mind.counter}</p>
-          <button onClick={mind.increase}>increase</button>
-          <button onClick={unsubscribe}>unsubscribe</button>
-        </div>
-      )
-    }
+      useDidMount(() => {
+        unsubscribe()
+      })
 
+      spy('rerender')
+
+      return <button onClick={mind.increase}>increase</button>
+    }
     const { getByText } = render(<Counter />)
 
     // when
     fireEvent.click(getByText('increase'))
 
-    // then
-    getByText('counter 1')
-
     // when
-    fireEvent.click(getByText('unsubscribe'))
-    fireEvent.click(getByText('increase'))
-
-    // then
-    getByText('counter 1')
+    expect(spy).toHaveBeenCalledTimes(1)
   })
 
   it('should return true when counter value is divisible', () => {
     // given
-    type Mind = {
-      counter: number
-      increase: () => void
-      isDivisible: () => boolean
-    }
-    const { useRemind } = remind<Mind>((set, get) => ({
-      counter: 0,
+    const { useRemind } = remind({ counter: 0 }, (set, get) => ({
       increase: () => set((prevMind) => ({ counter: prevMind.counter + 1 })),
       isDivisible: () => get().counter % 2 === 0,
     }))
@@ -314,13 +264,7 @@ describe('remind', () => {
 
   it('should rerender component when next value is bigger', () => {
     // given
-    type Mind = {
-      counter: number
-      increase: () => void
-      decrease: () => void
-    }
-    const { useRemind } = remind<Mind>((set) => ({
-      counter: 0,
+    const { useRemind } = remind({ counter: 0 }, (set) => ({
       increase: () => set((prevMind) => ({ counter: prevMind.counter + 1 })),
       decrease: () => set((prevMind) => ({ counter: prevMind.counter - 1 })),
     }))
@@ -354,170 +298,71 @@ describe('remind', () => {
     getByText('counter 1')
   })
 
-  it('should replace state', () => {
+  it('should replace state without rerender', () => {
     // given
-    type Mind = {
-      counter: number
-      increase: Noop
-    }
-    const store = remind<Mind>((set) => ({
-      counter: 0,
-      increase: () => {
-        set((prevMind) => ({ counter: prevMind.counter + 1 }))
-      },
-    }))
+    const store = remind({ counter: 0 }, () => ({}))
     const { useRemind } = store
 
     const Counter = () => {
       const { mind, setMind } = useRemind()
 
       const block = () => {
-        setMind(
-          (prevMind) => ({
-            counter: prevMind.counter,
-          }),
-          { replace: true }
-        )
+        setMind({}, { replace: true })
       }
 
-      if (mind.increase) {
+      if ('counter' in mind) {
         return (
           <div>
             <p>counter: {mind.counter}</p>
-            <button onClick={mind.increase}>increase</button>
             <button onClick={block}>block</button>
           </div>
         )
       }
 
-      return null
+      return <p>status: block</p>
     }
 
     const { getByText } = render(<Counter />)
 
     // when
-    fireEvent.click(getByText('increase'))
-
-    // then
-    getByText('counter: 1')
-
-    // when
     fireEvent.click(getByText('block'))
 
     // then
-    expect(store.mind).toEqual({ counter: 1 })
+    getByText('status: block')
   })
 
-  it('should generate staus for new async actions', async () => {
-    // given
-    type Mind = {
-      counter: number
-      increase?: () => Promise<void>
-    }
-    const store = remind<Mind>({
-      counter: 0,
-    })
-    const { useRemind } = store
-
-    const Counter = () => {
-      const { mind, setMind } = useRemind()
-
-      if (mind.increase) {
-        const [increase] = mind.increase
-
-        return (
-          <div>
-            <p>counter: {mind.counter}</p>
-            <button onClick={increase}>increase</button>
-          </div>
-        )
-      }
-
-      const upgrade = () => {
-        setMind((_, set) => ({
-          increase: async () => {
-            await wait(1000)
-            set((prevMind) => ({ counter: prevMind.counter + 1 }))
-          },
-        }))
-      }
-
-      return <button onClick={upgrade}>upgrade</button>
-    }
-
-    const { getByText, findByText } = render(<Counter />)
-
-    // when
-    fireEvent.click(getByText('upgrade'))
-
-    // then
-    getByText('counter: 0')
-
-    // when
-    fireEvent.click(getByText('increase'))
-
-    // then
-    await findByText('counter: 1')
-  })
-
-  it(`should remove status when async action does't exist`, async () => {
-    // given
-    type Mind = {
-      counter: number
-      increase?: () => Promise<void>
-    }
-    const { useRemind } = remind<Mind>((set) => ({
-      counter: 0,
+  it('should generare status for async action', () => {
+    // arrange
+    const { useRemind } = remind({ counter: 0 }, (set) => ({
       increase: async () => {
         await wait(1000)
-        set((prevMind) => ({ counter: prevMind.counter + 1 }))
+
+        set((mind) => ({ counter: mind.counter + 1 }))
       },
     }))
-
+    const spy = jest.fn()
     const Counter = () => {
-      const { mind, setMind } = useRemind()
+      const { mind } = useRemind()
+      const [_, status] = mind.increase
 
-      if (mind.increase) {
-        const [increase] = mind.increase
+      spy(status)
 
-        const remove = () => {
-          setMind(
-            (prevMind) => ({
-              counter: prevMind.counter,
-            }),
-            { replace: true }
-          )
-        }
-
-        return (
-          <div>
-            <p>counter: {mind.counter}</p>
-            <button onClick={increase}>increase</button>
-            <button onClick={remove}>remove</button>
-          </div>
-        )
-      }
-
-      return <pre>{JSON.stringify(mind)}</pre>
+      return null
     }
-    const { getByText, findByText } = render(<Counter />)
+    render(<Counter />)
 
-    // when
-    fireEvent.click(getByText('increase'))
-
-    // then
-    await findByText('counter: 1')
-
-    // when
-    fireEvent.click(getByText('remove'))
+    // assert
+    expect(spy).toHaveBeenCalledWith('idle')
   })
 
-  it('should immer work with setMind action', () => {
+  it('should immer work with setState action', () => {
     // given
-    const { useRemind } = remind({
-      counter: 0,
-    })
-
+    const { useRemind } = remind(
+      {
+        counter: 0,
+      },
+      () => ({})
+    )
     const Counter = () => {
       const { mind, setMind } = useRemind()
 
@@ -543,12 +388,14 @@ describe('remind', () => {
     getByText('counter: 1')
   })
 
-  it('should immer work with setMind action from outside component', () => {
+  it('should immer work with setState action from beyond component', () => {
     // given
-    const { useRemind, setMind } = remind({
-      counter: 0,
-    })
-
+    const { useRemind, setMind } = remind(
+      {
+        counter: 0,
+      },
+      () => ({})
+    )
     const Counter = () => {
       const { mind } = useRemind()
 
@@ -567,5 +414,38 @@ describe('remind', () => {
 
     // then
     getByText('counter: 1')
+  })
+
+  it('should not rerender component when emitt option in config is falsy', () => {
+    // given
+    const { useRemind } = remind(
+      {
+        counter: 0,
+      },
+      (set) => ({
+        increase: () => {
+          set((prevMind) => ({ counter: prevMind.counter + 1 }), {
+            emitt: false,
+          })
+        },
+      })
+    )
+    const Counter = () => {
+      const { mind } = useRemind()
+
+      return (
+        <div>
+          <p>counter: {mind.counter}</p>
+          <button onClick={mind.increase}>increase</button>
+        </div>
+      )
+    }
+    const { getByText } = render(<Counter />)
+
+    // when
+    fireEvent.click(getByText('increase'))
+
+    // then
+    getByText('counter: 0')
   })
 })
