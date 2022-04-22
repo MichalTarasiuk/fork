@@ -1,85 +1,93 @@
-import { useMemo, useCallback } from 'react'
+import { useMemo, useCallback, useRef } from 'react'
 import { unstable_batchedUpdates } from 'react-dom'
 
-import { createStore } from './store'
-import { useDidMount, useListener, useFollow } from './hooks/hooks'
-import { assign, compose, noop, filterObject } from './helpers/helpers'
+import { filterObject, assign, compose } from './helpers/helpers'
+import { useFirstMount, useListener, useDidUnmount } from './hooks/hooks'
 import { getPlugins } from './logic/logic'
-import type { StateCreator, Selector, Patch, SetConfig } from './store.types'
-import type { Config } from './remind.types'
+import { createStore } from './store'
+import type { ActionsCreator, Selector, Patch, SetConfig } from './store.types'
+import type { HookConfig } from './remind.types'
 
-const remind = <TState extends Record<PropertyKey, unknown>>(
-  stateCreator: StateCreator<TState>
+const remind = <
+  TState extends Record<PropertyKey, unknown>,
+  TActions extends Record<PropertyKey, Function>
+>(
+  initialState: TState,
+  actionsCreator: ActionsCreator<TState, TActions>
 ) => {
-  const store = createStore<TState>(stateCreator)
+  const store = createStore(initialState, actionsCreator)
   const plugins = getPlugins(store)
-  const state = store.state
-
-  const { setState, subscribe } = store
 
   const useRemind = <TSelector extends Selector<TState>>(
     selector?: TSelector,
-    config: Config<TState, TSelector> = {}
+    config: HookConfig<TState, TSelector> = {}
   ) => {
-    type Subscriber = ReturnType<typeof store['subscribe']>
+    const subscriber = useRef<ReturnType<typeof store['subscribe']> | null>(
+      null
+    )
+    const mockListener = useRef((_: TState, __: TState) => {})
 
-    const savedSubscriber = useFollow<Subscriber | null>(null, () => {})
-    const [mind, listener] = useListener(state, (state, nextState) => {
-      const pickedPlugins = Object.values(
-        filterObject(plugins, (key) => config[key] === true)
+    const isFirstMount = useFirstMount()
+
+    if (isFirstMount) {
+      subscriber.current = store.subscribe(
+        (state, nextState) => mockListener.current(state, nextState),
+        selector,
+        config.equality
       )
-      // @ts-ignore
-      const combinedPlugins = compose(...pickedPlugins)
+    }
 
-      return combinedPlugins({ state, nextState }).nextState
-    })
+    const savedSubscriber = subscriber.current!
+    const actions = savedSubscriber.actions
 
-    useDidMount(() => {
-      const { equality } = config || {}
-      const subscriber = store.subscribe(listener, selector, equality)
+    const [mind, listener] = useListener(
+      initialState,
+      actions,
+      (state, nextState) => {
+        const pickedPlugins = Object.values(
+          filterObject(plugins, (key) => config[key] === true)
+        )
+        // @ts-ignore
+        const combinedPlugins = compose(...pickedPlugins)
 
-      savedSubscriber.current = subscriber
+        return combinedPlugins({ state, nextState }).nextState
+      }
+    )
 
-      return () => {
-        subscriber.unsubscribe()
+    mockListener.current = listener
+
+    useDidUnmount(() => {
+      if (savedSubscriber) {
+        savedSubscriber.unsubscribe()
+        subscriber.current = null
       }
     })
 
     const setMind = useCallback((patch: Patch<TState>, config?: SetConfig) => {
-      const emitter = savedSubscriber.current?.body
+      const emitter = savedSubscriber.body
 
-      setState(patch, config, emitter)
+      store.setState(patch, config, emitter)
     }, [])
 
-    const output = useMemo(
+    const result = useMemo(
       () => ({
         mind,
         setMind,
-        unsubscribe: savedSubscriber.current?.unsubscribe ?? noop,
+        unsubscribe: savedSubscriber.unsubscribe,
       }),
       [mind]
     )
 
-    return assign([output.mind, output.setMind] as const, output)
+    return assign([result.mind, result.setMind] as const, result)
   }
 
-  const setMind = (...params: Parameters<typeof setState>) => {
+  const setMind = (...params: Parameters<typeof store['setState']>) => {
     unstable_batchedUpdates(() => {
-      setState(...params)
+      store.setState(...params)
     })
   }
 
-  return {
-    get mind() {
-      return store.state
-    },
-    get listeners() {
-      return store.listeners
-    },
-    useRemind,
-    setMind,
-    subscribe,
-  }
+  return { setMind, useRemind, subscribe: store.subscribe }
 }
 
 export default remind

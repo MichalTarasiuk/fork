@@ -24,11 +24,5 @@ export const usePatch = <TState>(
     []
   )
 
-  const replaceState = useCallback((nextState: TState) => {
-    state.current = nextState
-
-    return state.current
-  }, [])
-
-  return { state, setState, replaceState }
+  return { state, setState }
 }

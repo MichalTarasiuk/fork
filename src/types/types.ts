@@ -7,7 +7,7 @@ export type Primitive =
   | symbol
   | bigint
 
-export type Nill = undefined | null
+export type Nil = undefined | null
 
 export type AddBy<
   TObject extends Record<PropertyKey, unknown>,
