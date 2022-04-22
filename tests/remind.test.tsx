@@ -175,7 +175,7 @@ describe('remind', () => {
 
     // then
     expect(spy1).toHaveBeenCalledTimes(3)
-    expect(spy2).toHaveBeenCalledTimes(1)
+    expect(spy2).toHaveBeenCalledTimes(2)
   })
 
   it('should update async action status', () => {
