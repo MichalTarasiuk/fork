@@ -22,7 +22,7 @@ Use the `useRemind` anywhere you want. This hook will decide when your component
 
 ```jsx
 function IdeasDisplay() {
-  const { ideas } = useRemind((mind) => state.ideas)
+  const { ideas } = useRemind((mind) => mind.ideas)
 
   return (
     <ul>
