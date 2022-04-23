@@ -17,7 +17,7 @@ const { useRemind } = remind({ ideas: [] }, (set, get) => ({
 }))
 ```
 
-`Set`: function which manage mind
+`Set`: function which manage mind<br>
 `Get`: function which return current mind
 
 ## Then bind your components, and that's it!
