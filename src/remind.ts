@@ -54,7 +54,9 @@ const remind = <
       }
     )
 
-    mockListener.current = listener
+    if (isFirstMount) {
+      mockListener.current = listener
+    }
 
     useDidUnmount(() => {
       if (savedSubscriber) {
