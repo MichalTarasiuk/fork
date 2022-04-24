@@ -56,6 +56,51 @@ function Controls() {
 }
 ```
 
+## SetMind
+
+Function which manage mind.
+
+```js
+const { setMind } = remind(
+  {
+    /* */
+  },
+  (set) => ({
+    sendAndIdea: () => {
+      // emitter is provided here automatically by useRemind
+      set(patch, config)
+    },
+  })
+)
+
+// emitter is not provided here automatically
+setMind(patch, config)
+```
+
+`Patch`:
+
+```js
+setMind((mind) => ({
+  /* */
+}))
+
+// or
+
+setMind({
+  /* */
+})
+```
+
+`Config`:
+
+```js
+// default setMind config
+const config = {
+  emitt: true, // decides whether the listener sending the action will be called
+  replace: false, // decides whether mind will be overwrite
+}
+```
+
 ## Async
 
 Remind will generate you status for each async action.
@@ -98,4 +143,31 @@ const Component = () => {
 
   /* return */
 }
+```
+
+## Work beyond components
+
+Sometimes you need to access mind outside components.
+
+```js
+const { setMind, subscribe } = remind({ ideas: [] }, (set, get) => ({
+  sendAnIdea: async (id) => {
+    const idea = await myFetcher(id)
+
+    set((mind) => ({ ideas: [...mind.ideas, idea] }))
+  },
+}))
+
+// Listening to all changes, fires synchronously on every change
+const subscriber = subscribe((mind, nextMind) => {
+  /* */
+})
+
+setMind(/* */)
+
+// Actions for manage mind
+subscriber.actions
+
+// Unsubscirbe listener
+subscriber.unsubscribe()
 ```
