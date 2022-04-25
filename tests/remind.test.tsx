@@ -1,10 +1,36 @@
-import { render, fireEvent, waitFor } from '@testing-library/react'
+import { render, fireEvent } from '@testing-library/react'
 import { wait } from './tests.utils'
 
 import remind from '../src/remind'
 import { useDidMount } from '../src/hooks/hooks'
 
 describe('remind', () => {
+  it('should resolve plain action', () => {
+    // arrange
+    const { useRemind } = remind(
+      { counter: 0 },
+      {
+        increase: () => {
+          return { counter: 1 }
+        },
+      }
+    )
+    const spy = jest.fn()
+    const Counter = () => {
+      const { mind } = useRemind()
+
+      useDidMount(() => {
+        spy(mind.increase())
+      })
+
+      return null
+    }
+    render(<Counter />)
+
+    // assert
+    expect(spy).toHaveBeenCalledWith({ counter: 1 })
+  })
+
   it('should rerender component', () => {
     // arrange
     const { useRemind } = remind({ counter: 0 }, (set) => ({

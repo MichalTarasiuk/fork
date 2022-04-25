@@ -2,6 +2,28 @@ import { createStore } from '../src/store'
 import { wait } from './tests.utils'
 
 describe('store', () => {
+  it('should resolve plain action', () => {
+    // given
+    const store = createStore(
+      { counter: 0 },
+      {
+        increase: () => {
+          return { type: 'increase' }
+        },
+      }
+    )
+
+    // when
+    const { actions } = store.subscribe(() => ({}))
+
+    // then
+    expect(actions).toMatchInlineSnapshot(`
+      Object {
+        "increase": [Function],
+      }
+    `)
+  })
+
   it('should return resolved actions after subscribe', () => {
     // given
     const store = createStore({ counter: 0 }, (set) => ({
