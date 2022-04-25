@@ -1,4 +1,4 @@
-# Remind 🧠
+# Remind
 
 ```bash
 npm install react-remind # or yarn add react-remind
