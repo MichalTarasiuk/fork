@@ -1,5 +1,4 @@
 import { useMemo, useCallback, useRef } from 'react'
-import { unstable_batchedUpdates } from 'react-dom'
 
 import { filterObject, assign, compose } from './helpers/helpers'
 import { useFirstMount, useListener, useDidUnmount } from './hooks/hooks'
@@ -84,9 +83,7 @@ const remind = <
   }
 
   const setMind = (...params: Parameters<typeof store['setState']>) => {
-    unstable_batchedUpdates(() => {
-      store.setState(...params)
-    })
+    store.setState(...params)
   }
 
   return { setMind, useRemind, subscribe: store.subscribe }

@@ -1,4 +1,4 @@
-import { render, fireEvent } from '@testing-library/react'
+import { render, fireEvent, act } from '@testing-library/react'
 import { wait } from './tests.utils'
 
 import remind from '../src/remind'
@@ -434,8 +434,11 @@ describe('remind', () => {
     const { getByText } = render(<Counter />)
 
     // when
-    setMind((prevMind) => {
-      prevMind.counter++
+    act(() => {
+      setMind((prevMind) => {
+        console.log(prevMind)
+        prevMind.counter++
+      })
     })
 
     // then
