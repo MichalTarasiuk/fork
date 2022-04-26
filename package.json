@@ -1,6 +1,6 @@
 {
   "name": "react-remind",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Remind is library for state management in React",
   "repository": "https://github.com/MichalTarasiuk/remind.git",
   "exports": {
