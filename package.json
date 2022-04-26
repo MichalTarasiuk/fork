@@ -1,5 +1,6 @@
 {
   "name": "react-remind",
+  "private": "true",
   "version": "1.1.2",
   "description": "Remind is library for state management in React",
   "repository": "https://github.com/MichalTarasiuk/remind.git",
@@ -70,13 +71,15 @@
     "rollup-plugin-filesize": "9.1.2",
     "rollup-plugin-license": "2.6.1",
     "ts-jest": "27.1.4",
-    "typescript": "4.6.3"
+    "typescript": "4.6.3",
+    "react-dom": "^18.0.0"
   },
   "peerDependencies": {
     "immer": ">=9.0",
     "react": ">=16.8"
   },
-  "dependencies": {
-    "react-dom": "^18.0.0"
+  "resolutions": {
+    "immer": ">8.0.0",
+    "react": ">16.8.0"
   }
 }
