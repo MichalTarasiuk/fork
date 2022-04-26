@@ -176,14 +176,14 @@ subscriber.unsubscribe()
 
 ### Async
 
-If you are use async action status not for display in JSX. The set mind action should have emitt property set to true.
+If you are use async action status not for display in JSX. The set mind action should have emitt property set to false.
 
 ```jsx
 const { useRemind } = remind({ ideas: [] }, (set, get) => ({
   sendAnIdea: async (id) => {
     const idea = await myFetcher(id)
 
-    set((mind) => ({ ideas: [...mind.ideas, idea] }))
+    set((mind) => ({ ideas: [...mind.ideas, idea] }), { emitt: false })
   },
 }))
 
