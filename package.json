@@ -43,7 +43,8 @@
   "scripts": {
     "test": "jest --watch",
     "build": "rimraf dist && rollup --config",
-    "build:watch": "rollup --config --watch"
+    "build:watch": "rollup --config --watch",
+    "build:publish": "yarn build && yarn publish"
   },
   "lint-staged": {
     "*": "prettier --write"
