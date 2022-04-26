@@ -171,3 +171,32 @@ subscriber.actions
 // Unsubscirbe listener
 subscriber.unsubscribe()
 ```
+
+## Good practices
+
+### Async
+
+If you are use async action status not for display in JSX. The set mind action should have emitt property set to true.
+
+```jsx
+const { useRemind } = remind({ ideas: [] }, (set, get) => ({
+  sendAnIdea: async (id) => {
+    const idea = await myFetcher(id)
+
+    set((mind) => ({ ideas: [...mind.ideas, idea] }))
+  },
+}))
+
+const Component = () => {
+  const [mind] = useRemind()
+  const [sendAnIdea, status] = mind.sendAnIdea
+
+  useEffect(() => {
+    // logic
+  }, [status])
+
+  /* return */
+}
+```
+
+This tip will remove one extra rerender caused by set mind action.
