@@ -8,7 +8,9 @@ export const merge = <
   fn: (a: TA[keyof TA], b: TB[keyof TB]) => TReturnType
 ) => {
   type Keys = keyof TA & keyof TB
-  const keys = [...new Set([...Object.keys(a), ...Object.keys(b)])] as Keys[]
+  const keys = [
+    ...new Set([...Object.keys(a), ...Object.keys(b)]),
+  ] as readonly Keys[]
 
   return keys.reduce((acc, key) => {
     acc[key] = fn(a[key], b[key])

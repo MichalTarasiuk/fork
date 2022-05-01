@@ -1,16 +1,6 @@
-import type { Draft } from 'immer'
-
 import type { Listener } from './helpers/helpers'
-
-export type CreateState<TState extends Record<PropertyKey, unknown>> = (
-  initialState: TState
-) => {
-  current: TState
-  set: (resolvableState: ResolvableState<TState>) => {
-    nextState: TState
-    oldState: TState
-  }
-}
+import type { ArrowFunction } from './types/types'
+import type { Draft } from 'immer'
 
 export type Selector<TState extends Record<PropertyKey, unknown>> = (
   state: TState
@@ -18,10 +8,10 @@ export type Selector<TState extends Record<PropertyKey, unknown>> = (
 
 export type ActionsCreator<
   TState extends Record<PropertyKey, unknown>,
-  TActions extends Record<PropertyKey, Function>
+  TActions extends Record<PropertyKey, ArrowFunction>
 > = ((set: SetState<TState>, get: GetState<TState>) => TActions) | TActions
 
-export type SetConfig = { replace?: boolean; emitt?: boolean }
+export type SetConfig = { readonly replace?: boolean; readonly emitt?: boolean }
 export type SetState<TState extends Record<PropertyKey, unknown>> = (
   patch: Patch<TState>,
   config?: SetConfig,

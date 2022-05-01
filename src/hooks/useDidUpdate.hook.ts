@@ -1,11 +1,12 @@
 import { useEffect } from 'react'
-import type { EffectCallback } from 'react'
 
 import { useFirstMount } from '../hooks/hooks'
 
+import type { EffectCallback } from 'react'
+
 export const useDidUpdate = (
   effectCallback: EffectCallback,
-  ...dependencies: unknown[]
+  ...dependencies: readonly unknown[]
 ) => {
   const isFirstMount = useFirstMount()
 

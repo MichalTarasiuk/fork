@@ -1,11 +1,13 @@
 import { isPlainObject } from './helpers'
 
-export function empty(value: Record<PropertyKey, unknown>): {}
-export function empty(value: Array<unknown>): []
+import type { EmptyArray, EmptyObject } from '../types/types'
 
-export function empty<
-  TValue extends Record<PropertyKey, unknown> | Array<unknown>
->(value: TValue) {
+export function empty(value: Record<PropertyKey, unknown>): EmptyArray
+export function empty(value: ReadonlyArray<unknown>): EmptyObject
+
+export function empty(
+  value: Record<PropertyKey, unknown> | ReadonlyArray<unknown>
+) {
   if (isPlainObject(value)) {
     Object.keys(value).forEach((key) => {
       delete value[key]
@@ -14,6 +16,7 @@ export function empty<
     return value
   }
 
-  value.length = 0
+  value.slice(0, value.length)
+
   return value
 }

@@ -1,9 +1,10 @@
-import produce from 'immer'
+import Produce from 'immer'
+import { cloneDeep, isEqual } from 'lodash'
 
-import { createObserver, resolve, equals, copy, empty } from './helpers/helpers'
+import { createObserver, resolve, empty } from './helpers/helpers'
+
 import type { Listener } from './helpers/helpers'
 import type {
-  CreateState,
   ActionsCreator,
   Selector,
   SetState,
@@ -12,15 +13,16 @@ import type {
   SetConfig,
   Patch,
 } from './store.types'
+import type { ArrowFunction } from './types/types'
 
 const createStore = <
   TState extends Record<PropertyKey, unknown>,
-  TActions extends Record<PropertyKey, Function>
+  TActions extends Record<PropertyKey, ArrowFunction>
 >(
   initialState: TState,
   actionsCreator: ActionsCreator<TState, TActions>
 ) => {
-  let state: ReturnType<CreateState<TState>>
+  const state = createState(initialState)
   const observer = createObserver<TState>()
 
   const customListener = <TSelector extends Selector<TState>>(
@@ -33,7 +35,7 @@ const createStore = <
       const slice = selector(state)
       const notify = equality
         ? equality(slice, nextSlice)
-        : !equals(slice, nextSlice)
+        : !isEqual(slice, nextSlice)
 
       if (notify) {
         listener(state, nextState)
@@ -62,7 +64,7 @@ const createStore = <
     const { replace = false, emitt = true } = config || {}
 
     const { oldState, nextState } = state.set((state) => {
-      const updatedState = produce(state, (draft) => {
+      const updatedState = Produce(state, (draft) => {
         const resolvedPatch = resolve(patch, draft, setState)
 
         if (resolvedPatch) {
@@ -73,14 +75,12 @@ const createStore = <
       return updatedState
     })
 
-    if (!equals(oldState, nextState)) {
+    if (!isEqual(oldState, nextState)) {
       observer.notify(oldState, nextState, emitt ? undefined : emitter)
     }
   }
 
   const getState = () => state.current
-
-  state = createState(initialState)
 
   return {
     get listeners() {
@@ -94,19 +94,23 @@ const createStore = <
 
 const createState = <TState extends Record<PropertyKey, unknown>>(
   initialState: TState
-) => ({
-  current: initialState as TState,
-  set(resolvableState: ResolvableState<TState>) {
-    const oldState = copy(this.current)
-    const nextState = resolve(resolvableState, oldState)
+) => {
+  const state = {
+    current: initialState,
+    set(resolvableState: ResolvableState<TState>) {
+      const oldState = cloneDeep(state.current)
+      const nextState = resolve(resolvableState, oldState)
 
-    Object.assign(empty(this.current), nextState)
+      Object.assign(empty(state.current), nextState)
 
-    return {
-      oldState,
-      nextState,
-    }
-  },
-})
+      return {
+        oldState,
+        nextState,
+      }
+    },
+  }
+
+  return state
+}
 
 export { createStore }

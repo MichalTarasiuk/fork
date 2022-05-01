@@ -1,4 +1,5 @@
 import { isNil } from './helpers'
+
 import type { Nil } from '../types/types'
 
 export function assign<TB>(a: Nil, b: TB): TB

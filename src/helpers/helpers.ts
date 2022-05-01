@@ -1,8 +1,6 @@
 export * from './observer.helper'
 export * from './resolve.helper'
 export * from './entries.helper'
-export { equals } from './equals.helper'
-export { copy } from './copy.helper'
 export { assign } from './assign.helper'
 export { isFunction } from './isFunction.helper'
 export { compose } from './compose.helper'
@@ -16,5 +14,6 @@ export { flatObject } from './flatObject.helper'
 export { isNil } from './isNil.helper'
 export { filterObject } from './filterObject.helper'
 export { split } from './split.helper'
+export { assert } from './assert.helper'
 
 export const noop = () => {}

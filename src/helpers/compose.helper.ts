@@ -1,9 +1,11 @@
-export function compose(...funcs: never[]): <TArg>(arg: TArg) => TArg
-export function compose<TFunction extends (...args: any[]) => unknown>(
+import type { ArrowFunction } from '../types/types'
+
+export function compose(...funcs: readonly never[]): <TArg>(arg: TArg) => TArg
+export function compose<TFunction extends (...args: readonly any[]) => unknown>(
   ...funcs: readonly TFunction[]
 ): (...args: Parameters<TFunction>) => ReturnType<TFunction>
 
-export function compose(...funcs: Function[]) {
+export function compose(...funcs: readonly ArrowFunction[]) {
   if (funcs.length === 0) {
     // infer the argument type so it is usable in inference down the line
     return <TArg>(arg: TArg) => arg
@@ -14,6 +16,6 @@ export function compose(...funcs: Function[]) {
   }
 
   return funcs.reduce((a, b) => {
-    return (...args: unknown[]) => a(b(...args))
+    return (...args: readonly unknown[]) => a(b(...args))
   })
 }

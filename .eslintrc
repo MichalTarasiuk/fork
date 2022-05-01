@@ -1,0 +1,13 @@
+{
+  "root": true,
+  "parserOptions": {
+    "project": "tsconfig.json"
+  },
+  "plugins": ["@typeofweb"],
+  "extends": ["plugin:@typeofweb/recommended"],
+  "rules": {
+    "@typescript-eslint/consistent-type-assertions": "off",
+    "import/no-cycle": "off"
+  },
+  "ignorePatterns": ["examples/**/*", "dist/**/*", "tests/**/*"]
+}

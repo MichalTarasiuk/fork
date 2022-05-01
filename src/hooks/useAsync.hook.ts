@@ -2,6 +2,7 @@ import { useCallback } from 'react'
 
 import { mapObject, merge } from '../helpers/helpers'
 import { usePatch, useCreation } from '../hooks/hooks'
+
 import type { AsyncFunction } from '../types/types'
 
 export type Status = 'idle' | 'loading' | 'success' | 'error'

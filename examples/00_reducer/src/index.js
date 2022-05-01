@@ -1,6 +1,6 @@
 import { StrictMode, useRef, useEffect } from 'react'
 import { render } from 'react-dom'
-import remind from 'react-remind'
+import Remind from 'react-remind'
 
 const useFirstMount = () => {
   const ref = useRef(true)

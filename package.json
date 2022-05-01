@@ -1,5 +1,6 @@
 {
   "name": "react-remind",
+  "private": true,
   "version": "1.1.5",
   "description": "Remind is library for state management in React",
   "repository": "https://github.com/MichalTarasiuk/remind.git",
@@ -44,7 +45,8 @@
     "test": "jest --watch",
     "build": "rimraf dist && rollup --config",
     "build:watch": "rollup --config --watch",
-    "build:publish": "yarn build && yarn publish"
+    "build:publish": "yarn build && yarn publish",
+    "lint": "eslint"
   },
   "lint-staged": {
     "*": "prettier --write"
@@ -57,14 +59,19 @@
     "@rollup/plugin-typescript": "8.3.1",
     "@testing-library/react": "13.1.1",
     "@testing-library/react-hooks": "8.0.0",
+    "@typeofweb/eslint-plugin": "^0.3.0",
     "@types/jest": "27.4.1",
+    "@types/lodash": "^4.14.182",
     "@types/react": "18.0.0",
     "@types/react-dom": "18.0.0",
     "babel-jest": "27.5.1",
+    "eslint": "^8.14.0",
+    "eslint-plugin-react-hooks": "^4.5.0",
     "husky": "7.0.4",
     "immer": "^9.0.12",
     "jest": "27.5.1",
     "lint-staged": "12.3.7",
+    "lodash": "^4.17.21",
     "prettier": "2.6.2",
     "react": "18.0.0",
     "react-dom": "^18.0.0",

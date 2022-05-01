@@ -1,6 +1,10 @@
 export const entries = <TObject extends Record<PropertyKey, unknown>>(
   obj: TObject
-) => Object.entries(obj) as [keyof TObject, TObject[keyof TObject]][]
+) =>
+  Object.entries(obj) as readonly (readonly [
+    keyof TObject,
+    TObject[keyof TObject]
+  ])[]
 
 export const fromEntries = <
   TArr extends readonly (readonly [PropertyKey, unknown])[]

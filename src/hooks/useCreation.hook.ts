@@ -1,8 +1,9 @@
+import { isEqual } from 'lodash'
 import { useRef } from 'react'
-import type { DependencyList, MutableRefObject } from 'react'
 
-import { equals } from '../helpers/helpers'
 import { useHasMounted } from '../hooks/hooks'
+
+import type { DependencyList, MutableRefObject } from 'react'
 
 export const useCreation = <TValue>(
   factory: () => TValue,
@@ -12,7 +13,10 @@ export const useCreation = <TValue>(
   const savedDependencies = useRef(dependencies)
   const state = useRef<TValue | undefined>(undefined)
 
-  if (!hasMounted.current || !equals(savedDependencies.current, dependencies)) {
+  if (
+    !hasMounted.current ||
+    !isEqual(savedDependencies.current, dependencies)
+  ) {
     savedDependencies.current = dependencies
     state.current = factory()
   }

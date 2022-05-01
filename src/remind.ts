@@ -1,15 +1,17 @@
 import { useMemo, useCallback, useRef } from 'react'
 
-import { filterObject, assign, compose } from './helpers/helpers'
+import { filterObject, assign, compose, assert } from './helpers/helpers'
 import { useFirstMount, useListener, useDidUnmount } from './hooks/hooks'
 import { getPlugins } from './logic/logic'
 import { createStore } from './store'
-import type { ActionsCreator, Selector, Patch, SetConfig } from './store.types'
+
 import type { HookConfig } from './remind.types'
+import type { ActionsCreator, Selector, Patch, SetConfig } from './store.types'
+import type { ArrowFunction } from './types/types'
 
 const remind = <
   TState extends Record<PropertyKey, unknown>,
-  TActions extends Record<PropertyKey, Function>
+  TActions extends Record<PropertyKey, ArrowFunction>
 >(
   initialState: TState,
   actionsCreator: ActionsCreator<TState, TActions>
@@ -36,7 +38,9 @@ const remind = <
       )
     }
 
-    const savedSubscriber = subscriber.current!
+    assert(subscriber.current, 'subscriber.current is null')
+
+    const savedSubscriber = subscriber.current
     const actions = savedSubscriber.actions
 
     const [mind, listener] = useListener(
@@ -89,4 +93,5 @@ const remind = <
   return { setMind, useRemind, subscribe: store.subscribe }
 }
 
+// eslint-disable-next-line import/no-default-export -- library export
 export default remind

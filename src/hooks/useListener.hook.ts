@@ -1,12 +1,14 @@
+import { cloneDeep } from 'lodash'
 import { useCallback, useMemo } from 'react'
 
-import { isAsyncFunction, flatObject, split, copy } from '../helpers/helpers'
+import { isAsyncFunction, flatObject, split } from '../helpers/helpers'
 import {
   useHasMounted,
   useForce,
   useFirstMount,
   useAsync,
 } from '../hooks/hooks'
+
 import type { AsyncSlice, Status } from '../hooks/useAsync.hook'
 import type { AddBy, AsyncFunction } from '../types/types'
 
@@ -25,14 +27,16 @@ const createMind = <
   const syncSymbol = Symbol('sync')
 
   type Mind = TState & {
+    // eslint-disable-next-line functional/prefer-readonly-type -- sync symbol is mutable
     [syncSymbol]?: TSyncActions
+    // eslint-disable-next-line functional/prefer-readonly-type -- async symbol is mutable
     [asyncSymbol]?: AsyncSlice
   }
-  let mind: Mind = callback(undefined, copy(initialState))
+  let mind: Mind = callback(undefined, cloneDeep(initialState))
   mind[syncSymbol] = syncActions
 
   const setMind = (state: TState | undefined, nextState: TState) => {
-    const nextMind: Mind = callback(copy(state), copy(nextState))
+    const nextMind: Mind = callback(cloneDeep(state), cloneDeep(nextState))
 
     nextMind[asyncSymbol] = mind[asyncSymbol]
     nextMind[syncSymbol] = mind[syncSymbol]
