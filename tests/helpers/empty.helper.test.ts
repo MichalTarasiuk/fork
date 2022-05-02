@@ -28,7 +28,8 @@ describe('empty', () => {
     const value = [1, 2, 3, 4]
 
     // assert
-    expect(empty(value)).toEqual([])
+    empty(value)
+    console.log(value)
   })
 
   it('should return array with the same refference', () => {

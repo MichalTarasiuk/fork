@@ -1,13 +1,12 @@
+/* eslint-disable functional/prefer-readonly-type -- empty helper mutates */
 import { isPlainObject } from './helpers'
 
-import type { EmptyArray, EmptyObject } from '../types/types'
+import type { EmptyObject } from '../types/types'
 
-export function empty(value: Record<PropertyKey, unknown>): EmptyArray
-export function empty(value: ReadonlyArray<unknown>): EmptyObject
+export function empty(value: Record<PropertyKey, unknown>): Array<never>
+export function empty(value: Array<unknown>): EmptyObject
 
-export function empty(
-  value: Record<PropertyKey, unknown> | ReadonlyArray<unknown>
-) {
+export function empty(value: Record<PropertyKey, unknown> | Array<unknown>) {
   if (isPlainObject(value)) {
     Object.keys(value).forEach((key) => {
       delete value[key]
@@ -16,7 +15,7 @@ export function empty(
     return value
   }
 
-  value.slice(0, value.length)
+  value.splice(0, value.length)
 
   return value
 }

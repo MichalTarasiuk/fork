@@ -15,7 +15,7 @@ const initialStatus = 'idle' as Status
 
 export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
   object: TObject,
-  callback: (asyncSlice: AsyncSlice) => void
+  fn: (asyncSlice: AsyncSlice) => void
 ) => {
   const { state, setState } = usePatch(
     mapObject(object, () => initialStatus),
@@ -26,7 +26,7 @@ export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
         (a, b) => [a, b] as const
       )
 
-      callback(merged)
+      fn(merged)
     }
   )
 

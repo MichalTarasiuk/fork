@@ -21,7 +21,7 @@ const createMind = <
 >(
   initialState: TState,
   syncActions: TSyncActions,
-  callback: (state: TState | undefined, nextState: TState) => TState
+  fn: (state: TState | undefined, nextState: TState) => TState
 ) => {
   const asyncSymbol = Symbol('async')
   const syncSymbol = Symbol('sync')
@@ -32,11 +32,11 @@ const createMind = <
     // eslint-disable-next-line functional/prefer-readonly-type -- async symbol is mutable
     [asyncSymbol]?: AsyncSlice
   }
-  let mind: Mind = callback(undefined, cloneDeep(initialState))
+  let mind: Mind = fn(undefined, cloneDeep(initialState))
   mind[syncSymbol] = syncActions
 
   const setMind = (state: TState | undefined, nextState: TState) => {
-    const nextMind: Mind = callback(cloneDeep(state), cloneDeep(nextState))
+    const nextMind: Mind = fn(cloneDeep(state), cloneDeep(nextState))
 
     nextMind[asyncSymbol] = mind[asyncSymbol]
     nextMind[syncSymbol] = mind[syncSymbol]
@@ -50,7 +50,7 @@ const createMind = <
 
   return {
     get current() {
-      return flatObject(flatObject(mind, syncSymbol), asyncSymbol)
+      return flatObject(mind, asyncSymbol, syncSymbol)
     },
     setMind,
     updateAsync,
@@ -63,7 +63,7 @@ export const useListener = <
 >(
   initialState: TState,
   actions: TActions,
-  observer: (state: TState | undefined, nextState: TState) => TState
+  fn: (state: TState | undefined, nextState: TState) => TState
 ) => {
   type Mind = AddBy<TState & TActions, AsyncFunction, Status>
 
@@ -71,10 +71,7 @@ export const useListener = <
     () => split<AsyncActions, SyncActions>(actions, isAsyncFunction),
     []
   )
-  const mind = useMemo(
-    () => createMind(initialState, syncActions, observer),
-    []
-  )
+  const mind = useMemo(() => createMind(initialState, syncActions, fn), [])
 
   const hasMounted = useHasMounted()
   const isFirstMount = useFirstMount()

@@ -86,11 +86,7 @@ const remind = <
     return assign([result.mind, result.setMind] as const, result)
   }
 
-  const setMind = (...params: Parameters<typeof store['setState']>) => {
-    store.setState(...params)
-  }
-
-  return { setMind, useRemind, subscribe: store.subscribe }
+  return { setMind: store.setState, subscribe: store.subscribe, useRemind }
 }
 
 // eslint-disable-next-line import/no-default-export -- library export

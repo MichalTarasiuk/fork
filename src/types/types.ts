@@ -26,5 +26,3 @@ export type Noop = () => void
 export type ArrowFunction = (...args: readonly unknown[]) => unknown
 
 export type EmptyObject = Record<PropertyKey, never>
-
-export type EmptyArray = ReadonlyArray<never>
