@@ -10,12 +10,12 @@ import {
 } from '../hooks/hooks'
 
 import type { AsyncSlice, Status } from '../hooks/useAsync.hook'
-import type { AddBy, AsyncFunction } from '../types/types'
+import type { AddBy, AsyncFunction, ArrowFunction } from '../types/types'
 
 type AsyncActions = Record<PropertyKey, AsyncFunction>
-type SyncActions = Record<PropertyKey, Function>
+type SyncActions = Record<PropertyKey, ArrowFunction>
 
-const createMind = <
+const createManager = <
   TState extends Record<PropertyKey, unknown>,
   TSyncActions extends SyncActions
 >(
@@ -26,33 +26,34 @@ const createMind = <
   const asyncSymbol = Symbol('async')
   const syncSymbol = Symbol('sync')
 
-  type Mind = TState & {
+  type State = TState & {
     // eslint-disable-next-line functional/prefer-readonly-type -- sync symbol is mutable
     [syncSymbol]?: TSyncActions
     // eslint-disable-next-line functional/prefer-readonly-type -- async symbol is mutable
     [asyncSymbol]?: AsyncSlice
   }
-  let mind: Mind = fn(undefined, cloneDeep(initialState))
-  mind[syncSymbol] = syncActions
+  
+  let savedState: State = fn(undefined, cloneDeep(initialState))
+  savedState[syncSymbol] = syncActions
 
-  const setMind = (state: TState | undefined, nextState: TState) => {
-    const nextMind: Mind = fn(cloneDeep(state), cloneDeep(nextState))
+  const setState = (state: TState | undefined, nextState: TState) => {
+    const stateToSaved: State = fn(cloneDeep(state), cloneDeep(nextState))
 
-    nextMind[asyncSymbol] = mind[asyncSymbol]
-    nextMind[syncSymbol] = mind[syncSymbol]
+    stateToSaved[asyncSymbol] = savedState[asyncSymbol]
+    stateToSaved[syncSymbol] = savedState[syncSymbol]
 
-    mind = nextMind
+    savedState = stateToSaved
   }
 
   const updateAsync = (asyncSlice: AsyncSlice) => {
-    mind[asyncSymbol] = asyncSlice
+    savedState[asyncSymbol] = asyncSlice
   }
 
   return {
-    get current() {
-      return flatObject(mind, asyncSymbol, syncSymbol)
+    get state() {
+      return flatObject(savedState, asyncSymbol, syncSymbol)
     },
-    setMind,
+    setState,
     updateAsync,
   }
 }
@@ -65,35 +66,38 @@ export const useListener = <
   actions: TActions,
   fn: (state: TState | undefined, nextState: TState) => TState
 ) => {
-  type Mind = AddBy<TState & TActions, AsyncFunction, Status>
+  type State = AddBy<TState & TActions, AsyncFunction, Status>
 
   const [asyncActions, syncActions] = useMemo(
     () => split<AsyncActions, SyncActions>(actions, isAsyncFunction),
     []
   )
-  const mind = useMemo(() => createMind(initialState, syncActions, fn), [])
+  const manager = useMemo(
+    () => createManager(initialState, syncActions, fn),
+    []
+  )
 
   const hasMounted = useHasMounted()
   const isFirstMount = useFirstMount()
   const force = useForce()
 
   const asyncSlice = useAsync(asyncActions, (nextAsyncSlice) => {
-    mind.updateAsync(nextAsyncSlice)
+    manager.updateAsync(nextAsyncSlice)
 
     force()
   })
 
   if (isFirstMount) {
-    mind.updateAsync(asyncSlice.current)
+    manager.updateAsync(asyncSlice.current)
   }
 
   const listener = useCallback((state: TState, nextState: TState) => {
     if (hasMounted.current) {
-      mind.setMind(state, nextState)
+      manager.setState(state, nextState)
 
       force()
     }
   }, [])
 
-  return [mind.current as Mind, listener] as const
+  return [manager.state as State, listener] as const
 }

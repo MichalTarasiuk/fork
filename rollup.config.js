@@ -1,47 +1,47 @@
-import commonjs from '@rollup/plugin-commonjs'
-import typescript from '@rollup/plugin-typescript'
-import filesize from 'rollup-plugin-filesize'
-import license from 'rollup-plugin-license'
+import Commonjs from '@rollup/plugin-commonjs'
+import Typescript from '@rollup/plugin-typescript'
+import Filesize from 'rollup-plugin-filesize'
+import License from 'rollup-plugin-license'
 
-import pkg from './package.json'
+import Pkg from './package.json'
 
 const config = [
   {
-    input: 'src/remind.ts',
+    input: 'src/hooray.ts',
     output: [
       {
-        name: 'remind',
+        name: 'hooray',
         format: 'es',
         dir: './',
-        entryFileNames: pkg.exports.import.replace(/^\.\//, ''),
+        entryFileNames: Pkg.exports.import.replace(/^\.\//, ''),
         sourcemap: true,
       },
       {
-        name: 'remind',
+        name: 'hooray',
         format: 'cjs',
         dir: './',
-        entryFileNames: pkg.exports.require.replace(/^\.\//, ''),
+        entryFileNames: Pkg.exports.require.replace(/^\.\//, ''),
         sourcemap: true,
       },
       {
-        name: 'remind',
+        name: 'hooray',
         format: 'umd',
         dir: './',
-        entryFileNames: pkg.exports.browser.replace(/^\.\//, ''),
+        entryFileNames: Pkg.exports.browser.replace(/^\.\//, ''),
         sourcemap: true,
       },
     ],
     plugins: [
-      commonjs({ include: 'node_modules/**' }),
-      typescript({
+      Commonjs({ include: 'node_modules/**' }),
+      Typescript({
         tsconfig: 'tsconfig.json',
         declaration: true,
         declarationDir: 'dist/',
         rootDir: '.',
         include: ['src/**/*.ts'],
       }),
-      filesize({}),
-      license({
+      Filesize({}),
+      License({
         banner: `
          <%= pkg.name %>@<%= pkg.version %>
          Copyright (c) <%= moment().format('YYYY') %> Michał Tarasiuk
@@ -53,4 +53,5 @@ const config = [
   },
 ]
 
+// eslint-disable-next-line import/no-default-export -- library export
 export default config

@@ -1,14 +1,14 @@
 import { renderHook, act } from '@testing-library/react-hooks'
 
-import { useDidMount } from '../../src/hooks/hooks'
+import { useMount } from '../../src/hooks/hooks'
 
 const mockEffectCleanup = jest.fn()
 const mockEffectCallback = jest.fn().mockReturnValue(mockEffectCleanup)
 
-describe('useDidMount', () => {
+describe('useMount', () => {
   it('should run provided effect only once', () => {
     // given
-    const { rerender } = renderHook(() => useDidMount(mockEffectCallback))
+    const { rerender } = renderHook(() => useMount(mockEffectCallback))
 
     // when
     rerender()
@@ -19,7 +19,7 @@ describe('useDidMount', () => {
 
   it('should run clean-up provided on unmount', () => {
     // given
-    const { unmount } = renderHook(() => useDidMount(mockEffectCallback))
+    const { unmount } = renderHook(() => useMount(mockEffectCallback))
 
     // when
     act(() => {

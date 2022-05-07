@@ -1,18 +1,18 @@
 import { renderHook } from '@testing-library/react-hooks'
 
-import { useDidUnmount } from '../../src/hooks/hooks'
+import { useUnmount } from '../../src/hooks/hooks'
 
 describe('useUnmount', () => {
   it('should not call provided callback on mount', () => {
     const spy = jest.fn()
-    renderHook(() => useDidUnmount(spy))
+    renderHook(() => useUnmount(spy))
 
     expect(spy).not.toHaveBeenCalled()
   })
 
   it('should not call provided callback on re-renders', () => {
     const spy = jest.fn()
-    const hook = renderHook(() => useDidUnmount(spy))
+    const hook = renderHook(() => useUnmount(spy))
 
     hook.rerender()
     hook.rerender()
@@ -24,7 +24,7 @@ describe('useUnmount', () => {
 
   it('should call provided callback on unmount', () => {
     const spy = jest.fn()
-    const hook = renderHook(() => useDidUnmount(spy))
+    const hook = renderHook(() => useUnmount(spy))
 
     hook.unmount()
 

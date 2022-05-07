@@ -1,7 +1,7 @@
-# Remind
+# Hooray
 
 ```bash
-npm install react-remind # or yarn add react-remind
+npm install hooray # or yarn add hooray
 ```
 
 ## Initializing State
@@ -9,30 +9,30 @@ npm install react-remind # or yarn add react-remind
 The first argument is the initial state and the second is the actions that access functions such as set and get as described below
 
 ```jsx
-import remind from 'react-remind'
+import hooray from 'hooray'
 
-const { useRemind } = remind({ ideas: [] }, (set, get) => ({
-  sendAnIdea: (idea) => set((mind) => ({ ideas: [...mind.ideas, idea] })),
+const { useHooray } = hooray({ ideas: [] }, (set, get) => ({
+  sendAnIdea: (idea) => set((state) => ({ ideas: [...state.ideas, idea] })),
   isEmpty: () => get().ideas.length === 0,
 }))
 ```
 
-`Set`: function which manage mind<br>
-`Get`: function which return current mind
+`Set`: function which manage state<br>
+`Get`: function which return current state
 
 ## Then bind your components, and that's it!
 
-Use the `useRemind` anywhere you want. This hook will decide when your component get rerendered.
+Use the `useHooray` anywhere you want. This hook will decide when your component get rerendered.
 
 `Selector`: causes the component to re-render only when the scope value changes
 
 ```jsx
 function IdeasDisplay() {
-  const { ideas } = useRemind((mind) => mind.ideas)
+  const { state } = useHooray((state) => state.ideas)
 
   return (
     <ul>
-      {ideas.map((idea) => (
+      {state.ideas.map((idea) => (
         <li>{idea}</li>
       ))}
     </ul>
@@ -44,11 +44,11 @@ const ideas = [
 ]
 
 function Controls() {
-  const { mind } = useRemind()
+  const { state } = useHooray()
   return (
     <button
       onClick={() => {
-        mind.sendAnIdea(random(ideas))
+        state.sendAnIdea(random(ideas))
       }}>
       send an idea
     </button>
@@ -56,37 +56,37 @@ function Controls() {
 }
 ```
 
-## SetMind
+## SetState
 
-Function which manage mind.
+Function which manage state.
 
 ```js
-const { setMind } = remind(
+const { setState } = hooray(
   {
     /* */
   },
   (set) => ({
     sendAndIdea: () => {
-      // emitter is provided here automatically by useRemind
+      // emitter is provided here automatically by useHooray
       set(patch, config)
     },
   })
 )
 
 // emitter is not provided here automatically
-setMind(patch, config)
+setState(patch, config)
 ```
 
 `Patch`:
 
 ```js
-setMind((mind) => ({
+setState((state) => ({
   /* */
 }))
 
 // or
 
-setMind({
+setState({
   /* */
 })
 ```
@@ -94,29 +94,29 @@ setMind({
 `Config`:
 
 ```js
-// default setMind config
+// default setState config
 const config = {
   emitt: true, // decides whether the listener sending the action will be called
-  replace: false, // decides whether mind will be overwrite
+  replace: false, // decides whether state will be overwrite
 }
 ```
 
 ## Async
 
-Remind will generate you status for each async action.
+Hooray will generate you status for each async action.
 
 ```jsx
-const { useRemind } = remind({ ideas: [] }, (set, get) => ({
+const { useHooray } = hooray({ ideas: [] }, (set, get) => ({
   sendAnIdea: async (id) => {
     const idea = await myFetcher(id)
 
-    set((mind) => ({ ideas: [...mind.ideas, idea] }))
+    set((state) => ({ ideas: [...state.ideas, idea] }))
   },
 }))
 
 const Component = () => {
-  const [mind] = useRemind()
-  const [sendAnIdea, status] = mind.sendAnIdea
+  const [state] = useHooray()
+  const [sendAnIdea, status] = state.sendAnIdea
 
   /* return */
 }
@@ -124,22 +124,22 @@ const Component = () => {
 
 ## Immer
 
-Remind supports immer 🔥
+Hooray supports immer 🔥
 
 ```jsx
-const { useRemind } = remind({ ideas: [] }, (set, get) => ({
+const { useHooray } = hooray({ ideas: [] }, (set, get) => ({
   sendAnIdea: async (id) => {
     const idea = await myFetcher(id)
 
-    set((mind) => {
-      mind.push(idea)
+    set((state) => {
+      state.push(idea)
     })
   },
 }))
 
 const Component = () => {
-  const [mind] = useRemind()
-  const [sendAnIdea, status] = mind.sendAnIdea
+  const [state] = useHooray()
+  const [sendAnIdea, status] = state.sendAnIdea
 
   /* return */
 }
@@ -147,25 +147,25 @@ const Component = () => {
 
 ## Work beyond components
 
-Sometimes you need to access mind outside components.
+Sometimes you need to access state outside components.
 
 ```js
-const { setMind, subscribe } = remind({ ideas: [] }, (set, get) => ({
+const { setState, subscribe } = hooray({ ideas: [] }, (set, get) => ({
   sendAnIdea: async (id) => {
     const idea = await myFetcher(id)
 
-    set((mind) => ({ ideas: [...mind.ideas, idea] }))
+    set((state) => ({ ideas: [...state.ideas, idea] }))
   },
 }))
 
 // Listening to all changes, fires synchronously on every change
-const subscriber = subscribe((mind, nextMind) => {
+const subscriber = subscribe((state, nextState) => {
   /* */
 })
 
-setMind(/* */)
+setState(/* */)
 
-// Actions for manage mind
+// Actions for manage state
 subscriber.actions
 
 // Unsubscirbe listener
@@ -176,20 +176,20 @@ subscriber.unsubscribe()
 
 ### Async
 
-If you are use async action status not for display in JSX. The set mind action should have emitt property set to false.
+If you are use async action status not for display in JSX. The set state action should have emitt property set to false.
 
 ```jsx
-const { useRemind } = remind({ ideas: [] }, (set, get) => ({
+const { useHooray } = hooray({ ideas: [] }, (set, get) => ({
   sendAnIdea: async (id) => {
     const idea = await myFetcher(id)
 
-    set((mind) => ({ ideas: [...mind.ideas, idea] }), { emitt: false })
+    set((state) => ({ ideas: [...state.ideas, idea] }), { emitt: false })
   },
 }))
 
 const Component = () => {
-  const [mind] = useRemind()
-  const [sendAnIdea, status] = mind.sendAnIdea
+  const [state] = useHooray()
+  const [sendAnIdea, status] = state.sendAnIdea
 
   useEffect(() => {
     // logic
@@ -199,4 +199,4 @@ const Component = () => {
 }
 ```
 
-This tip will remove one extra rerender caused by set mind action.
+This tip will remove one extra rerender caused by set state action.

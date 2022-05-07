@@ -1,19 +1,19 @@
 import { renderHook } from '@testing-library/react-hooks'
 
-import { useDidUpdate } from '../../src/hooks/hooks'
+import { useUpdate } from '../../src/hooks/hooks'
 
 const mockEffectCallback = jest.fn()
 const mockEffectCleanup = jest.fn()
 mockEffectCallback.mockReturnValue(mockEffectCleanup)
 
-describe('useDidUpdate', () => {
+describe('useUpdate', () => {
   afterEach(() => {
     jest.clearAllMocks()
   })
 
   it('should call effect callback  on mount', () => {
     // arrange
-    renderHook(() => useDidUpdate(mockEffectCallback))
+    renderHook(() => useUpdate(mockEffectCallback))
 
     // assert
     expect(mockEffectCallback).toHaveBeenCalledTimes(0)
@@ -22,7 +22,7 @@ describe('useDidUpdate', () => {
   it('should effect callback call on update', () => {
     // given
     const { rerender } = renderHook(() =>
-      useDidUpdate(mockEffectCallback, Math.random())
+      useUpdate(mockEffectCallback, Math.random())
     )
 
     // when

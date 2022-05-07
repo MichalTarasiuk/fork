@@ -1,6 +1,6 @@
 import { useRef, useCallback } from 'react'
 
-import { useDidUpdate } from './hooks'
+import { useUpdate } from './hooks'
 
 export const usePatch = <TState>(
   initialState: TState,
@@ -9,7 +9,7 @@ export const usePatch = <TState>(
   const state = useRef(initialState)
   const savedCallback = useRef(callback)
 
-  useDidUpdate(() => {
+  useUpdate(() => {
     savedCallback.current = callback
   }, callback)
 

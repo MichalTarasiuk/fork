@@ -14,6 +14,5 @@ export { flatObject } from './flatObject.helper'
 export { isNil } from './isNil.helper'
 export { filterObject } from './filterObject.helper'
 export { split } from './split.helper'
-export { assert } from './assert.helper'
 
 export const noop = () => {}
