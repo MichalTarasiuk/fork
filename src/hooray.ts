@@ -26,9 +26,9 @@ const hooray = <
     selector?: TSelector,
     config: HookConfig<TState, TSelector> = {}
   ) => {
-    const savedSubscriber = useRef<ReturnType<typeof store['subscribe']> | null>(
-      null
-    )
+    const savedSubscriber = useRef<ReturnType<
+      typeof store['subscribe']
+    > | null>(null)
     const savedListener = useRef((_: TState, __: TState) => {})
 
     const isFirstMount = useFirstMount()

@@ -32,7 +32,7 @@ const createManager = <
     // eslint-disable-next-line functional/prefer-readonly-type -- async symbol is mutable
     [asyncSymbol]?: AsyncSlice
   }
-  
+
   let savedState: State = fn(undefined, cloneDeep(initialState))
   savedState[syncSymbol] = syncActions
 
