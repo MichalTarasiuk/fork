@@ -1,4 +1,4 @@
-import remind from 'react-remind'
+import hooray from 'hooray'
 
 import { wait } from './store.helpers'
 
@@ -8,7 +8,7 @@ export type Note = {
   content: string
 }
 
-const { useRemind } = remind({ block: true, notes: [] as Note[] }, (set) => ({
+const { useHooray } = hooray({ block: true, notes: [] as Note[] }, (set) => ({
   async unlock() {
     await wait(1000)
 
@@ -16,4 +16,4 @@ const { useRemind } = remind({ block: true, notes: [] as Note[] }, (set) => ({
   },
 }))
 
-export { useRemind }
+export { useHooray }

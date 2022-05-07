@@ -1,11 +1,11 @@
 import { StrictMode, useRef, useEffect } from 'react'
 import { render } from 'react-dom'
-import remind from 'react-remind'
+import hooray from 'hooray'
 
-const { useRemind } = remind({ counter: 0, dakrMode: false }, (set) => ({
+const { useHooray } = hooray({ counter: 0, dakrMode: false }, (set) => ({
   increase: () =>
-    set((mind) => {
-      mind.counter++
+    set((state) => {
+      state.counter++
     }),
 }))
 
@@ -30,15 +30,15 @@ const useReRender = (name) => {
 }
 
 const CounterDisplay = () => {
-  const [mind] = useRemind((mind) => mind.counter)
+  const [state] = useHooray((state) => state.counter)
 
-  return <p>counter: {mind.counter}</p>
+  return <p>counter: {state.counter}</p>
 }
 
 const CounterManager = () => {
-  const [mind] = useRemind((mind) => mind.increase)
+  const [state] = useHooray((state) => state.increase)
 
-  return <button onClick={mind.increase}>increase</button>
+  return <button onClick={state.increase}>increase</button>
 }
 
 const Counter = () => {
@@ -51,22 +51,22 @@ const Counter = () => {
 }
 
 const DarkModeSwitch = () => {
-  const [mind, setMind] = useRemind((mind) => mind.darkMode)
+  const [state, setState] = useHooray((state) => state.darkMode)
 
   useReRender('DarkModeSwitch')
 
   const toggle = (event) => {
     const checked = event.target.checked
 
-    setMind((mind) => {
-      mind.darkMode = checked
+    setState((state) => {
+      state.darkMode = checked
     })
   }
 
   return (
     <div>
       <label>
-        <input type="checkbox" checked={mind.darkMode} onChange={toggle} />
+        <input type="checkbox" checked={state.darkMode} onChange={toggle} />
         dark mode
       </label>
     </div>

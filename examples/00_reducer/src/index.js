@@ -1,6 +1,6 @@
 import { StrictMode, useRef, useEffect } from 'react'
 import { render } from 'react-dom'
-import remind from 'react-remind'
+import hooray from 'hooray'
 
 const useFirstMount = () => {
   const ref = useRef(true)
@@ -45,7 +45,7 @@ const reducer = (counter, action) => {
   }
 }
 
-const { useRemind } = remind({ counter: 0 }, (set, get) => ({
+const { useHooray } = hooray({ counter: 0 }, (set, get) => ({
   counter: 0,
   setCounter: (action) => {
     set((state) => reducer(state.counter, action))
@@ -56,23 +56,23 @@ const { useRemind } = remind({ counter: 0 }, (set, get) => ({
 }))
 
 const App = () => {
-  const [mind] = useRemind()
+  const [state] = useHooray()
   const rerenderCount = useReRenderCount()
 
   return (
     <div>
       <h1>Counter</h1>
-      <p>counter: {mind.counter}</p>
-      <p>is divisible: {mind.isDivisible().toString()}</p>
+      <p>counter: {state.counter}</p>
+      <p>is divisible: {state.isDivisible().toString()}</p>
       <button
         onClick={() => {
-          mind.setCounter({ type: INCREASE })
+          state.setCounter({ type: INCREASE })
         }}>
         increase
       </button>
       <button
         onClick={() => {
-          mind.setCounter({ type: DECREASE })
+          state.setCounter({ type: DECREASE })
         }}>
         decrease
       </button>

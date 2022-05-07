@@ -1,24 +1,24 @@
 import React from 'react'
 import { createRoot } from 'react-dom/client'
-import remind from 'react-remind'
+import hooray from 'hooray'
 
-const { useRemind, setMind } = remind({ counter: 0 }, (set) => ({
+const { useHooray, setState } = hooray({ counter: 0 }, (set) => ({
   increase: () => {
-    set((mind) => ({ counter: mind.counter + 1 }))
+    set((state) => ({ counter: state.counter + 1 }))
   },
 }))
 
 const decrease = () => {
-  setMind((mind) => ({ counter: mind.counter - 1 }))
+  setState((state) => ({ counter: state.counter - 1 }))
 }
 
 const App = () => {
-  const { mind } = useRemind()
+  const { state } = useHooray()
 
   return (
     <div>
-      <p>{mind.counter}</p>
-      <button onClick={mind.increase}>increase</button>
+      <p>{state.counter}</p>
+      <button onClick={state.increase}>increase</button>
       <button onClick={decrease}>decrease</button>
     </div>
   )

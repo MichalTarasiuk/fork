@@ -2,12 +2,12 @@ import React from 'react'
 
 import { Form, NotesList } from 'components'
 
-import { useRemind } from './store/store'
+import { useHooray } from './store/store'
 import './app.css'
 
 const App = () => {
-  const [mind] = useRemind()
-  const [unlock, status] = mind.unlock
+  const [state] = useHooray()
+  const [unlock, status] = state.unlock
 
   return (
     <main className="main-content">
@@ -15,7 +15,7 @@ const App = () => {
         <Form />
       </section>
       <section className="notes-section">
-        {mind.block ? (
+        {state.block ? (
           <button onClick={unlock}>
             {status === 'idle' ? 'unlock' : status}
           </button>

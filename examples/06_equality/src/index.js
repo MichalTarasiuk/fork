@@ -1,10 +1,10 @@
 import { StrictMode, useRef, useEffect } from 'react'
 import { render } from 'react-dom'
-import remind from 'react-remind'
+import hooray from 'hooray'
 
-const { useRemind } = remind({ counter: 0 }, (set) => ({
-  increase: () => set((prevMind) => ({ counter: prevMind.counter + 1 })),
-  decrease: () => set((prevMind) => ({ counter: prevMind.counter - 1 })),
+const { useHooray } = hooray({ counter: 0 }, (set) => ({
+  increase: () => set((state) => ({ counter: state.counter + 1 })),
+  decrease: () => set((state) => ({ counter: state.counter - 1 })),
 }))
 
 const useFirstMount = () => {
@@ -28,7 +28,7 @@ const useReRender = (name) => {
 }
 
 const Counter = () => {
-  const { mind } = useRemind((mind) => mind.counter, {
+  const { state } = useHooray((state) => state.counter, {
     equality: (slice, nextSlice) => nextSlice > slice,
   })
 
@@ -36,9 +36,9 @@ const Counter = () => {
 
   return (
     <div>
-      <p>counter {mind.counter}</p>
-      <button onClick={mind.increase}>increase</button>
-      <button onClick={mind.decrease}>decrease</button>
+      <p>counter {state.counter}</p>
+      <button onClick={state.increase}>increase</button>
+      <button onClick={state.decrease}>decrease</button>
     </div>
   )
 }

@@ -1,27 +1,27 @@
 import { StrictMode } from 'react'
 import { render } from 'react-dom'
-import remind from 'react-remind'
+import hooray from 'hooray'
 
 const wait = (ms = 1000) => new Promise((res) => setTimeout(res, ms))
 
-const { useRemind } = remind({ counter: 0 }, (set) => ({
+const { useHooray } = hooray({ counter: 0 }, (set) => ({
   increase: async () => {
     await wait()
-    set((mind) => {
-      mind.counter++
+    set((state) => {
+      state.counter++
     })
   },
 }))
 
 const CounterDisplay = () => {
-  const [mind] = useRemind()
+  const [state] = useHooray()
 
-  return <h1>Counter {mind.counter}</h1>
+  return <h1>Counter {state.counter}</h1>
 }
 
 const CounterManager = () => {
-  const [mind] = useRemind()
-  const [increase, status] = mind.increase
+  const [state] = useHooray()
+  const [increase, status] = state.increase
 
   return (
     <button onClick={increase}>

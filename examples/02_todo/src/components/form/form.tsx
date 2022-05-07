@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react'
 
-import { useRemind } from 'store/store'
+import { useHooray } from 'store/store'
 import { useForm } from './useForm.hook'
 import './form.css'
 
 const Form = () => {
   const [values, handler] = useForm({ title: '', content: '' })
-  const { setMind, unsubscribe } = useRemind()
+  const { setState, unsubscribe } = useHooray()
 
   useEffect(() => {
     unsubscribe()
@@ -21,8 +21,8 @@ const Form = () => {
         id: Math.random(),
       }
 
-      setMind(({ notes: prevNotes }) => ({
-        notes: [...prevNotes, newNote],
+      setState(({ notes }) => ({
+        notes: [...notes, newNote],
       }))
 
       handler.reset()

@@ -1,18 +1,18 @@
-import remind from 'react-remind'
+import hooray from 'hooray'
 
-const { useRemind } = remind({ counter: 0 }, (set) => ({
+const { useHooray } = hooray({ counter: 0 }, (set) => ({
   setToInitial: () => set({ counter: 0 }),
-  increase: () => set((prevMind) => ({ counter: prevMind.counter + 1 })),
+  increase: () => set((state) => ({ counter: state.counter + 1 })),
 }))
 
 function App() {
-  const { mind } = useRemind()
+  const { state } = useHooray()
 
   return (
     <div>
-      <p>counter {mind.counter}</p>
-      <button onClick={mind.increase}>increase</button>
-      <button onClick={mind.setToInitial}>reset</button>
+      <p>counter {state.counter}</p>
+      <button onClick={state.increase}>increase</button>
+      <button onClick={state.setToInitial}>reset</button>
     </div>
   )
 }
