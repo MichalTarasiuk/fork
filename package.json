@@ -1,92 +1,92 @@
 {
-  "name": "hoor4y",
-  "private": true,
-  "version": "1.0.0",
-  "description": "Hooray is library for state management in React",
-  "repository": "https://github.com/MichalTarasiuk/hooray.git",
-  "exports": {
-    "import": "./dist/index.mjs",
-    "default": "./dist/index.mjs",
-    "require": "./dist/index.cjs",
-    "browser": "./dist/index.umd.js"
-  },
-  "types": "./dist/src/hooray.d.ts",
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
-  "browser": "dist/index.umd.js",
-  "unpkg": "dist/index.umd.js",
-  "author": {
-    "name": "Michał Tarasiuk",
-    "email": "tarasiuk.michal03@gmail.com"
-  },
-  "files": [
-    "dist"
-  ],
-  "contributors": [
-    "Michał Tarasiuk (https://github.com/MichalTarasiuk)"
-  ],
-  "workspaces": [
-    ".",
-    "examples/*"
-  ],
-  "keywords": [
-    "react",
-    "state",
-    "manager",
-    "management",
-    "redux",
-    "store"
-  ],
-  "bugs": {
-    "url": "https://github.com/MichalTarasiuk/hooray/issues"
-  },
-  "license": "MIT",
-  "scripts": {
-    "test": "jest --watch",
-    "build": "rimraf dist && rollup --config",
-    "build:watch": "rollup --config --watch",
-    "build:publish": "yarn build && yarn publish",
-    "lint": "eslint"
-  },
-  "lint-staged": {
-    "*": "prettier --write"
-  },
-  "devDependencies": {
-    "@babel/core": "7.17.9",
-    "@babel/preset-env": "7.16.11",
-    "@babel/preset-typescript": "7.16.7",
-    "@rollup/plugin-commonjs": "21.0.3",
-    "@rollup/plugin-typescript": "8.3.1",
-    "@testing-library/react": "13.1.1",
-    "@testing-library/react-hooks": "8.0.0",
-    "@typeofweb/eslint-plugin": "^0.3.0",
-    "@types/jest": "27.4.1",
-    "@types/lodash": "^4.14.182",
-    "@types/react": "18.0.0",
-    "@types/react-dom": "18.0.0",
-    "babel-jest": "27.5.1",
-    "eslint": "^8.14.0",
-    "eslint-plugin-react-hooks": "^4.5.0",
-    "husky": "7.0.4",
-    "immer": "^9.0.12",
-    "jest": "27.5.1",
-    "lint-staged": "12.3.7",
-    "lodash": "^4.17.21",
-    "prettier": "2.6.2",
-    "react": "^18.1.0",
-    "react-dom": "^18.1.0",
-    "rollup": "2.70.1",
-    "rollup-plugin-filesize": "9.1.2",
-    "rollup-plugin-license": "2.6.1",
-    "ts-jest": "27.1.4",
-    "typescript": "4.6.3"
-  },
-  "peerDependencies": {
-    "immer": ">=9.0",
-    "react": ">=16.8"
-  },
-  "resolutions": {
-    "immer": ">8.0.0",
-    "react": ">16.8.0"
-  }
+    "name": "hoor4y",
+    "private": false,
+    "version": "1.0.1",
+    "description": "Hooray is library for state management in React",
+    "repository": "https://github.com/MichalTarasiuk/hooray.git",
+    "exports": {
+        "import": "./dist/index.mjs",
+        "default": "./dist/index.mjs",
+        "require": "./dist/index.cjs",
+        "browser": "./dist/index.umd.js"
+    },
+    "types": "./dist/src/hooray.d.ts",
+    "main": "./dist/index.cjs",
+    "module": "./dist/index.mjs",
+    "browser": "dist/index.umd.js",
+    "unpkg": "dist/index.umd.js",
+    "author": {
+        "name": "Michał Tarasiuk",
+        "email": "tarasiuk.michal03@gmail.com"
+    },
+    "files": [
+        "dist"
+    ],
+    "contributors": [
+        "Michał Tarasiuk (https://github.com/MichalTarasiuk)"
+    ],
+    "workspaces": [
+        ".",
+        "examples/*"
+    ],
+    "keywords": [
+        "react",
+        "state",
+        "manager",
+        "management",
+        "redux",
+        "store"
+    ],
+    "bugs": {
+        "url": "https://github.com/MichalTarasiuk/hooray/issues"
+    },
+    "license": "MIT",
+    "scripts": {
+        "test": "jest --watch",
+        "build": "rimraf dist && rollup --config",
+        "build:watch": "rollup --config --watch",
+        "build:publish": "yarn build && yarn publish",
+        "lint": "eslint"
+    },
+    "lint-staged": {
+        "*": "prettier --write"
+    },
+    "devDependencies": {
+        "@babel/core": "7.17.9",
+        "@babel/preset-env": "7.16.11",
+        "@babel/preset-typescript": "7.16.7",
+        "@rollup/plugin-commonjs": "21.0.3",
+        "@rollup/plugin-typescript": "8.3.1",
+        "@testing-library/react": "13.1.1",
+        "@testing-library/react-hooks": "8.0.0",
+        "@typeofweb/eslint-plugin": "^0.3.0",
+        "@types/jest": "27.4.1",
+        "@types/lodash": "^4.14.182",
+        "@types/react": "18.0.0",
+        "@types/react-dom": "18.0.0",
+        "babel-jest": "27.5.1",
+        "eslint": "^8.14.0",
+        "eslint-plugin-react-hooks": "^4.5.0",
+        "husky": "7.0.4",
+        "immer": "^9.0.12",
+        "jest": "27.5.1",
+        "lint-staged": "12.3.7",
+        "lodash": "^4.17.21",
+        "prettier": "2.6.2",
+        "react": "^18.1.0",
+        "react-dom": "^18.1.0",
+        "rollup": "2.70.1",
+        "rollup-plugin-filesize": "9.1.2",
+        "rollup-plugin-license": "2.6.1",
+        "ts-jest": "27.1.4",
+        "typescript": "4.6.3"
+    },
+    "peerDependencies": {
+        "immer": ">=9.0",
+        "react": ">=16.8"
+    },
+    "resolutions": {
+        "immer": ">8.0.0",
+        "react": ">16.8.0"
+    }
 }
