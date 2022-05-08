@@ -83,7 +83,9 @@
     },
     "peerDependencies": {
         "immer": ">=9.0",
-        "react": ">=16.8"
+        "react": ">=16.8",
+        "react-dom": ">=16.8",
+        "lodash": ">=4.0.0"
     },
     "resolutions": {
         "immer": ">8.0.0",
