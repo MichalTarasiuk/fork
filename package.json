@@ -1,6 +1,6 @@
 {
-  "name": "hooray",
-  "private": false,
+  "name": "hoor4y",
+  "private": true,
   "version": "1.0.0",
   "description": "Hooray is library for state management in React",
   "repository": "https://github.com/MichalTarasiuk/hooray.git",

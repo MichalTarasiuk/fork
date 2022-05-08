@@ -1,4 +1,4 @@
-import hooray from 'hooray'
+import hooray from 'hoor4y'
 
 const { useHooray } = hooray({ counter: 0 }, (set) => ({
   setToInitial: () => set({ counter: 0 }),

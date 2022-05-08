@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { render } from 'react-dom'
-import hooray from 'hooray'
+import hooray from 'hoor4y'
 
 const wait = (ms = 1000) => new Promise((res) => setTimeout(res, ms))
 

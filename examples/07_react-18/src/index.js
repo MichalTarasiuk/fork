@@ -1,6 +1,6 @@
 import React from 'react'
 import { createRoot } from 'react-dom/client'
-import hooray from 'hooray'
+import hooray from 'hoor4y'
 
 const { useHooray, setState } = hooray({ counter: 0 }, (set) => ({
   increase: () => {

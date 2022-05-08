@@ -1,6 +1,6 @@
 import { StrictMode, useRef, useEffect } from 'react'
 import { render } from 'react-dom'
-import hooray from 'hooray'
+import hooray from 'hoor4y'
 
 const { useHooray } = hooray({ counter: 0 }, (set) => ({
   increase: () => set((state) => ({ counter: state.counter + 1 })),

@@ -1,7 +1,7 @@
 # Hooray
 
 ```bash
-npm install hooray # or yarn add hooray
+npm install hoor4y # or yarn add hoor4y
 ```
 
 ## Initializing State
@@ -9,7 +9,7 @@ npm install hooray # or yarn add hooray
 The first argument is the initial state and the second is the actions that access functions such as set and get as described below
 
 ```jsx
-import hooray from 'hooray'
+import hooray from 'hoor4y'
 
 const { useHooray } = hooray({ ideas: [] }, (set, get) => ({
   sendAnIdea: (idea) => set((state) => ({ ideas: [...state.ideas, idea] })),
