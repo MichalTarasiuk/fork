@@ -3,7 +3,7 @@ import { useMemo, useCallback, useRef } from 'react'
 
 import { filterObject, assign, compose } from './helpers/helpers'
 import { useFirstMount, useListener, useUnmount } from './hooks/hooks'
-import { getPlugins } from './logic/logic'
+import { createPlugins } from './logic/logic'
 import { createStore } from './store'
 
 import type { HookConfig } from './hooray.types'
@@ -18,7 +18,7 @@ const hooray = <
   actionsCreator: ActionsCreator<TState, TActions>
 ) => {
   const store = createStore(initialState, actionsCreator)
-  const plugins = getPlugins(store)
+  const plugins = createPlugins(store)
 
   const { setState: setStateInner, subscribe } = store
 

@@ -1,1 +1,1 @@
-export * from './getPlugins.logic'
+export * from './createPlugins.logic'
