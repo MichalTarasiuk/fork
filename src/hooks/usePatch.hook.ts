@@ -4,20 +4,20 @@ import { useUpdate } from './hooks'
 
 export const usePatch = <TState>(
   initialState: TState,
-  callback: (state: TState) => void
+  fn: (state: TState) => void
 ) => {
   const state = useRef(initialState)
-  const savedCallback = useRef(callback)
+  const savedFn = useRef(fn)
 
   useUpdate(() => {
-    savedCallback.current = callback
-  }, callback)
+    savedFn.current = fn
+  }, fn)
 
   const setState = useCallback(
     (patch: Partial<Record<PropertyKey, TState[keyof TState]>>) => {
       state.current = { ...state.current, ...patch }
 
-      savedCallback.current(state.current)
+      savedFn.current(state.current)
 
       return state.current
     },

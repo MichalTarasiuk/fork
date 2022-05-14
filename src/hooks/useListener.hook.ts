@@ -66,7 +66,7 @@ export const useListener = <
   actions: TActions,
   fn: (state: TState | undefined, nextState: TState) => TState
 ) => {
-  type State = AddBy<TState & TActions, AsyncFunction, Status>
+  type State = TState & AddBy<TActions, AsyncFunction, Status>
 
   const [asyncActions, syncActions] = useMemo(
     () => split<AsyncActions, SyncActions>(actions, isAsyncFunction),
