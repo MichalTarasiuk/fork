@@ -1,4 +1,4 @@
-import { split } from '../../src/helpers/helpers'
+import { split } from '../../src/utils/utils'
 
 describe('split', () => {
   it('should split an object into two objects', () => {

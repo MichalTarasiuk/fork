@@ -1,9 +1,8 @@
 import Produce from 'immer'
 import { cloneDeep, isEqual } from 'lodash'
 
-import { createObserver, resolve, empty } from './helpers/helpers'
+import { createObserver, resolve, empty } from './utils/utils'
 
-import type { Listener } from './helpers/helpers'
 import type {
   ActionsCreator,
   Selector,
@@ -14,6 +13,7 @@ import type {
   Patch,
 } from './store.types'
 import type { ArrowFunction } from './types/types'
+import type { Listener } from './utils/utils'
 
 const createStore = <
   TState extends Record<PropertyKey, unknown>,
@@ -27,14 +27,15 @@ const createStore = <
 
   const customListener = <TSelector extends Selector<TState>>(
     listener: Listener<TState>,
-    selector: Selector<TState>,
+    selector: TSelector,
     equality?: Equality<ReturnType<TSelector>>
   ) => {
     return (state: TState, nextState: TState) => {
       const nextSlice = selector(nextState)
       const slice = selector(state)
       const notify = equality
-        ? equality(slice, nextSlice)
+        ? // @ts-ignore
+          equality(slice, nextSlice)
         : !isEqual(slice, nextSlice)
 
       if (notify) {

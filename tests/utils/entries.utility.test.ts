@@ -1,4 +1,4 @@
-import { entries, fromEntries } from '../../src/helpers/helpers'
+import { entries, fromEntries } from '../../src/utils/utils'
 
 describe('entries', () => {
   it('should return an array of arrays', () => {

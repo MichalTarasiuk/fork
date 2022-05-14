@@ -1,4 +1,4 @@
-import { isNil } from './helpers'
+import { isNil } from './utils'
 
 import type { Nil } from '../types/types'
 

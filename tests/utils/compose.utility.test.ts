@@ -1,4 +1,4 @@
-import { compose } from '../../src/helpers/helpers'
+import { compose } from '../../src/utils/utils'
 
 describe('compose', () => {
   it('composes from right to left', () => {

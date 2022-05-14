@@ -36,7 +36,7 @@ const config = [
       Typescript({
         tsconfig: 'tsconfig.json',
         declaration: true,
-        declarationDir: 'dist/',
+        declarationDir: 'build/',
         rootDir: '.',
         include: ['src/**/*.ts'],
       }),

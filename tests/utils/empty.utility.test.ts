@@ -1,4 +1,4 @@
-import { empty } from '../../src/helpers/helpers'
+import { empty } from '../../src/utils/utils'
 
 describe('empty', () => {
   it('should return empty object', () => {

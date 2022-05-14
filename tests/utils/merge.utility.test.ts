@@ -1,4 +1,4 @@
-import { merge } from '../../src/helpers/helpers'
+import { merge } from '../../src/utils/utils'
 
 describe('merge', () => {
   it('should merge objects', () => {

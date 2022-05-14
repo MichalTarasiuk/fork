@@ -1,4 +1,4 @@
-import { fromEntries, entries } from '../helpers/helpers'
+import { fromEntries, entries } from '../utils/utils'
 
 export const mapObject = <TObject extends Record<PropertyKey, unknown>, TValue>(
   obj: TObject,

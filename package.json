@@ -1,26 +1,26 @@
 {
     "name": "hoor4y",
-    "private": false,
+    "private": true,
     "version": "1.0.1",
     "description": "Hooray is library for state management in React",
     "repository": "https://github.com/MichalTarasiuk/hooray.git",
     "exports": {
-        "import": "./dist/index.mjs",
-        "default": "./dist/index.mjs",
-        "require": "./dist/index.cjs",
-        "browser": "./dist/index.umd.js"
+        "import": "./build/index.mjs",
+        "default": "./build/index.mjs",
+        "require": "./build/index.cjs",
+        "browser": "./build/index.umd.js"
     },
-    "types": "./dist/src/hooray.d.ts",
-    "main": "./dist/index.cjs",
-    "module": "./dist/index.mjs",
-    "browser": "dist/index.umd.js",
-    "unpkg": "dist/index.umd.js",
+    "types": "./build/src/hooray.d.ts",
+    "main": "./build/index.cjs",
+    "module": "./build/index.mjs",
+    "browser": "build/index.umd.js",
+    "unpkg": "build/index.umd.js",
     "author": {
         "name": "Michał Tarasiuk",
         "email": "tarasiuk.michal03@gmail.com"
     },
     "files": [
-        "dist"
+        "build"
     ],
     "contributors": [
         "Michał Tarasiuk (https://github.com/MichalTarasiuk)"
@@ -43,7 +43,7 @@
     "license": "MIT",
     "scripts": {
         "test": "jest --watch",
-        "build": "rimraf dist && rollup --config",
+        "build": "rimraf build && rollup --config",
         "build:watch": "rollup --config --watch",
         "build:publish": "yarn build && yarn publish",
         "lint": "eslint"

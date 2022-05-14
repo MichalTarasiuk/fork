@@ -1,4 +1,4 @@
-import { mapObject } from '../../src/helpers/helpers'
+import { mapObject } from '../../src/utils/utils'
 
 describe('mapObject', () => {
   it('should map object', () => {

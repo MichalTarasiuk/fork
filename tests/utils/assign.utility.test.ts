@@ -1,4 +1,4 @@
-import { assign } from '../../src/helpers/helpers'
+import { assign } from '../../src/utils/utils'
 
 describe('assign', () => {
   it('should assign array and plain object', () => {

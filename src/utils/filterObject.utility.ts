@@ -1,4 +1,4 @@
-import { fromEntries, entries } from '../helpers/helpers'
+import { fromEntries, entries } from '../utils/utils'
 
 export const filterObject = <TObject extends Record<PropertyKey, unknown>>(
   object: TObject,

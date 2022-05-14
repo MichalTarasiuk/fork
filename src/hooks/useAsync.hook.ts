@@ -1,7 +1,7 @@
 import { useCallback } from 'react'
 
-import { mapObject, merge } from '../helpers/helpers'
 import { usePatch, useCreation } from '../hooks/hooks'
+import { mapObject, merge } from '../utils/utils'
 
 import type { AsyncFunction } from '../types/types'
 

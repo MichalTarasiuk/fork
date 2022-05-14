@@ -1,4 +1,4 @@
-import { set } from '../../src/helpers/helpers'
+import { set } from '../../src/utils/utils'
 
 describe('set', () => {
   it('should set value', () => {

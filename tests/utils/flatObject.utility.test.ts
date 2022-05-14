@@ -1,4 +1,4 @@
-import { flatObject } from '../../src/helpers/helpers'
+import { flatObject } from '../../src/utils/utils'
 
 describe('flatObject', () => {
   it('should flatten object', () => {

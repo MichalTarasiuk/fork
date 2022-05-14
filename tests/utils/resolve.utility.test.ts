@@ -1,4 +1,4 @@
-import { resolve } from '../../src/helpers/helpers'
+import { resolve } from '../../src/utils/utils'
 
 describe('resolve', () => {
   it('should resolve state which is function', () => {

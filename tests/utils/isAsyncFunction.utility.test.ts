@@ -1,4 +1,4 @@
-import { isAsyncFunction } from '../../src/helpers/helpers'
+import { isAsyncFunction } from '../../src/utils/utils'
 
 describe('isAsyncFunction', () => {
   it('should return false when value is a string', () => {

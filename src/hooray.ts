@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion -- safty assertion  */
 import { useMemo, useCallback, useRef } from 'react'
 
-import { filterObject, assign, compose } from './helpers/helpers'
 import { useFirstMount, useListener, useUnmount } from './hooks/hooks'
 import { createPlugins } from './logic/logic'
 import { createStore } from './store'
+import { filterObject, assign, compose } from './utils/utils'
 
 import type { HookConfig } from './hooray.types'
 import type { ActionsCreator, Selector, Patch, SetConfig } from './store.types'

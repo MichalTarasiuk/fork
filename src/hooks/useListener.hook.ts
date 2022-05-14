@@ -1,13 +1,13 @@
 import { cloneDeep } from 'lodash'
 import { useCallback, useMemo } from 'react'
 
-import { isAsyncFunction, flatObject, split } from '../helpers/helpers'
 import {
   useHasMounted,
   useForce,
   useFirstMount,
   useAsync,
 } from '../hooks/hooks'
+import { isAsyncFunction, flatObject, split } from '../utils/utils'
 
 import type { AsyncSlice, Status } from '../hooks/useAsync.hook'
 import type { AddBy, AsyncFunction, ArrowFunction } from '../types/types'

@@ -1,6 +1,6 @@
 import { cloneDeep } from 'lodash'
 
-import { isPlainObject } from './helpers'
+import { isPlainObject } from './utils'
 
 export const flatObject = <TObject extends Record<PropertyKey, unknown>>(
   object: TObject,

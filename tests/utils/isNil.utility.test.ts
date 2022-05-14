@@ -1,4 +1,4 @@
-import { isNil } from '../../src/helpers/helpers'
+import { isNil } from '../../src/utils/utils'
 
 describe('isNil', () => {
   it('should return true if value is null', () => {

@@ -1,4 +1,4 @@
-import { isFunction } from '../../src/helpers/helpers'
+import { isFunction } from '../../src/utils/utils'
 
 describe('isFunction', () => {
   it('should return true when value is a function', () => {

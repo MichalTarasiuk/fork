@@ -1,10 +1,10 @@
-import type { Listener } from './helpers/helpers'
 import type { ArrowFunction } from './types/types'
+import type { Listener } from './utils/utils'
 import type { Draft } from 'immer'
 
 export type Selector<TState extends Record<PropertyKey, unknown>> = (
   state: TState
-) => any
+) => TState[keyof TState]
 
 export type ActionsCreator<
   TState extends Record<PropertyKey, unknown>,

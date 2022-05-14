@@ -1,5 +1,4 @@
-import { createObserver } from '../../src/helpers/helpers'
-import { noop } from '../../src/helpers/helpers'
+import { createObserver, noop } from '../../src/utils/utils'
 
 describe('observer', () => {
   it('should subscribe observer', () => {
@@ -45,7 +44,7 @@ describe('observer', () => {
 
     // when
     fruits.forEach((fruit) => {
-      observer.notify(fruit)
+      observer.notify(fruit, fruit)
     })
 
     // then

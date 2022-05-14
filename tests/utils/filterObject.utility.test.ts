@@ -1,4 +1,4 @@
-import { filterObject } from '../../src/helpers/helpers'
+import { filterObject } from '../../src/utils/utils'
 
 describe('filterObject', () => {
   it('should filter object', () => {

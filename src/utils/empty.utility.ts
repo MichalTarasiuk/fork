@@ -1,5 +1,5 @@
 /* eslint-disable functional/prefer-readonly-type -- empty helper mutates */
-import { isPlainObject } from './helpers'
+import { isPlainObject } from './utils'
 
 import type { EmptyObject } from '../types/types'
 
