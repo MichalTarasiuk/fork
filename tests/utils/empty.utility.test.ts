@@ -29,7 +29,6 @@ describe('empty', () => {
 
     // assert
     empty(value)
-    console.log(value)
   })
 
   it('should return array with the same refference', () => {

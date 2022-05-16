@@ -1,14 +1,21 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion -- safty assertion  */
 import { useMemo, useCallback, useRef } from 'react'
 
-import { useFirstMount, useListener, useUnmount } from './hooks/hooks'
-import { createPlugins } from './logic/logic'
+import {
+  useFirstMount,
+  useListener,
+  useUnmount,
+  useMount,
+  useForce,
+} from './hooks/hooks'
+import { createPluginsManager, createObserver } from './logic/logic'
 import { createStore } from './store'
 import { filterObject, assign, compose } from './utils/utils'
 
 import type { HookConfig } from './hooray.types'
 import type { ActionsCreator, Selector, Patch, SetConfig } from './store.types'
 import type { ArrowFunction } from './types/types'
+import type { ReactNode } from 'react'
 
 const hooray = <
   TState extends Record<PropertyKey, unknown>,
@@ -18,17 +25,38 @@ const hooray = <
   actionsCreator: ActionsCreator<TState, TActions>
 ) => {
   const store = createStore(initialState, actionsCreator)
-  const plugins = createPlugins(store)
+  const pluginsManager = createPluginsManager<TState>()
+  const observer = createObserver<TState>()
 
   const { setState: setStateInner, subscribe } = store
+
+  pluginsManager.add('observe', (stateMap) => {
+    observer.observe(stateMap.nextState)
+
+    return stateMap
+  })
+
+  const HoorayProvider = ({ children }: { readonly children: ReactNode }) => {
+    const force = useForce()
+
+    useMount(() => {
+      observer.configure((state) => {
+        store.setState(state, { replace: true })
+
+        force()
+      })
+    })
+
+    return <>{children}</>
+  }
 
   const useHooray = <TSelector extends Selector<TState>>(
     selector?: TSelector,
     config: HookConfig<TState, TSelector> = {}
   ) => {
-    const savedSubscriber = useRef<ReturnType<
-      typeof store['subscribe']
-    > | null>(null)
+    type Subscriber = ReturnType<typeof store['subscribe']>
+
+    const savedSubscriber = useRef<Subscriber | null>(null)
     const savedListener = useRef((_: TState, __: TState) => {})
 
     const isFirstMount = useFirstMount()
@@ -47,7 +75,11 @@ const hooray = <
       actions,
       (state, nextState) => {
         const pickedPlugins = Object.values(
-          filterObject(plugins, (key) => config[key] === true)
+          filterObject(
+            pluginsManager.plugins,
+            // @ts-ignore
+            (key) => key in config && config[key] === true
+          )
         )
         // @ts-ignore
         const combinedPlugins = compose(...pickedPlugins)
@@ -85,7 +117,7 @@ const hooray = <
     return assign([result.state, result.setState] as const, result)
   }
 
-  return { setState: setStateInner, subscribe, useHooray }
+  return { HoorayProvider, useHooray, setState: setStateInner, subscribe }
 }
 
 // eslint-disable-next-line import/no-default-export -- library export

@@ -8,9 +8,5 @@ export type HookConfig<
     nextState: ReturnType<TSelector>,
     state: ReturnType<TSelector>
   ) => boolean
-}
-
-export type StateMap<TState extends Record<PropertyKey, unknown>> = {
-  readonly nextState: TState
-  readonly state?: TState
+  readonly observe?: boolean
 }
