@@ -14,6 +14,7 @@ export { isNil } from './isNil.utility'
 export { filterObject } from './filterObject.utility'
 export { split } from './split.utility'
 export { createProxy } from './createProxy.utility'
+export { createRef } from './createRef.utility'
 
 export const noop = () => {}
 
