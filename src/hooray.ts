@@ -36,11 +36,7 @@ const hooray = <
     setProviderBody,
   } = createSafeHookCall('hooray')
 
-  pluginsManager.add('observe', (state) => {
-    observer.observe(state)
-
-    return state
-  })
+  pluginsManager.add('observe', (state) => observer.observe(state))
 
   setProviderBody(() => {
     const force = useForce()

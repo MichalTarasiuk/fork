@@ -53,7 +53,6 @@ const createManager = <
     get state() {
       const copy = fn(cloneDeep(savedState))
 
-      // FIX ME: Proxy doesn't work - reference is lost
       return flatObject(copy, asyncSymbol, syncSymbol)
     },
     setState,

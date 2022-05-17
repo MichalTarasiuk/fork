@@ -4,7 +4,7 @@ import type { Draft } from 'immer'
 
 export type Selector<TState extends Record<PropertyKey, unknown>> = (
   state: TState
-) => TState[keyof TState]
+) => TState | TState[keyof TState]
 
 export type ActionsCreator<
   TState extends Record<PropertyKey, unknown>,

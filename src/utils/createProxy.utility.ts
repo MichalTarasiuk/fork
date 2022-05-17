@@ -21,6 +21,10 @@ export const createProxy = <TTarget extends Record<PropertyKey, unknown>>(
       propertyKey: PropertyKey,
       attributes: PropertyDescriptor
     ) {
+      if (isSymbol(propertyKey)) {
+        return true
+      }
+
       const result = Reflect.defineProperty(target, propertyKey, attributes)
 
       fn(target)
@@ -28,6 +32,10 @@ export const createProxy = <TTarget extends Record<PropertyKey, unknown>>(
       return result
     },
     deleteProperty(target: TTarget, propertyKey: PropertyKey) {
+      if (isSymbol(propertyKey)) {
+        return true
+      }
+
       const result = Reflect.deleteProperty(target, propertyKey)
 
       fn(target)
