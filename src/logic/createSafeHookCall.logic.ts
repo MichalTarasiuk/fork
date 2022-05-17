@@ -1,4 +1,4 @@
-import { createContext, useContext } from 'react'
+import React, { createContext, useContext } from 'react'
 
 import { createRef, noop } from '../utils/utils'
 
@@ -34,7 +34,7 @@ export const createSafeHookCall = (name: string) => {
   const Provider = ({ children }: ProviderProps) => {
     providerBody.current()
 
-    return <border.Provider value={true}>{children}</border.Provider>
+    return React.createElement(border.Provider, { value: true }, children)
   }
 
   return { Provider, safeHookCall, setProviderBody }
