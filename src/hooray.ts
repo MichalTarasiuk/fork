@@ -79,7 +79,6 @@ const hooray = <
             (key) => key in config && config[key] === true
           )
         )
-        // @ts-ignore
         const combinedPlugins = compose(...pickedPlugins)
 
         return combinedPlugins(state)
