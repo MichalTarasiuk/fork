@@ -45,7 +45,7 @@ const reducer = (counter, action) => {
   }
 }
 
-const { useHooray } = hooray({ counter: 0 }, (set, get) => ({
+const { HoorayProvider, useHooray } = hooray({ counter: 0 }, (set, get) => ({
   counter: 0,
   setCounter: (action) => {
     set((state) => reducer(state.counter, action))
@@ -86,7 +86,9 @@ const App = () => {
 
 render(
   <StrictMode>
-    <App />
+    <HoorayProvider>
+      <App />
+    </HoorayProvider>
   </StrictMode>,
   document.querySelector('#app')
 )

@@ -2,7 +2,7 @@ import { StrictMode, useRef, useEffect } from 'react'
 import { render } from 'react-dom'
 import hooray from 'hoor4y'
 
-const { useHooray } = hooray({ counter: 0 }, (set) => ({
+const { HoorayProvider, useHooray } = hooray({ counter: 0 }, (set) => ({
   increase: () => set((state) => ({ counter: state.counter + 1 })),
   decrease: () => set((state) => ({ counter: state.counter - 1 })),
 }))
@@ -45,7 +45,9 @@ const Counter = () => {
 
 const App = () => (
   <StrictMode>
-    <Counter />
+    <HoorayProvider>
+      <Counter />
+    </HoorayProvider>
   </StrictMode>
 )
 

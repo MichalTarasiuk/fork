@@ -2,12 +2,15 @@ import { StrictMode, useRef, useEffect } from 'react'
 import { render } from 'react-dom'
 import hooray from 'hoor4y'
 
-const { useHooray } = hooray({ counter: 0, dakrMode: false }, (set) => ({
-  increase: () =>
-    set((state) => {
-      state.counter++
-    }),
-}))
+const { HoorayProvider, useHooray } = hooray(
+  { counter: 0, dakrMode: false },
+  (set) => ({
+    increase: () =>
+      set((state) => {
+        state.counter++
+      }),
+  })
+)
 
 const useFirstMount = () => {
   const ref = useRef(true)
@@ -76,8 +79,10 @@ const DarkModeSwitch = () => {
 const App = () => {
   return (
     <StrictMode>
-      <Counter />
-      <DarkModeSwitch />
+      <HoorayProvider>
+        <Counter />
+        <DarkModeSwitch />
+      </HoorayProvider>
     </StrictMode>
   )
 }

@@ -4,7 +4,7 @@ import hooray from 'hoor4y'
 
 const wait = (ms = 1000) => new Promise((res) => setTimeout(res, ms))
 
-const { useHooray } = hooray({ counter: 0 }, (set) => ({
+const { HoorayProvider, useHooray } = hooray({ counter: 0 }, (set) => ({
   increase: async () => {
     await wait()
     set((state) => {
@@ -33,8 +33,10 @@ const CounterManager = () => {
 const App = () => {
   return (
     <StrictMode>
-      <CounterDisplay />
-      <CounterManager />
+      <HoorayProvider>
+        <CounterDisplay />
+        <CounterManager />
+      </HoorayProvider>
     </StrictMode>
   )
 }

@@ -8,12 +8,13 @@ export type Note = {
   content: string
 }
 
-const { useHooray } = hooray({ block: true, notes: [] as Note[] }, (set) => ({
-  async unlock() {
-    await wait(1000)
+export const { HoorayProvider, useHooray } = hooray(
+  { block: true, notes: [] as Note[] },
+  (set) => ({
+    async unlock() {
+      await wait(1000)
 
-    set({ block: false })
-  },
-}))
-
-export { useHooray }
+      set({ block: false })
+    },
+  })
+)

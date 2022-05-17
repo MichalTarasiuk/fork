@@ -1,6 +1,6 @@
 import hooray from 'hoor4y'
 
-const { useHooray } = hooray({ counter: 0 }, (set) => ({
+export const { HoorayProvider, useHooray } = hooray({ counter: 0 }, (set) => ({
   setToInitial: () => set({ counter: 0 }),
   increase: () => set((state) => ({ counter: state.counter + 1 })),
 }))

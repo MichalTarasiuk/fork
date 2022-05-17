@@ -2,11 +2,14 @@ import React from 'react'
 import { createRoot } from 'react-dom/client'
 import hooray from 'hoor4y'
 
-const { useHooray, setState } = hooray({ counter: 0 }, (set) => ({
-  increase: () => {
-    set((state) => ({ counter: state.counter + 1 }))
-  },
-}))
+const { HoorayProvider, useHooray, setState } = hooray(
+  { counter: 0 },
+  (set) => ({
+    increase: () => {
+      set((state) => ({ counter: state.counter + 1 }))
+    },
+  })
+)
 
 const decrease = () => {
   setState((state) => ({ counter: state.counter - 1 }))
@@ -24,4 +27,8 @@ const App = () => {
   )
 }
 
-createRoot(document.querySelector('#app')).render(<App />)
+createRoot(document.querySelector('#app')).render(
+  <HoorayProvider>
+    <App />
+  </HoorayProvider>
+)
