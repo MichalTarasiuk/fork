@@ -7,7 +7,7 @@ import { useMount } from '../src/hooks/hooks'
 describe('hooray', () => {
   it('should resolve plain action', () => {
     // arrange
-    const { useHooray } = hooray(
+    const { HoorayProvider, useHooray } = hooray(
       { counter: 0 },
       {
         increase: () => {
@@ -25,7 +25,11 @@ describe('hooray', () => {
 
       return null
     }
-    render(<Counter />)
+    render(
+      <HoorayProvider>
+        <Counter />
+      </HoorayProvider>
+    )
 
     // assert
     expect(spy).toHaveBeenCalledWith({ counter: 1 })
@@ -33,7 +37,7 @@ describe('hooray', () => {
 
   it('should rerender component', () => {
     // arrange
-    const { useHooray } = hooray({ counter: 0 }, (set) => ({
+    const { HoorayProvider, useHooray } = hooray({ counter: 0 }, (set) => ({
       increase: () => {
         set((state) => ({ counter: state.counter + 1 }))
       },
@@ -52,7 +56,11 @@ describe('hooray', () => {
         </div>
       )
     }
-    const { getByText } = render(<Counter />)
+    const { getByText } = render(
+      <HoorayProvider>
+        <Counter />
+      </HoorayProvider>
+    )
 
     // assert
     getByText('counter: 1')
@@ -61,7 +69,7 @@ describe('hooray', () => {
   it('should not rerender component when state is not changed', () => {
     // arrange
     const spy = jest.fn()
-    const { useHooray } = hooray({ counter: 0 }, (set) => ({}))
+    const { HoorayProvider, useHooray } = hooray({ counter: 0 }, (set) => ({}))
     const Counter = () => {
       const { setState } = useHooray()
 
@@ -73,7 +81,11 @@ describe('hooray', () => {
 
       return null
     }
-    render(<Counter />)
+    render(
+      <HoorayProvider>
+        <Counter />
+      </HoorayProvider>
+    )
 
     // assert
     expect(spy).toHaveBeenCalledTimes(1)
@@ -81,7 +93,7 @@ describe('hooray', () => {
 
   it('should not rerender component when scope state is the same', async () => {
     // arrange
-    const { useHooray } = hooray(
+    const { HoorayProvider, useHooray } = hooray(
       {
         counter: 0,
         darkMode: false,
@@ -100,7 +112,11 @@ describe('hooray', () => {
       return <p>counter {state.counter}</p>
     }
 
-    const { findByText } = render(<Counter />)
+    const { findByText } = render(
+      <HoorayProvider>
+        <Counter />
+      </HoorayProvider>
+    )
 
     // assert
     await findByText('counter 0')
@@ -108,7 +124,7 @@ describe('hooray', () => {
 
   it('should not rerender component when scope state is not the same', async () => {
     // arrange
-    const { useHooray } = hooray(
+    const { HoorayProvider, useHooray } = hooray(
       {
         counter: 0,
         darkMode: false,
@@ -127,7 +143,11 @@ describe('hooray', () => {
       return <p>counter {state.counter}</p>
     }
 
-    const { findByText } = render(<Counter />)
+    const { findByText } = render(
+      <HoorayProvider>
+        <Counter />
+      </HoorayProvider>
+    )
 
     // assert
     await findByText('counter 1')
@@ -135,7 +155,7 @@ describe('hooray', () => {
 
   it('should rerender component when scope state is not the same after setState action from beyond component', () => {
     // given
-    const { useHooray, setState } = hooray(
+    const { HoorayProvider, useHooray, setState } = hooray(
       {
         counter: 0,
         darkMode: false,
@@ -151,7 +171,11 @@ describe('hooray', () => {
       return <p>counter {state.counter}</p>
     }
 
-    render(<Counter />)
+    render(
+      <HoorayProvider>
+        <Counter />
+      </HoorayProvider>
+    )
 
     // when
     setState((state) => state)
@@ -162,14 +186,17 @@ describe('hooray', () => {
 
   it('should unsubscribe after unmount', () => {
     // given
-    const { useHooray } = hooray({ isUnmount: false, counter: 0 }, (set) => ({
-      unmount: () => {
-        set({ isUnmount: true })
-      },
-      increase: () => {
-        set((state) => ({ counter: state.counter + 1 }))
-      },
-    }))
+    const { HoorayProvider, useHooray } = hooray(
+      { isUnmount: false, counter: 0 },
+      (set) => ({
+        unmount: () => {
+          set({ isUnmount: true })
+        },
+        increase: () => {
+          set((state) => ({ counter: state.counter + 1 }))
+        },
+      })
+    )
     const spy1 = jest.fn()
     const spy2 = jest.fn()
     const Root = {
@@ -193,7 +220,11 @@ describe('hooray', () => {
         return null
       },
     }
-    const { getByText } = render(<Root.Parent />)
+    const { getByText } = render(
+      <HoorayProvider>
+        <Root.Parent />
+      </HoorayProvider>
+    )
 
     // when
     fireEvent.click(getByText('unmount'))
@@ -206,7 +237,7 @@ describe('hooray', () => {
 
   it('should update async action status', () => {
     // given
-    const { useHooray } = hooray({ counter: 0 }, (set) => ({
+    const { HoorayProvider, useHooray } = hooray({ counter: 0 }, (set) => ({
       increase: async () => {
         await wait(1000)
 
@@ -222,7 +253,11 @@ describe('hooray', () => {
 
       return <button onClick={increase}>increase</button>
     }
-    const { getByText } = render(<Counter />)
+    const { getByText } = render(
+      <HoorayProvider>
+        <Counter />
+      </HoorayProvider>
+    )
 
     // when
     fireEvent.click(getByText('increase'))
@@ -233,7 +268,7 @@ describe('hooray', () => {
 
   it('should remove listener after unsubscribe', () => {
     // given
-    const { useHooray } = hooray({ counter: 0 }, (set) => ({
+    const { HoorayProvider, useHooray } = hooray({ counter: 0 }, (set) => ({
       increase: () => {
         set((state) => ({ counter: state.counter + 1 }))
       },
@@ -250,7 +285,11 @@ describe('hooray', () => {
 
       return <button onClick={state.increase}>increase</button>
     }
-    const { getByText } = render(<Counter />)
+    const { getByText } = render(
+      <HoorayProvider>
+        <Counter />
+      </HoorayProvider>
+    )
 
     // when
     fireEvent.click(getByText('increase'))
@@ -261,10 +300,13 @@ describe('hooray', () => {
 
   it('should return true when counter value is divisible', () => {
     // given
-    const { useHooray } = hooray({ counter: 0 }, (set, get) => ({
-      increase: () => set((state) => ({ counter: state.counter + 1 })),
-      isDivisible: () => get().counter % 2 === 0,
-    }))
+    const { HoorayProvider, useHooray } = hooray(
+      { counter: 0 },
+      (set, get) => ({
+        increase: () => set((state) => ({ counter: state.counter + 1 })),
+        isDivisible: () => get().counter % 2 === 0,
+      })
+    )
 
     const Counter = () => {
       const { state } = useHooray()
@@ -278,7 +320,11 @@ describe('hooray', () => {
       )
     }
 
-    const { getByText } = render(<Counter />)
+    const { getByText } = render(
+      <HoorayProvider>
+        <Counter />
+      </HoorayProvider>
+    )
 
     // when
     fireEvent.click(getByText('increase'))
@@ -290,7 +336,7 @@ describe('hooray', () => {
 
   it('should rerender component when next value is bigger', () => {
     // given
-    const { useHooray } = hooray({ counter: 0 }, (set) => ({
+    const { HoorayProvider, useHooray } = hooray({ counter: 0 }, (set) => ({
       increase: () => set((state) => ({ counter: state.counter + 1 })),
       decrease: () => set((state) => ({ counter: state.counter - 1 })),
     }))
@@ -309,7 +355,11 @@ describe('hooray', () => {
       )
     }
 
-    const { getByText } = render(<Counter />)
+    const { getByText } = render(
+      <HoorayProvider>
+        <Counter />
+      </HoorayProvider>
+    )
 
     // when
     fireEvent.click(getByText('increase'))
@@ -326,7 +376,7 @@ describe('hooray', () => {
 
   it('should replace state without rerender', () => {
     // given
-    const { useHooray } = hooray({ counter: 0 }, () => ({}))
+    const { HoorayProvider, useHooray } = hooray({ counter: 0 }, () => ({}))
 
     const Counter = () => {
       const { state, setState } = useHooray()
@@ -347,7 +397,11 @@ describe('hooray', () => {
       return <p>status: block</p>
     }
 
-    const { getByText } = render(<Counter />)
+    const { getByText } = render(
+      <HoorayProvider>
+        <Counter />
+      </HoorayProvider>
+    )
 
     // when
     fireEvent.click(getByText('block'))
@@ -358,7 +412,7 @@ describe('hooray', () => {
 
   it('should generare status for async action', () => {
     // arrange
-    const { useHooray } = hooray({ counter: 0 }, (set) => ({
+    const { HoorayProvider, useHooray } = hooray({ counter: 0 }, (set) => ({
       increase: async () => {
         await wait(1000)
 
@@ -374,7 +428,11 @@ describe('hooray', () => {
 
       return null
     }
-    render(<Counter />)
+    render(
+      <HoorayProvider>
+        <Counter />
+      </HoorayProvider>
+    )
 
     // assert
     expect(spy).toHaveBeenCalledWith('idle')
@@ -382,7 +440,7 @@ describe('hooray', () => {
 
   it('should immer work with setState action', () => {
     // given
-    const { useHooray } = hooray(
+    const { HoorayProvider, useHooray } = hooray(
       {
         counter: 0,
       },
@@ -404,7 +462,11 @@ describe('hooray', () => {
         </div>
       )
     }
-    const { getByText } = render(<Counter />)
+    const { getByText } = render(
+      <HoorayProvider>
+        <Counter />
+      </HoorayProvider>
+    )
 
     // when
     fireEvent.click(getByText('increase'))
@@ -415,7 +477,7 @@ describe('hooray', () => {
 
   it('should immer work with setState action from beyond component', () => {
     // given
-    const { useHooray, setState } = hooray(
+    const { HoorayProvider, useHooray, setState } = hooray(
       {
         counter: 0,
       },
@@ -430,7 +492,11 @@ describe('hooray', () => {
         </div>
       )
     }
-    const { getByText } = render(<Counter />)
+    const { getByText } = render(
+      <HoorayProvider>
+        <Counter />
+      </HoorayProvider>
+    )
 
     // when
     act(() => {
@@ -445,7 +511,7 @@ describe('hooray', () => {
 
   it('should not rerender component when emitt option in config is falsy', () => {
     // given
-    const { useHooray } = hooray(
+    const { HoorayProvider, useHooray } = hooray(
       {
         counter: 0,
       },
@@ -467,7 +533,11 @@ describe('hooray', () => {
         </div>
       )
     }
-    const { getByText } = render(<Counter />)
+    const { getByText } = render(
+      <HoorayProvider>
+        <Counter />
+      </HoorayProvider>
+    )
 
     // when
     fireEvent.click(getByText('increase'))

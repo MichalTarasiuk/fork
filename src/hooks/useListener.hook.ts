@@ -21,7 +21,7 @@ const createManager = <
 >(
   initialState: TState,
   syncActions: TSyncActions,
-  fn: (state: TState | undefined, nextState: TState) => TState
+  fn: (state: TState) => TState
 ) => {
   const asyncSymbol = Symbol('async')
   const syncSymbol = Symbol('sync')
@@ -33,11 +33,11 @@ const createManager = <
     [asyncSymbol]?: AsyncSlice
   }
 
-  let savedState: State = fn(undefined, cloneDeep(initialState))
+  let savedState: State = cloneDeep(initialState)
   savedState[syncSymbol] = syncActions
 
-  const setState = (state: TState | undefined, nextState: TState) => {
-    const stateToSaved: State = fn(cloneDeep(state), cloneDeep(nextState))
+  const setState = (nextState: TState) => {
+    const stateToSaved: State = cloneDeep(nextState)
 
     stateToSaved[asyncSymbol] = savedState[asyncSymbol]
     stateToSaved[syncSymbol] = savedState[syncSymbol]
@@ -51,7 +51,10 @@ const createManager = <
 
   return {
     get state() {
-      return flatObject(savedState, asyncSymbol, syncSymbol)
+      const copy = fn(cloneDeep(savedState))
+
+      // FIX ME: Proxy doesn't work - reference is lost
+      return flatObject(copy, asyncSymbol, syncSymbol)
     },
     setState,
     updateAsync,
@@ -64,7 +67,7 @@ export const useListener = <
 >(
   initialState: TState,
   actions: TActions,
-  fn: (state: TState | undefined, nextState: TState) => TState
+  fn: (state: TState) => TState
 ) => {
   type State = TState & AddBy<TActions, AsyncFunction, Status>
 
@@ -91,9 +94,9 @@ export const useListener = <
     manager.updateAsync(asyncSlice.current)
   }
 
-  const listener = useCallback((state: TState, nextState: TState) => {
+  const listener = useCallback((_: TState, nextState: TState) => {
     if (hasMounted.current) {
-      manager.setState(state, nextState)
+      manager.setState(nextState)
 
       force()
     }

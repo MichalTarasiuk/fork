@@ -1,6 +1,6 @@
-export const createRef = <TValue>() => {
+export const createRef = <TValue>(initialValue: TValue) => {
   const ref = {
-    current: null as TValue | null,
+    current: initialValue,
   }
 
   const setRef = (value: TValue) => {

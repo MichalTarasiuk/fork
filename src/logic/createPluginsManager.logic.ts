@@ -1,13 +1,8 @@
 import { fromEntries, entries } from '../utils/utils'
 
-type StateMap<TState extends Record<PropertyKey, unknown>> = {
-  readonly nextState: TState
-  readonly state?: TState
-}
-
 type Plugin<TState extends Record<PropertyKey, unknown>> = (
-  stateMap: StateMap<TState>
-) => StateMap<TState>
+  state: TState
+) => TState
 
 const initialPlugins = {}
 

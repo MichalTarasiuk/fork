@@ -15,7 +15,7 @@ export const usePatch = <TState>(
 
   const setState = useCallback(
     (patch: Partial<Record<PropertyKey, TState[keyof TState]>>) => {
-      state.current = { ...state.current, ...patch }
+      state.current = Object.assign(state.current, patch)
 
       savedFn.current(state.current)
 

@@ -1,17 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion -- safty assertion */
-import { createProxy } from '../utils/utils'
-
-const createRef = <TValue>() => {
-  const ref = {
-    current: null as TValue | null,
-  }
-
-  const setRef = (value: TValue) => {
-    ref.current = value
-  }
-
-  return { ref, setRef }
-}
+import { createProxy, createRef } from '../utils/utils'
 
 export const createObserver = <
   TState extends Record<PropertyKey, unknown>
@@ -19,7 +7,7 @@ export const createObserver = <
   type Fn = (state: TState) => void
 
   const observers = new WeakMap<TState, TState>()
-  const { ref, setRef } = createRef<Fn>()
+  const { ref, setRef } = createRef<Fn | null>(null)
 
   const observe = (state: TState) => {
     if (observers.has(state)) {

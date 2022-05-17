@@ -1,17 +1,18 @@
-import { cloneDeep } from 'lodash'
-
 import { isPlainObject } from './utils'
 
+// utility mutate the object
 export const flatObject = <TObject extends Record<PropertyKey, unknown>>(
   object: TObject,
   ...keys: ReadonlyArray<keyof TObject>
 ) =>
   keys.reduce((acc, key) => {
-    const { [key]: selectedValue, ...restAcc } = acc
+    const value = acc[key]
 
-    if (isPlainObject(selectedValue)) {
-      return { ...restAcc, ...selectedValue } as TObject
+    if (isPlainObject(value)) {
+      delete acc[key]
+
+      return Object.assign(acc, value) as TObject
     }
 
     return acc
-  }, cloneDeep(object))
+  }, object)

@@ -23,6 +23,6 @@ export type AsyncFunction = (...args: readonly unknown[]) => Promise<unknown>
 
 export type Noop = () => void
 
-export type ArrowFunction = (...args: readonly unknown[]) => unknown
+export type ArrowFunction = (...args: readonly any[]) => unknown
 
 export type EmptyObject = Record<PropertyKey, never>
