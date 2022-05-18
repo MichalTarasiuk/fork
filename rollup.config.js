@@ -7,24 +7,24 @@ import Pkg from './package.json'
 
 const config = [
   {
-    input: 'src/hooray.ts',
+    input: 'src/remest.ts',
     output: [
       {
-        name: 'hooray',
+        name: 'remest',
         format: 'es',
         dir: './',
         entryFileNames: Pkg.exports.import.replace(/^\.\//, ''),
         sourcemap: true,
       },
       {
-        name: 'hooray',
+        name: 'remest',
         format: 'cjs',
         dir: './',
         entryFileNames: Pkg.exports.require.replace(/^\.\//, ''),
         sourcemap: true,
       },
       {
-        name: 'hooray',
+        name: 'remest',
         format: 'umd',
         dir: './',
         entryFileNames: Pkg.exports.browser.replace(/^\.\//, ''),

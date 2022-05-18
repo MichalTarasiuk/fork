@@ -1,16 +1,16 @@
 {
-    "name": "hoor4y",
+    "name": "remest",
     "private": true,
     "version": "1.0.1",
-    "description": "Hooray is library for state management in React",
-    "repository": "https://github.com/MichalTarasiuk/hooray.git",
+    "description": "Remest is library for state management in React",
+    "repository": "https://github.com/MichalTarasiuk/remest.git",
     "exports": {
         "import": "./build/index.mjs",
         "default": "./build/index.mjs",
         "require": "./build/index.cjs",
         "browser": "./build/index.umd.js"
     },
-    "types": "./build/src/hooray.d.ts",
+    "types": "./build/src/remest.d.ts",
     "main": "./build/index.cjs",
     "module": "./build/index.mjs",
     "browser": "build/index.umd.js",
@@ -38,7 +38,7 @@
         "store"
     ],
     "bugs": {
-        "url": "https://github.com/MichalTarasiuk/hooray/issues"
+        "url": "https://github.com/MichalTarasiuk/remests/issues"
     },
     "license": "MIT",
     "scripts": {

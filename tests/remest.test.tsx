@@ -1,13 +1,13 @@
 import { render, fireEvent, act } from '@testing-library/react'
 import { wait } from './tests.utils'
 
-import hooray from '../src/hooray'
+import remest from '../src/remest'
 import { useMount } from '../src/hooks/hooks'
 
-describe('hooray', () => {
+describe('remest', () => {
   it('should resolve plain action', () => {
     // arrange
-    const { HoorayProvider, useHooray } = hooray(
+    const { RemestProvider, useRemest } = remest(
       { counter: 0 },
       {
         increase: () => {
@@ -17,7 +17,7 @@ describe('hooray', () => {
     )
     const spy = jest.fn()
     const Counter = () => {
-      const { state } = useHooray()
+      const { state } = useRemest()
 
       useMount(() => {
         spy(state.increase())
@@ -26,9 +26,9 @@ describe('hooray', () => {
       return null
     }
     render(
-      <HoorayProvider>
+      <RemestProvider>
         <Counter />
-      </HoorayProvider>
+      </RemestProvider>
     )
 
     // assert
@@ -37,13 +37,13 @@ describe('hooray', () => {
 
   it('should rerender component', () => {
     // arrange
-    const { HoorayProvider, useHooray } = hooray({ counter: 0 }, (set) => ({
+    const { RemestProvider, useRemest } = remest({ counter: 0 }, (set) => ({
       increase: () => {
         set((state) => ({ counter: state.counter + 1 }))
       },
     }))
     const Counter = () => {
-      const { state } = useHooray()
+      const { state } = useRemest()
 
       useMount(() => {
         state.increase()
@@ -57,9 +57,9 @@ describe('hooray', () => {
       )
     }
     const { getByText } = render(
-      <HoorayProvider>
+      <RemestProvider>
         <Counter />
-      </HoorayProvider>
+      </RemestProvider>
     )
 
     // assert
@@ -69,9 +69,9 @@ describe('hooray', () => {
   it('should not rerender component when state is not changed', () => {
     // arrange
     const spy = jest.fn()
-    const { HoorayProvider, useHooray } = hooray({ counter: 0 }, (set) => ({}))
+    const { RemestProvider, useRemest } = remest({ counter: 0 }, () => ({}))
     const Counter = () => {
-      const { setState } = useHooray()
+      const { setState } = useRemest()
 
       spy()
 
@@ -82,9 +82,9 @@ describe('hooray', () => {
       return null
     }
     render(
-      <HoorayProvider>
+      <RemestProvider>
         <Counter />
-      </HoorayProvider>
+      </RemestProvider>
     )
 
     // assert
@@ -93,7 +93,7 @@ describe('hooray', () => {
 
   it('should not rerender component when scope state is the same', async () => {
     // arrange
-    const { HoorayProvider, useHooray } = hooray(
+    const { RemestProvider, useRemest } = remest(
       {
         counter: 0,
         darkMode: false,
@@ -101,7 +101,7 @@ describe('hooray', () => {
       () => ({})
     )
     const Counter = () => {
-      const [state, setState] = useHooray((state) => state.darkMode)
+      const [state, setState] = useRemest((state) => state.darkMode)
 
       useMount(() => {
         setState((state) => ({
@@ -113,9 +113,9 @@ describe('hooray', () => {
     }
 
     const { findByText } = render(
-      <HoorayProvider>
+      <RemestProvider>
         <Counter />
-      </HoorayProvider>
+      </RemestProvider>
     )
 
     // assert
@@ -124,7 +124,7 @@ describe('hooray', () => {
 
   it('should not rerender component when scope state is not the same', async () => {
     // arrange
-    const { HoorayProvider, useHooray } = hooray(
+    const { RemestProvider, useRemest } = remest(
       {
         counter: 0,
         darkMode: false,
@@ -132,7 +132,7 @@ describe('hooray', () => {
       () => ({})
     )
     const Counter = () => {
-      const [state, setState] = useHooray((state) => state.counter)
+      const [state, setState] = useRemest((state) => state.counter)
 
       useMount(() => {
         setState((state) => ({
@@ -144,9 +144,9 @@ describe('hooray', () => {
     }
 
     const { findByText } = render(
-      <HoorayProvider>
+      <RemestProvider>
         <Counter />
-      </HoorayProvider>
+      </RemestProvider>
     )
 
     // assert
@@ -155,7 +155,7 @@ describe('hooray', () => {
 
   it('should rerender component when scope state is not the same after setState action from beyond component', () => {
     // given
-    const { HoorayProvider, useHooray, setState } = hooray(
+    const { RemestProvider, useRemest, setState } = remest(
       {
         counter: 0,
         darkMode: false,
@@ -164,7 +164,7 @@ describe('hooray', () => {
     )
     const spy = jest.fn()
     const Counter = () => {
-      const [state] = useHooray((state) => state.counter)
+      const [state] = useRemest((state) => state.counter)
 
       spy()
 
@@ -172,9 +172,9 @@ describe('hooray', () => {
     }
 
     render(
-      <HoorayProvider>
+      <RemestProvider>
         <Counter />
-      </HoorayProvider>
+      </RemestProvider>
     )
 
     // when
@@ -186,7 +186,7 @@ describe('hooray', () => {
 
   it('should unsubscribe after unmount', () => {
     // given
-    const { HoorayProvider, useHooray } = hooray(
+    const { RemestProvider, useRemest } = remest(
       { isUnmount: false, counter: 0 },
       (set) => ({
         unmount: () => {
@@ -201,7 +201,7 @@ describe('hooray', () => {
     const spy2 = jest.fn()
     const Root = {
       Parent() {
-        const { state } = useHooray()
+        const { state } = useRemest()
 
         return (
           <>
@@ -213,7 +213,7 @@ describe('hooray', () => {
         )
       },
       Child({ spy }) {
-        useHooray()
+        useRemest()
 
         spy()
 
@@ -221,9 +221,9 @@ describe('hooray', () => {
       },
     }
     const { getByText } = render(
-      <HoorayProvider>
+      <RemestProvider>
         <Root.Parent />
-      </HoorayProvider>
+      </RemestProvider>
     )
 
     // when
@@ -237,7 +237,7 @@ describe('hooray', () => {
 
   it('should update async action status', () => {
     // given
-    const { HoorayProvider, useHooray } = hooray({ counter: 0 }, (set) => ({
+    const { RemestProvider, useRemest } = remest({ counter: 0 }, (set) => ({
       increase: async () => {
         await wait(1000)
 
@@ -246,7 +246,7 @@ describe('hooray', () => {
     }))
     const spy = jest.fn()
     const Counter = () => {
-      const { state } = useHooray()
+      const { state } = useRemest()
       const [increase, status] = state.increase
 
       spy(status)
@@ -254,9 +254,9 @@ describe('hooray', () => {
       return <button onClick={increase}>increase</button>
     }
     const { getByText } = render(
-      <HoorayProvider>
+      <RemestProvider>
         <Counter />
-      </HoorayProvider>
+      </RemestProvider>
     )
 
     // when
@@ -268,14 +268,14 @@ describe('hooray', () => {
 
   it('should remove listener after unsubscribe', () => {
     // given
-    const { HoorayProvider, useHooray } = hooray({ counter: 0 }, (set) => ({
+    const { RemestProvider, useRemest } = remest({ counter: 0 }, (set) => ({
       increase: () => {
         set((state) => ({ counter: state.counter + 1 }))
       },
     }))
     const spy = jest.fn()
     const Counter = () => {
-      const { state, unsubscribe } = useHooray()
+      const { state, unsubscribe } = useRemest()
 
       useMount(() => {
         unsubscribe()
@@ -286,9 +286,9 @@ describe('hooray', () => {
       return <button onClick={state.increase}>increase</button>
     }
     const { getByText } = render(
-      <HoorayProvider>
+      <RemestProvider>
         <Counter />
-      </HoorayProvider>
+      </RemestProvider>
     )
 
     // when
@@ -300,7 +300,7 @@ describe('hooray', () => {
 
   it('should return true when counter value is divisible', () => {
     // given
-    const { HoorayProvider, useHooray } = hooray(
+    const { RemestProvider, useRemest } = remest(
       { counter: 0 },
       (set, get) => ({
         increase: () => set((state) => ({ counter: state.counter + 1 })),
@@ -309,7 +309,7 @@ describe('hooray', () => {
     )
 
     const Counter = () => {
-      const { state } = useHooray()
+      const { state } = useRemest()
 
       return (
         <div>
@@ -321,9 +321,9 @@ describe('hooray', () => {
     }
 
     const { getByText } = render(
-      <HoorayProvider>
+      <RemestProvider>
         <Counter />
-      </HoorayProvider>
+      </RemestProvider>
     )
 
     // when
@@ -336,13 +336,13 @@ describe('hooray', () => {
 
   it('should rerender component when next value is bigger', () => {
     // given
-    const { HoorayProvider, useHooray } = hooray({ counter: 0 }, (set) => ({
+    const { RemestProvider, useRemest } = remest({ counter: 0 }, (set) => ({
       increase: () => set((state) => ({ counter: state.counter + 1 })),
       decrease: () => set((state) => ({ counter: state.counter - 1 })),
     }))
 
     const Counter = () => {
-      const { state } = useHooray((state) => state.counter, {
+      const { state } = useRemest((state) => state.counter, {
         equality: (slice, nextSlice) => nextSlice > slice,
       })
 
@@ -356,9 +356,9 @@ describe('hooray', () => {
     }
 
     const { getByText } = render(
-      <HoorayProvider>
+      <RemestProvider>
         <Counter />
-      </HoorayProvider>
+      </RemestProvider>
     )
 
     // when
@@ -376,10 +376,10 @@ describe('hooray', () => {
 
   it('should replace state without rerender', () => {
     // given
-    const { HoorayProvider, useHooray } = hooray({ counter: 0 }, () => ({}))
+    const { RemestProvider, useRemest } = remest({ counter: 0 }, () => ({}))
 
     const Counter = () => {
-      const { state, setState } = useHooray()
+      const { state, setState } = useRemest()
 
       const block = () => {
         setState({}, { replace: true })
@@ -398,9 +398,9 @@ describe('hooray', () => {
     }
 
     const { getByText } = render(
-      <HoorayProvider>
+      <RemestProvider>
         <Counter />
-      </HoorayProvider>
+      </RemestProvider>
     )
 
     // when
@@ -412,7 +412,7 @@ describe('hooray', () => {
 
   it('should generare status for async action', () => {
     // arrange
-    const { HoorayProvider, useHooray } = hooray({ counter: 0 }, (set) => ({
+    const { RemestProvider, useRemest } = remest({ counter: 0 }, (set) => ({
       increase: async () => {
         await wait(1000)
 
@@ -421,7 +421,7 @@ describe('hooray', () => {
     }))
     const spy = jest.fn()
     const Counter = () => {
-      const { state } = useHooray()
+      const { state } = useRemest()
       const [_, status] = state.increase
 
       spy(status)
@@ -429,9 +429,9 @@ describe('hooray', () => {
       return null
     }
     render(
-      <HoorayProvider>
+      <RemestProvider>
         <Counter />
-      </HoorayProvider>
+      </RemestProvider>
     )
 
     // assert
@@ -440,14 +440,14 @@ describe('hooray', () => {
 
   it('should immer work with setState action', () => {
     // given
-    const { HoorayProvider, useHooray } = hooray(
+    const { RemestProvider, useRemest } = remest(
       {
         counter: 0,
       },
       () => ({})
     )
     const Counter = () => {
-      const { state, setState } = useHooray()
+      const { state, setState } = useRemest()
 
       const increase = () => {
         setState((state) => {
@@ -463,9 +463,9 @@ describe('hooray', () => {
       )
     }
     const { getByText } = render(
-      <HoorayProvider>
+      <RemestProvider>
         <Counter />
-      </HoorayProvider>
+      </RemestProvider>
     )
 
     // when
@@ -477,14 +477,14 @@ describe('hooray', () => {
 
   it('should immer work with setState action from beyond component', () => {
     // given
-    const { HoorayProvider, useHooray, setState } = hooray(
+    const { RemestProvider, useRemest, setState } = remest(
       {
         counter: 0,
       },
       () => ({})
     )
     const Counter = () => {
-      const { state } = useHooray()
+      const { state } = useRemest()
 
       return (
         <div>
@@ -493,9 +493,9 @@ describe('hooray', () => {
       )
     }
     const { getByText } = render(
-      <HoorayProvider>
+      <RemestProvider>
         <Counter />
-      </HoorayProvider>
+      </RemestProvider>
     )
 
     // when
@@ -511,7 +511,7 @@ describe('hooray', () => {
 
   it('should not rerender component when emitt option in config is falsy', () => {
     // given
-    const { HoorayProvider, useHooray } = hooray(
+    const { RemestProvider, useRemest } = remest(
       {
         counter: 0,
       },
@@ -524,7 +524,7 @@ describe('hooray', () => {
       })
     )
     const Counter = () => {
-      const { state } = useHooray()
+      const { state } = useRemest()
 
       return (
         <div>
@@ -534,9 +534,9 @@ describe('hooray', () => {
       )
     }
     const { getByText } = render(
-      <HoorayProvider>
+      <RemestProvider>
         <Counter />
-      </HoorayProvider>
+      </RemestProvider>
     )
 
     // when
@@ -548,14 +548,14 @@ describe('hooray', () => {
 
   it('should observe state on change', () => {
     // given
-    const { HoorayProvider, useHooray } = hooray(
+    const { RemestProvider, useRemest } = remest(
       {
         counter: 0,
       },
       {}
     )
     const Counter = () => {
-      const { state } = useHooray((state) => state, {
+      const { state } = useRemest((state) => state, {
         observe: true,
       })
 
@@ -571,9 +571,9 @@ describe('hooray', () => {
       )
     }
     const { getByText } = render(
-      <HoorayProvider>
+      <RemestProvider>
         <Counter />
-      </HoorayProvider>
+      </RemestProvider>
     )
 
     // when

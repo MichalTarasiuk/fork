@@ -1,9 +1,9 @@
 Liblary can cause errors. Please not use.
 
-# Hooray
+# Remest
 
 ```bash
-npm install hoor4y # or yarn add hoor4y
+npm install remest # or yarn add hoor4y
 ```
 
 ## Initializing State
@@ -11,9 +11,9 @@ npm install hoor4y # or yarn add hoor4y
 The first argument is the initial state and the second is the actions that access functions such as set and get as described below
 
 ```jsx
-import hooray from 'hoor4y'
+import remest from 'remest'
 
-const { useHooray } = hooray({ ideas: [] }, (set, get) => ({
+const { useRemest } = remest({ ideas: [] }, (set, get) => ({
   sendAnIdea: (idea) => set((state) => ({ ideas: [...state.ideas, idea] })),
   isEmpty: () => get().ideas.length === 0,
 }))
@@ -24,13 +24,13 @@ const { useHooray } = hooray({ ideas: [] }, (set, get) => ({
 
 ## Then bind your components, and that's it!
 
-Use the `useHooray` anywhere you want. This hook will decide when your component get rerendered.
+Use the `useRemest` anywhere you want. This hook will decide when your component get rerendered.
 
 `Selector`: causes the component to re-render only when the scope value changes
 
 ```jsx
 function IdeasDisplay() {
-  const { state } = useHooray((state) => state.ideas)
+  const { state } = useRemest((state) => state.ideas)
 
   return (
     <ul>
@@ -46,7 +46,7 @@ const ideas = [
 ]
 
 function Controls() {
-  const { state } = useHooray()
+  const { state } = useRemest()
   return (
     <button
       onClick={() => {
@@ -63,13 +63,13 @@ function Controls() {
 Function which manage state.
 
 ```js
-const { setState } = hooray(
+const { setState } = remest(
   {
     /* */
   },
   (set) => ({
     sendAndIdea: () => {
-      // emitter is provided here automatically by useHooray
+      // emitter is provided here automatically by useRemest
       set(patch, config)
     },
   })
@@ -105,10 +105,10 @@ const config = {
 
 ## Async
 
-Hooray will generate you status for each async action.
+Remest will generate you status for each async action.
 
 ```jsx
-const { useHooray } = hooray({ ideas: [] }, (set, get) => ({
+const { useRemest } = remest({ ideas: [] }, (set, get) => ({
   sendAnIdea: async (id) => {
     const idea = await myFetcher(id)
 
@@ -117,7 +117,7 @@ const { useHooray } = hooray({ ideas: [] }, (set, get) => ({
 }))
 
 const Component = () => {
-  const [state] = useHooray()
+  const [state] = useRemest()
   const [sendAnIdea, status] = state.sendAnIdea
 
   /* return */
@@ -126,10 +126,10 @@ const Component = () => {
 
 ## Immer
 
-Hooray supports immer 🔥
+Remest supports immer 🔥
 
 ```jsx
-const { useHooray } = hooray({ ideas: [] }, (set, get) => ({
+const { useRemest } = remest({ ideas: [] }, (set, get) => ({
   sendAnIdea: async (id) => {
     const idea = await myFetcher(id)
 
@@ -140,7 +140,7 @@ const { useHooray } = hooray({ ideas: [] }, (set, get) => ({
 }))
 
 const Component = () => {
-  const [state] = useHooray()
+  const [state] = useRemest()
   const [sendAnIdea, status] = state.sendAnIdea
 
   /* return */
@@ -152,7 +152,7 @@ const Component = () => {
 Sometimes you need to access state outside components.
 
 ```js
-const { setState, subscribe } = hooray({ ideas: [] }, (set, get) => ({
+const { setState, subscribe } = remest({ ideas: [] }, (set, get) => ({
   sendAnIdea: async (id) => {
     const idea = await myFetcher(id)
 
@@ -181,7 +181,7 @@ subscriber.unsubscribe()
 If you are use async action status not for display in JSX. The set state action should have emitt property set to false.
 
 ```jsx
-const { useHooray } = hooray({ ideas: [] }, (set, get) => ({
+const { useRemest } = remest({ ideas: [] }, (set, get) => ({
   sendAnIdea: async (id) => {
     const idea = await myFetcher(id)
 
@@ -190,7 +190,7 @@ const { useHooray } = hooray({ ideas: [] }, (set, get) => ({
 }))
 
 const Component = () => {
-  const [state] = useHooray()
+  const [state] = useRemest()
   const [sendAnIdea, status] = state.sendAnIdea
 
   useEffect(() => {

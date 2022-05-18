@@ -16,11 +16,11 @@ import {
 import { createStore } from './store'
 import { filterObject, assign, compose } from './utils/utils'
 
-import type { HookConfig } from './hooray.types'
+import type { HookConfig } from './remest.types'
 import type { ActionsCreator, Selector, Patch, SetConfig } from './store.types'
 import type { ArrowFunction } from './types/types'
 
-const hooray = <
+const remest = <
   TState extends Record<PropertyKey, unknown>,
   TActions extends Record<PropertyKey, ArrowFunction>
 >(
@@ -31,10 +31,10 @@ const hooray = <
   const pluginsManager = createPluginsManager<TState>()
   const observer = createObserver<TState>()
   const {
-    Provider: HoorayProvider,
+    Provider: RemestProvider,
     safeHookCall,
     setProviderBody,
-  } = createSafeHookCall('hooray')
+  } = createSafeHookCall('remest')
 
   pluginsManager.add('observe', (state) => observer.observe(state))
 
@@ -50,7 +50,7 @@ const hooray = <
     })
   })
 
-  const useHooray = safeHookCall(
+  const useRemest = safeHookCall(
     <TSelector extends Selector<TState>>(
       selector?: TSelector,
       config: HookConfig<TState, TSelector> = {}
@@ -120,12 +120,12 @@ const hooray = <
   const { setState, subscribe } = store
 
   return {
-    HoorayProvider,
-    useHooray,
+    RemestProvider,
+    useRemest,
     setState,
     subscribe,
   }
 }
 
 // eslint-disable-next-line import/no-default-export -- library export
-export default hooray
+export default remest
