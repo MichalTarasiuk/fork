@@ -25,7 +25,7 @@ const remest = <
   TActions extends Record<PropertyKey, ArrowFunction>
 >(
   initialState: TState,
-  actionsCreator: ActionsCreator<TState, TActions>
+  actionsCreator?: ActionsCreator<TState, TActions>
 ) => {
   const store = createStore(initialState, actionsCreator)
   const pluginsManager = createPluginsManager<TState>()
@@ -71,18 +71,22 @@ const remest = <
       }
 
       const actions = savedSubscriber.current!.actions
-      const [state, listener] = useListener(initialState, actions, (state) => {
-        const pickedPlugins = Object.values(
-          filterObject(
-            pluginsManager.plugins,
-            // @ts-ignore
-            (key) => key in config && config[key] === true
+      const [state, listener] = useListener(
+        initialState,
+        actions || {},
+        (state) => {
+          const pickedPlugins = Object.values(
+            filterObject(
+              pluginsManager.plugins,
+              // @ts-ignore
+              (key) => key in config && config[key] === true
+            )
           )
-        )
-        const combinedPlugins = compose(...pickedPlugins)
+          const combinedPlugins = compose(...pickedPlugins)
 
-        return combinedPlugins(state)
-      })
+          return combinedPlugins(state)
+        }
+      )
 
       if (isFirstMount) {
         savedListener.current = listener

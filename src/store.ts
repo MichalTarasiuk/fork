@@ -20,7 +20,7 @@ const createStore = <
   TActions extends Record<PropertyKey, ArrowFunction>
 >(
   initialState: TState,
-  actionsCreator: ActionsCreator<TState, TActions>
+  actionsCreator?: ActionsCreator<TState, TActions>
 ) => {
   const state = createState(initialState)
   const observer = createObserver<TState>()
