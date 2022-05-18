@@ -7,8 +7,8 @@ import type { ReactNode } from 'react'
 
 type ProviderProps = { readonly children: ReactNode }
 
-const uppercaseFirst = (str: string): string =>
-  str.charAt(0).toUpperCase() + str.slice(1)
+const uppercaseFirst = (value: string) =>
+  value.charAt(0).toUpperCase() + value.slice(1)
 
 export const createSafeHookCall = (name: string) => {
   const formatedName = uppercaseFirst(name)

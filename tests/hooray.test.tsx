@@ -545,4 +545,41 @@ describe('hooray', () => {
     // then
     getByText('counter: 0')
   })
+
+  it('should observe state on change', () => {
+    // given
+    const { HoorayProvider, useHooray } = hooray(
+      {
+        counter: 0,
+      },
+      {}
+    )
+    const Counter = () => {
+      const { state } = useHooray((state) => state, {
+        observe: true,
+      })
+
+      const increase = () => {
+        state.counter++
+      }
+
+      return (
+        <div>
+          <p>counter: {state.counter}</p>
+          <button onClick={increase}>increase</button>
+        </div>
+      )
+    }
+    const { getByText } = render(
+      <HoorayProvider>
+        <Counter />
+      </HoorayProvider>
+    )
+
+    // when
+    fireEvent.click(getByText('increase'))
+
+    // then
+    getByText('counter: 1')
+  })
 })

@@ -51,9 +51,9 @@ const createManager = <
 
   return {
     get state() {
-      const copy = fn(cloneDeep(savedState))
+      const copy = cloneDeep(savedState)
 
-      return flatObject(copy, asyncSymbol, syncSymbol)
+      return fn(flatObject(copy, asyncSymbol, syncSymbol))
     },
     setState,
     updateAsync,
