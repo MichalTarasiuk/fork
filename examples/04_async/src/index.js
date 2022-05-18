@@ -1,10 +1,10 @@
 import { StrictMode } from 'react'
 import { render } from 'react-dom'
-import hooray from 'hoor4y'
+import remest from 'remest'
 
 const wait = (ms = 1000) => new Promise((res) => setTimeout(res, ms))
 
-const { HoorayProvider, useHooray } = hooray({ counter: 0 }, (set) => ({
+const { RemestProvider, useRemest } = remest({ counter: 0 }, (set) => ({
   increase: async () => {
     await wait()
     set((state) => {
@@ -14,13 +14,13 @@ const { HoorayProvider, useHooray } = hooray({ counter: 0 }, (set) => ({
 }))
 
 const CounterDisplay = () => {
-  const [state] = useHooray()
+  const [state] = useRemest()
 
   return <h1>Counter {state.counter}</h1>
 }
 
 const CounterManager = () => {
-  const [state] = useHooray()
+  const [state] = useRemest()
   const [increase, status] = state.increase
 
   return (
@@ -33,10 +33,10 @@ const CounterManager = () => {
 const App = () => {
   return (
     <StrictMode>
-      <HoorayProvider>
+      <RemestProvider>
         <CounterDisplay />
         <CounterManager />
-      </HoorayProvider>
+      </RemestProvider>
     </StrictMode>
   )
 }

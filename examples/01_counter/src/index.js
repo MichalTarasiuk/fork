@@ -2,13 +2,13 @@ import React from 'react'
 import ReactDOM from 'react-dom'
 
 import { App } from './App'
-import { HoorayProvider } from './App'
+import { RemestProvider } from './App'
 
 ReactDOM.render(
   <React.StrictMode>
-    <HoorayProvider>
+    <RemestProvider>
       <App />
-    </HoorayProvider>
+    </RemestProvider>
   </React.StrictMode>,
   document.getElementById('root')
 )

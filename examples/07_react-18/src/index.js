@@ -1,8 +1,8 @@
 import React from 'react'
 import { createRoot } from 'react-dom/client'
-import hooray from 'hoor4y'
+import remest from 'remest'
 
-const { HoorayProvider, useHooray, setState } = hooray(
+const { RemestProvider, useRemest, setState } = remest(
   { counter: 0 },
   (set) => ({
     increase: () => {
@@ -16,7 +16,7 @@ const decrease = () => {
 }
 
 const App = () => {
-  const { state } = useHooray()
+  const { state } = useRemest()
 
   return (
     <div>
@@ -28,7 +28,7 @@ const App = () => {
 }
 
 createRoot(document.querySelector('#app')).render(
-  <HoorayProvider>
+  <RemestProvider>
     <App />
-  </HoorayProvider>
+  </RemestProvider>
 )

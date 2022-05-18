@@ -1,8 +1,8 @@
 import { StrictMode, useRef, useEffect } from 'react'
 import { render } from 'react-dom'
-import hooray from 'hoor4y'
+import remest from 'remest'
 
-const { HoorayProvider, useHooray } = hooray({ counter: 0 }, (set) => ({
+const { RemestProvider, useRemest } = remest({ counter: 0 }, (set) => ({
   increase: () => set((state) => ({ counter: state.counter + 1 })),
   decrease: () => set((state) => ({ counter: state.counter - 1 })),
 }))
@@ -28,7 +28,7 @@ const useReRender = (name) => {
 }
 
 const Counter = () => {
-  const { state } = useHooray((state) => state.counter, {
+  const { state } = useRemest((state) => state.counter, {
     equality: (slice, nextSlice) => nextSlice > slice,
   })
 
@@ -45,9 +45,9 @@ const Counter = () => {
 
 const App = () => (
   <StrictMode>
-    <HoorayProvider>
+    <RemestProvider>
       <Counter />
-    </HoorayProvider>
+    </RemestProvider>
   </StrictMode>
 )
 

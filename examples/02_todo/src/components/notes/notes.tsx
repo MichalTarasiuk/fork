@@ -1,11 +1,11 @@
 import { useCallback } from 'react'
 
-import { useHooray } from 'store/store'
+import { useRemest } from 'store/store'
 import { Note } from './note'
 import './notes.css'
 
 export const NotesList = () => {
-  const { state, setState } = useHooray((state) => state.notes)
+  const { state, setState } = useRemest((state) => state.notes)
 
   const edit = useCallback(
     (content: string, id: number) => {

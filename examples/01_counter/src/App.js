@@ -1,12 +1,12 @@
-import hooray from 'hoor4y'
+import remest from 'remest'
 
-export const { HoorayProvider, useHooray } = hooray({ counter: 0 }, (set) => ({
+export const { RemestProvider, useRemest } = remest({ counter: 0 }, (set) => ({
   setToInitial: () => set({ counter: 0 }),
   increase: () => set((state) => ({ counter: state.counter + 1 })),
 }))
 
 function App() {
-  const { state } = useHooray()
+  const { state } = useRemest()
 
   return (
     <div>

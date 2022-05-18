@@ -2,11 +2,11 @@ import React from 'react'
 
 import { Form, NotesList } from 'components'
 
-import { useHooray } from './store/store'
+import { useRemest } from './store/store'
 import './app.css'
 
 const App = () => {
-  const [state] = useHooray()
+  const [state] = useRemest()
   const [unlock, status] = state.unlock
 
   return (

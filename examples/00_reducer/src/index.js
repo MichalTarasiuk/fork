@@ -1,6 +1,6 @@
 import { StrictMode, useRef, useEffect } from 'react'
 import { render } from 'react-dom'
-import hooray from 'hoor4y'
+import remest from 'remest'
 
 const useFirstMount = () => {
   const ref = useRef(true)
@@ -45,7 +45,7 @@ const reducer = (counter, action) => {
   }
 }
 
-const { HoorayProvider, useHooray } = hooray({ counter: 0 }, (set, get) => ({
+const { RemestProvider, useRemest } = remest({ counter: 0 }, (set, get) => ({
   counter: 0,
   setCounter: (action) => {
     set((state) => reducer(state.counter, action))
@@ -56,7 +56,7 @@ const { HoorayProvider, useHooray } = hooray({ counter: 0 }, (set, get) => ({
 }))
 
 const App = () => {
-  const [state] = useHooray()
+  const [state] = useRemest()
   const rerenderCount = useReRenderCount()
 
   return (
@@ -86,9 +86,9 @@ const App = () => {
 
 render(
   <StrictMode>
-    <HoorayProvider>
+    <RemestProvider>
       <App />
-    </HoorayProvider>
+    </RemestProvider>
   </StrictMode>,
   document.querySelector('#app')
 )

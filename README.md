@@ -3,7 +3,7 @@ Liblary can cause errors. Please not use.
 # Remest
 
 ```bash
-npm install remest # or yarn add hoor4y
+npm install remest # or yarn add remest
 ```
 
 ## Initializing State

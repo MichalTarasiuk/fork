@@ -1,8 +1,8 @@
 import { StrictMode, useRef, useEffect } from 'react'
 import { render } from 'react-dom'
-import hooray from 'hoor4y'
+import remest from 'remest'
 
-const { HoorayProvider, useHooray } = hooray(
+const { RemestProvider, useRemest } = remest(
   { counter: 0, dakrMode: false },
   (set) => ({
     increase: () =>
@@ -33,13 +33,13 @@ const useReRender = (name) => {
 }
 
 const CounterDisplay = () => {
-  const [state] = useHooray((state) => state.counter)
+  const [state] = useRemest((state) => state.counter)
 
   return <p>counter: {state.counter}</p>
 }
 
 const CounterManager = () => {
-  const [state] = useHooray((state) => state.increase)
+  const [state] = useRemest((state) => state.increase)
 
   return <button onClick={state.increase}>increase</button>
 }
@@ -54,7 +54,7 @@ const Counter = () => {
 }
 
 const DarkModeSwitch = () => {
-  const [state, setState] = useHooray((state) => state.darkMode)
+  const [state, setState] = useRemest((state) => state.darkMode)
 
   useReRender('DarkModeSwitch')
 
@@ -79,10 +79,10 @@ const DarkModeSwitch = () => {
 const App = () => {
   return (
     <StrictMode>
-      <HoorayProvider>
+      <RemestProvider>
         <Counter />
         <DarkModeSwitch />
-      </HoorayProvider>
+      </RemestProvider>
     </StrictMode>
   )
 }

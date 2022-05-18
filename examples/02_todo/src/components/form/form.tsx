@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react'
 
-import { useHooray } from 'store/store'
+import { useRemest } from 'store/store'
 import { useForm } from './useForm.hook'
 import './form.css'
 
 const Form = () => {
   const [values, handler] = useForm({ title: '', content: '' })
-  const { setState, unsubscribe } = useHooray()
+  const { setState, unsubscribe } = useRemest()
 
   useEffect(() => {
     unsubscribe()

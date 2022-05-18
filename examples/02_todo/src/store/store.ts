@@ -1,4 +1,4 @@
-import hooray from 'hooray'
+import remest from 'remest'
 
 import { wait } from './store.helpers'
 
@@ -8,7 +8,7 @@ export type Note = {
   content: string
 }
 
-export const { HoorayProvider, useHooray } = hooray(
+export const { RemestProvider, useRemest } = remest(
   { block: true, notes: [] as Note[] },
   (set) => ({
     async unlock() {
