@@ -65,15 +65,16 @@ export const useListener = <
   TActions extends Record<PropertyKey, Function>
 >(
   initialState: TState,
-  actions: TActions,
+  actions: TActions | undefined,
   fn: (state: TState) => TState
 ) => {
   type State = TState & AddBy<TActions, AsyncFunction, Status>
 
   const [asyncActions, syncActions] = useMemo(
-    () => split<AsyncActions, SyncActions>(actions, isAsyncFunction),
+    () => split<AsyncActions, SyncActions>(actions || {}, isAsyncFunction),
     []
   )
+
   const manager = useMemo(
     () => createManager(initialState, syncActions, fn),
     []
