@@ -11,6 +11,7 @@ const mockUser = {
   getName: () => Promise.resolve('John'),
   getSurname: () => Promise.resolve('Doe'),
 }
+
 const object = {
   async getUser() {
     await wait(1000)

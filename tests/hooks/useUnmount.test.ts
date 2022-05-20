@@ -4,30 +4,38 @@ import { useUnmount } from '../../src/hooks/hooks'
 
 describe('useUnmount', () => {
   it('should not call provided callback on mount', () => {
+    // arrange
     const spy = jest.fn()
     renderHook(() => useUnmount(spy))
 
+    // assert
     expect(spy).not.toHaveBeenCalled()
   })
 
   it('should not call provided callback on re-renders', () => {
+    // given
     const spy = jest.fn()
     const hook = renderHook(() => useUnmount(spy))
 
+    // when
     hook.rerender()
     hook.rerender()
     hook.rerender()
     hook.rerender()
 
+    // then
     expect(spy).not.toHaveBeenCalled()
   })
 
   it('should call provided callback on unmount', () => {
+    // given
     const spy = jest.fn()
     const hook = renderHook(() => useUnmount(spy))
 
+    // when
     hook.unmount()
 
+    // then
     expect(spy).toHaveBeenCalledTimes(1)
   })
 })

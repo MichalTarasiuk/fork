@@ -9,8 +9,8 @@ export const useCreation = <TResult>(
   factory: () => TResult,
   dependencies: DependencyList
 ) => {
-  const savedDependencies = useRef(dependencies)
   const result = useRef<TResult | undefined>(undefined)
+  const savedDependencies = useRef(dependencies)
 
   const hasMounted = useHasMounted()
 

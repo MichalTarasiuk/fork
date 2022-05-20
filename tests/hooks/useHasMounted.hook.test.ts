@@ -26,4 +26,18 @@ describe('useHasMounted', () => {
     // then
     expect(hook.current).toBeFalsy()
   })
+
+  it('should return true if component is re-rendered', () => {
+    // given
+    const {
+      rerender,
+      result: { current: hook },
+    } = renderHook(() => useHasMounted())
+
+    // when
+    rerender()
+
+    // then
+    expect(hook.current).toBeTruthy()
+  })
 })

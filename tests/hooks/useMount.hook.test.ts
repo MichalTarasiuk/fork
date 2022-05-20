@@ -6,6 +6,10 @@ const mockEffectCleanup = jest.fn()
 const mockEffectCallback = jest.fn().mockReturnValue(mockEffectCleanup)
 
 describe('useMount', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
+
   it('should run provided effect only once', () => {
     // given
     const { rerender } = renderHook(() => useMount(mockEffectCallback))
@@ -28,5 +32,16 @@ describe('useMount', () => {
 
     // then
     expect(mockEffectCleanup).toHaveBeenCalled()
+  })
+
+  it('should not call on re-render', () => {
+    // given
+    const { rerender } = renderHook(() => useMount(mockEffectCallback))
+
+    // when
+    rerender()
+
+    // then
+    expect(mockEffectCallback).toHaveBeenCalledTimes(1)
   })
 })

@@ -26,4 +26,12 @@ describe('useForce', () => {
     // then
     expect(rerender).toHaveBeenCalledTimes(4)
   })
+
+  it('should return function', () => {
+    // arrange
+    const { result } = renderHook(() => useForce())
+
+    // assert
+    expect(result.current).toEqual(expect.any(Function))
+  })
 })

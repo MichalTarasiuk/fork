@@ -16,7 +16,7 @@ describe('useCreation', () => {
   it('should invoke foo constructor only on mount when dependency list is empty', () => {
     // given
     const spy = jest.fn()
-    const { rerender } = renderHook(() => useCreation(() => new Foo(spy)))
+    const { rerender } = renderHook(() => useCreation(() => new Foo(spy), []))
 
     // when
     rerender()
@@ -46,5 +46,26 @@ describe('useCreation', () => {
 
     // then
     expect(spy).toHaveBeenCalledTimes(4)
+  })
+
+  it('should not invoke foo constructor when dependency list is the same', () => {
+    // given
+    type Props = {
+      dependencyList: DependencyList
+    }
+    const spy = jest.fn()
+    const { rerender } = renderHook(
+      ({ dependencyList }: Props) =>
+        useCreation(() => new Foo(spy), dependencyList),
+      { initialProps: { dependencyList: [] as DependencyList } }
+    )
+
+    // when
+    rerender({ dependencyList: [] })
+    rerender({ dependencyList: [] })
+    rerender({ dependencyList: [] })
+
+    // then
+    expect(spy).toHaveBeenCalledTimes(1)
   })
 })
