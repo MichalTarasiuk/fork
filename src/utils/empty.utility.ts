@@ -1,10 +1,10 @@
 /* eslint-disable functional/prefer-readonly-type -- empty helper mutates */
 import { isPlainObject } from './utils'
 
-import type { EmptyObject } from '../types/types'
+import type { EmptyObject, EmptyArray } from '../types/types'
 
-export function empty(value: Record<PropertyKey, unknown>): Array<never>
-export function empty(value: Array<unknown>): EmptyObject
+export function empty(value: Record<PropertyKey, unknown>): EmptyObject
+export function empty(value: Array<unknown>): EmptyArray
 
 // utility mutate the object
 export function empty(value: Record<PropertyKey, unknown> | Array<unknown>) {

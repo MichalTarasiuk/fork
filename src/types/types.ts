@@ -26,3 +26,6 @@ export type Noop = () => void
 export type ArrowFunction = (...args: readonly any[]) => unknown
 
 export type EmptyObject = Record<PropertyKey, never>
+
+// eslint-disable-next-line functional/prefer-readonly-type -- Mutable type
+export type EmptyArray = Array<never>

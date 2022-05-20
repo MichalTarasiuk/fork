@@ -15,14 +15,12 @@ const createObserver = <TState>() => {
     }
   }
 
-  const destroy = () => _listeners.clear()
-
   const notify = (
     state: TState,
     nextState: TState,
     emitter?: Listener<TState>
   ) => {
-    const listeners = [..._listeners]
+    const listeners = Array.from(_listeners)
 
     listeners.forEach((listener) => {
       if (emitter !== listener) {
@@ -35,7 +33,6 @@ const createObserver = <TState>() => {
     get listeners() {
       return Array.from(_listeners)
     },
-    destroy,
     notify,
     subscribe,
   }

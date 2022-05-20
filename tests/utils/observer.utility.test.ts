@@ -12,19 +12,18 @@ describe('observer', () => {
     expect(observer.listeners).toHaveLength(1)
   })
 
-  it('should destroy all subscribers', () => {
+  it('should unsubscribe observer', () => {
     // given
     const observer = createObserver<string>()
 
     // when
-    observer.subscribe(noop)
-    observer.subscribe(noop)
+    const subscriber = observer.subscribe(noop)
 
     // then
     expect(observer.listeners).toHaveLength(1)
 
     // when
-    observer.destroy()
+    subscriber.unsubscribe()
 
     // then
     expect(observer.listeners).toHaveLength(0)

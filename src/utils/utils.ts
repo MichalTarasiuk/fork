@@ -1,4 +1,4 @@
-import type { ArrowFunction } from '../types/types'
+import type { ArrowFunction, Nil } from '../types/types'
 
 export * from './observer.utility'
 export * from './resolve.utility'
@@ -10,7 +10,6 @@ export { set } from './set.utility'
 export { merge } from './merge.utility'
 export { empty } from './empty.utility'
 export { flatObject } from './flatObject.utility'
-export { isNil } from './isNil.utility'
 export { filterObject } from './filterObject.utility'
 export { split } from './split.utility'
 export { createProxy } from './createProxy.utility'
@@ -31,3 +30,6 @@ export const isAsyncFunction = (value: unknown): value is Promise<unknown> =>
 
 export const isFunction = (value: unknown): value is ArrowFunction =>
   typeof value === 'function'
+
+export const isNil = (value: unknown): value is Nil =>
+  value === undefined || value === null

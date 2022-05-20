@@ -8,7 +8,7 @@ describe('mapObject', () => {
       b: 2,
       c: 3,
     }
-    const fn = (key: keyof typeof obj, value: typeof obj[keyof typeof obj]) =>
+    const fn = (_: keyof typeof obj, value: typeof obj[keyof typeof obj]) =>
       value + 1
 
     const result = mapObject(obj, fn)
@@ -19,5 +19,21 @@ describe('mapObject', () => {
       b: 3,
       c: 4,
     })
+  })
+
+  it('should return object with different reference', () => {
+    // arrange
+    const obj = {
+      a: 1,
+      b: 2,
+      c: 3,
+    }
+    const fn = (_: keyof typeof obj, value: typeof obj[keyof typeof obj]) =>
+      value + 1
+
+    const result = mapObject(obj, fn)
+
+    // assert
+    expect(result).not.toBe(obj)
   })
 })
