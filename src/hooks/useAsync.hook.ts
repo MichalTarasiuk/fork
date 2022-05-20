@@ -34,8 +34,9 @@ export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
   object: TObject,
   fn: (asyncSlice: AsyncSlice) => void
 ) => {
-  type State = Record<keyof TObject, Status>
-  type Mutations = Record<keyof TObject, Mutation>
+  type Name = keyof TObject
+  type State = Record<Name, Status>
+  type Mutations = Record<Name, Mutation>
 
   const { state, setStatus } = useMemo(() => {
     const listener = (nextState: State) => {
@@ -48,7 +49,7 @@ export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
   }, [])
 
   const createMutation = useCallback(
-    (name: keyof TObject, asyncFunction: AsyncFunction) => {
+    (name: Name, asyncFunction: AsyncFunction) => {
       const mutation = async () => {
         setStatus(name, 'loading')
 

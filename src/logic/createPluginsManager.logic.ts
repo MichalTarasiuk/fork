@@ -4,18 +4,18 @@ type Plugin<TState extends Record<PropertyKey, unknown>> = (
   state: TState
 ) => TState
 
-const initialPlugins = {}
+const getInitialPlugins = <TState extends Record<PropertyKey, unknown>>() =>
+  ({} as Record<string, Plugin<TState>>)
 
 export const createPluginsManager = <
   TState extends Record<PropertyKey, unknown>
 >() => {
-  const pluginsMap = new Map<string, Plugin<TState>>(entries(initialPlugins))
+  const initialPlugins = getInitialPlugins<TState>()
+  const pluginsMap = new Map(entries(initialPlugins))
 
   return {
     get plugins() {
-      type Plugins = Record<PropertyKey, Plugin<TState>>
-
-      return fromEntries([...pluginsMap.entries()]) as Plugins
+      return fromEntries([...pluginsMap.entries()])
     },
     add(name: string, plugin: Plugin<TState>) {
       if (pluginsMap.has(name)) {
