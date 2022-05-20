@@ -35,11 +35,9 @@ export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
   fn: (asyncSlice: AsyncSlice) => void
 ) => {
   type Name = keyof TObject
-  type State = Record<Name, Status>
-  type Mutations = Record<Name, Mutation>
 
   const { state, setStatus } = useMemo(() => {
-    const listener = (nextState: State) => {
+    const listener = (nextState: Record<keyof TObject, Status>) => {
       const asyncSlice = createAsyncSlice(nextState, mutations.current)
 
       fn(asyncSlice)
@@ -68,15 +66,18 @@ export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
     []
   )
 
-  const createAsyncSlice = useCallback((state: State, mutations: Mutations) => {
-    const asyncSlice = merge(
-      state,
-      mutations,
-      (status, mutation) => [mutation, status] as const
-    )
+  const createAsyncSlice = useCallback(
+    (state: Record<Name, Status>, mutations: Record<Name, Mutation>) => {
+      const asyncSlice = merge(
+        state,
+        mutations,
+        (status, mutation) => [mutation, status] as const
+      )
 
-    return asyncSlice
-  }, [])
+      return asyncSlice
+    },
+    []
+  )
 
   const mutations = useCreation(() => {
     const result = mapObject(object, (name, asyncFunction) =>
