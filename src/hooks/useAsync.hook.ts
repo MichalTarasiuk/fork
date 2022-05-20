@@ -38,7 +38,7 @@ export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
 
   const { state, setStatus } = useMemo(() => {
     const listener = (nextState: Record<keyof TObject, Status>) => {
-      const asyncSlice = createAsyncSlice(nextState, mutations.current)
+      const asyncSlice = mergeStateWithMuations(nextState, mutations.current)
 
       fn(asyncSlice)
     }
@@ -66,7 +66,7 @@ export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
     []
   )
 
-  const createAsyncSlice = useCallback(
+  const mergeStateWithMuations = useCallback(
     (state: Record<Name, Status>, mutations: Record<Name, Mutation>) => {
       const asyncSlice = merge(
         state,
@@ -89,7 +89,7 @@ export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
 
   return {
     get asyncSlice() {
-      const asyncSlice = createAsyncSlice(state, mutations.current)
+      const asyncSlice = mergeStateWithMuations(state, mutations.current)
 
       return asyncSlice
     },

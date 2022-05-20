@@ -6,12 +6,12 @@ export const split = <
   fn: (value: unknown) => boolean
 ) =>
   Object.keys(object).reduce(
-    (acc, key: PropertyKey) => {
+    (collector, key: PropertyKey) => {
       const index = fn(object[key]) ? 0 : 1
       // @ts-ignore
-      acc[index][key] = object[key]
+      collector[index][key] = object[key]
 
-      return acc
+      return collector
     },
     [{} as TA, {} as TB] as const
   )

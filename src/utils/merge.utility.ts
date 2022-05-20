@@ -13,9 +13,9 @@ export const merge = <
   type Keys = keyof TA & keyof TB
   const keys = union(Object.keys(a), Object.keys(b)) as readonly Keys[]
 
-  return keys.reduce((acc, key) => {
-    acc[key] = fn(a[key], b[key])
+  return keys.reduce((collector, key) => {
+    collector[key] = fn(a[key], b[key])
 
-    return acc
+    return collector
   }, {} as Record<keyof TA & keyof TB, TReturnType>)
 }

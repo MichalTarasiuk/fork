@@ -5,14 +5,14 @@ export const flatObject = <TObject extends Record<PropertyKey, unknown>>(
   object: TObject,
   ...keys: ReadonlyArray<keyof TObject>
 ) =>
-  keys.reduce((acc, key) => {
-    const value = acc[key]
+  keys.reduce((collector, key) => {
+    const value = collector[key]
 
     if (isPlainObject(value)) {
-      delete acc[key]
+      delete collector[key]
 
-      return Object.assign(acc, value) as TObject
+      return Object.assign(collector, value) as TObject
     }
 
-    return acc
+    return collector
   }, object)
