@@ -32,13 +32,16 @@ const CounterManager = () => {
 
 const App = () => {
   return (
-    <StrictMode>
-      <RemestProvider>
-        <CounterDisplay />
-        <CounterManager />
-      </RemestProvider>
-    </StrictMode>
+    <RemestProvider>
+      <CounterDisplay />
+      <CounterManager />
+    </RemestProvider>
   )
 }
 
-render(<App />, document.getElementById('app'))
+render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+  document.getElementById('app')
+)

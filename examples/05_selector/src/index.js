@@ -1,6 +1,8 @@
-import { StrictMode, useRef, useEffect } from 'react'
+import { StrictMode } from 'react'
 import { render } from 'react-dom'
 import remest from 'remest'
+
+import { useReRender } from './helpers'
 
 const { RemestProvider, useRemest } = remest(
   { counter: 0, dakrMode: false },
@@ -11,26 +13,6 @@ const { RemestProvider, useRemest } = remest(
       }),
   })
 )
-
-const useFirstMount = () => {
-  const ref = useRef(true)
-
-  useEffect(() => {
-    if (ref.current) {
-      ref.current = false
-    }
-  }, [])
-
-  return ref.current
-}
-
-const useReRender = (name) => {
-  const isFirstMount = useFirstMount()
-
-  if (!isFirstMount) {
-    console.log(`${name} rerendered`)
-  }
-}
 
 const CounterDisplay = () => {
   const [state] = useRemest((state) => state.counter)

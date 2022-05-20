@@ -1,61 +1,10 @@
-import { StrictMode, useRef, useEffect } from 'react'
+import { StrictMode } from 'react'
 import { render } from 'react-dom'
-import remest from 'remest'
 
-const useFirstMount = () => {
-  const ref = useRef(true)
+import { useReRenderCount } from './helpers'
+import { RemestProvider, useRemest, action } from './remest'
 
-  useEffect(() => {
-    if (ref.current) {
-      ref.current = false
-    }
-  }, [])
-
-  return ref.current
-}
-
-const useReRenderCount = () => {
-  const ref = useRef(0)
-  const isFirstMount = useFirstMount()
-
-  if (!isFirstMount) {
-    ref.current++
-  }
-
-  return ref.current
-}
-
-const INCREASE = 'INCREASE'
-const DECREASE = 'DECREASE'
-
-const reducer = (counter, action) => {
-  switch (action.type) {
-    case INCREASE:
-      return {
-        counter: counter + 1,
-      }
-    case DECREASE:
-      return {
-        counter: counter - 1,
-      }
-    default:
-      return {
-        counter,
-      }
-  }
-}
-
-const { RemestProvider, useRemest } = remest({ counter: 0 }, (set, get) => ({
-  counter: 0,
-  setCounter: (action) => {
-    set((state) => reducer(state.counter, action))
-  },
-  isDivisible() {
-    return get().counter % 2 === 0
-  },
-}))
-
-const App = () => {
+const Counter = () => {
   const [state] = useRemest()
   const rerenderCount = useReRenderCount()
 
@@ -66,13 +15,13 @@ const App = () => {
       <p>is divisible: {state.isDivisible().toString()}</p>
       <button
         onClick={() => {
-          state.setCounter({ type: INCREASE })
+          state.setCounter({ type: action.increase })
         }}>
         increase
       </button>
       <button
         onClick={() => {
-          state.setCounter({ type: DECREASE })
+          state.setCounter({ type: action.decrease })
         }}>
         decrease
       </button>
@@ -84,11 +33,17 @@ const App = () => {
   )
 }
 
+const App = () => {
+  return (
+    <RemestProvider>
+      <Counter />
+    </RemestProvider>
+  )
+}
+
 render(
   <StrictMode>
-    <RemestProvider>
-      <App />
-    </RemestProvider>
+    <App />
   </StrictMode>,
   document.querySelector('#app')
 )

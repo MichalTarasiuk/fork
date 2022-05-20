@@ -1,31 +1,13 @@
-import { StrictMode, useRef, useEffect } from 'react'
+import { StrictMode } from 'react'
 import { render } from 'react-dom'
 import remest from 'remest'
+
+import { useReRender } from './helpers'
 
 const { RemestProvider, useRemest } = remest({ counter: 0 }, (set) => ({
   increase: () => set((state) => ({ counter: state.counter + 1 })),
   decrease: () => set((state) => ({ counter: state.counter - 1 })),
 }))
-
-const useFirstMount = () => {
-  const ref = useRef(true)
-
-  useEffect(() => {
-    if (ref.current) {
-      ref.current = false
-    }
-  }, [])
-
-  return ref.current
-}
-
-const useReRender = (name) => {
-  const isFirstMount = useFirstMount()
-
-  if (!isFirstMount) {
-    console.log(`${name} rerendered`)
-  }
-}
 
 const Counter = () => {
   const { state } = useRemest((state) => state.counter, {
@@ -44,11 +26,14 @@ const Counter = () => {
 }
 
 const App = () => (
-  <StrictMode>
-    <RemestProvider>
-      <Counter />
-    </RemestProvider>
-  </StrictMode>
+  <RemestProvider>
+    <Counter />
+  </RemestProvider>
 )
 
-render(<App />, document.querySelector('#app'))
+render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+  document.querySelector('#app')
+)
