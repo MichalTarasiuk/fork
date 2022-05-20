@@ -5,21 +5,22 @@ import { useHasMounted } from '../hooks/hooks'
 
 import type { DependencyList, MutableRefObject } from 'react'
 
-export const useCreation = <TValue>(
-  factory: () => TValue,
-  ...dependencies: DependencyList
+export const useCreation = <TResult>(
+  factory: () => TResult,
+  dependencies: DependencyList
 ) => {
-  const hasMounted = useHasMounted()
   const savedDependencies = useRef(dependencies)
-  const state = useRef<TValue | undefined>(undefined)
+  const result = useRef<TResult | undefined>(undefined)
+
+  const hasMounted = useHasMounted()
 
   if (
     !hasMounted.current ||
     !isEqual(savedDependencies.current, dependencies)
   ) {
     savedDependencies.current = dependencies
-    state.current = factory()
+    result.current = factory()
   }
 
-  return state as unknown as MutableRefObject<TValue>
+  return result as unknown as MutableRefObject<TResult>
 }

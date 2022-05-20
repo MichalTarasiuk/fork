@@ -74,7 +74,6 @@ export const useListener = <
     () => split<AsyncActions, SyncActions>(actions || {}, isAsyncFunction),
     []
   )
-
   const manager = useMemo(
     () => createManager(initialState, syncActions, fn),
     []
@@ -84,14 +83,14 @@ export const useListener = <
   const isFirstMount = useFirstMount()
   const force = useForce()
 
-  const asyncSlice = useAsync(asyncActions, (nextAsyncSlice) => {
+  const { asyncSlice } = useAsync(asyncActions, (nextAsyncSlice) => {
     manager.updateAsync(nextAsyncSlice)
 
     force()
   })
 
   if (isFirstMount) {
-    manager.updateAsync(asyncSlice.current)
+    manager.updateAsync(asyncSlice)
   }
 
   const listener = useCallback((_: TState, nextState: TState) => {

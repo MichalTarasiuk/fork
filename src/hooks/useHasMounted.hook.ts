@@ -3,19 +3,15 @@ import { useRef } from 'react'
 import { useMount } from './hooks'
 
 export const useHasMounted = () => {
-  const isMounted = useRef(false)
+  const hasMounted = useRef(false)
 
   useMount(() => {
-    isMounted.current = true
+    hasMounted.current = true
 
     return () => {
-      isMounted.current = false
+      hasMounted.current = false
     }
   })
 
-  return {
-    get current() {
-      return isMounted.current
-    },
-  }
+  return hasMounted
 }

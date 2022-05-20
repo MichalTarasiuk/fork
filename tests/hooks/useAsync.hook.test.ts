@@ -27,7 +27,7 @@ describe('useAsync', () => {
     } = renderHook(() => useAsync(object, () => {}))
 
     // assert
-    expect(hook.current).toMatchInlineSnapshot(`
+    expect(hook.asyncSlice).toMatchInlineSnapshot(`
       Object {
         "getUser": Array [
           [Function],
@@ -45,7 +45,7 @@ describe('useAsync', () => {
     } = renderHook(() => useAsync(object, callback))
 
     // when
-    const [getUser] = hook.current.getUser
+    const [getUser] = hook.asyncSlice.getUser
 
     // when
     await getUser()
@@ -81,13 +81,13 @@ describe('useAsync', () => {
     } = renderHook(() => useAsync(object, callback))
 
     // when
-    const [getUser] = hook.current.getUser
+    const [getUser] = hook.asyncSlice.getUser
 
     // when
     await getUser()
 
     // then
-    const [, status] = hook.current.getUser
+    const [, status] = hook.asyncSlice.getUser
     expect(status).toBe('success')
   })
 })
