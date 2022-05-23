@@ -1,4 +1,4 @@
-import { split } from '../../src/utils/utils'
+import { partition } from '../../src/utils/utils'
 
 describe('split', () => {
   it('should split an object into two objects', () => {
@@ -31,7 +31,7 @@ describe('split', () => {
       y: 25,
       z: 26,
     }
-    const [a, b] = split(object, (value) =>
+    const [a, b] = partition(object, (value) =>
       typeof value === 'number' ? value % 2 === 0 : false
     )
 

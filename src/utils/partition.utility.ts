@@ -1,4 +1,4 @@
-export const split = <
+export const partition = <
   TA extends Record<PropertyKey, unknown>,
   TB extends Record<PropertyKey, unknown>
 >(

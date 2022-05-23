@@ -11,7 +11,7 @@ export { merge } from './merge.utility'
 export { empty } from './empty.utility'
 export { flatObject } from './flatObject.utility'
 export { filterObject } from './filterObject.utility'
-export { split } from './split.utility'
+export { partition } from './partition.utility'
 export { createProxy } from './createProxy.utility'
 export { createRef } from './createRef.utility'
 

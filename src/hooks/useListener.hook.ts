@@ -7,7 +7,7 @@ import {
   useFirstMount,
   useAsync,
 } from '../hooks/hooks'
-import { isAsyncFunction, flatObject, split } from '../utils/utils'
+import { isAsyncFunction, flatObject, partition } from '../utils/utils'
 
 import type { AsyncSlice, Status } from '../hooks/useAsync.hook'
 import type { AddBy, AsyncFunction, ArrowFunction } from '../types/types'
@@ -71,7 +71,7 @@ export const useListener = <
   type State = TState & AddBy<TActions, AsyncFunction, Status>
 
   const [asyncActions, syncActions] = useMemo(
-    () => split<AsyncActions, SyncActions>(actions || {}, isAsyncFunction),
+    () => partition<AsyncActions, SyncActions>(actions || {}, isAsyncFunction),
     []
   )
   const manager = useMemo(
