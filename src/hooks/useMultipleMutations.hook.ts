@@ -1,18 +1,19 @@
 import { useCallback, useMemo } from 'react'
 
-import { useCreation } from '../hooks/hooks'
 import { mapObject, merge } from '../utils/utils'
+
+import { useCreation } from './hooks'
 
 import type { AsyncFunction } from '../types/types'
 
 export type Status = 'idle' | 'loading' | 'success' | 'error'
 type Mutation = () => Promise<unknown>
 
-export type AsyncSlice = Record<PropertyKey, readonly [Mutation, Status]>
+export type MultipleMutations = Record<PropertyKey, readonly [Mutation, Status]>
 
 const initialStatus = 'idle' as Status
 
-const createAsyncState = <TObject extends Record<PropertyKey, AsyncFunction>>(
+const createState = <TObject extends Record<PropertyKey, AsyncFunction>>(
   object: TObject,
   fn: (state: Record<keyof TObject, Status>) => void
 ) => {
@@ -30,20 +31,25 @@ const createAsyncState = <TObject extends Record<PropertyKey, AsyncFunction>>(
   }
 }
 
-export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
+export const useMultipleMutations = <
+  TObject extends Record<PropertyKey, AsyncFunction>
+>(
   object: TObject,
-  fn: (asyncSlice: AsyncSlice) => void
+  fn: (multipleMutations: MultipleMutations) => void
 ) => {
   type Name = keyof TObject
 
   const { state, setStatus } = useMemo(() => {
     const listener = (nextState: Record<keyof TObject, Status>) => {
-      const asyncSlice = mergeStateWithMuations(nextState, mutations.current)
+      const multipleMutations = createMultipleMutations(
+        nextState,
+        mutations.current
+      )
 
-      fn(asyncSlice)
+      fn(multipleMutations)
     }
 
-    return createAsyncState(object, listener)
+    return createState(object, listener)
   }, [])
 
   const createMutation = useCallback(
@@ -67,15 +73,15 @@ export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
     []
   )
 
-  const mergeStateWithMuations = useCallback(
+  const createMultipleMutations = useCallback(
     (state: Record<Name, Status>, mutations: Record<Name, Mutation>) => {
-      const asyncSlice = merge(
+      const multipleMutations = merge(
         state,
         mutations,
         (status, mutation) => [mutation, status] as const
       )
 
-      return asyncSlice
+      return multipleMutations
     },
     []
   )
@@ -89,10 +95,13 @@ export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
   }, [object])
 
   return {
-    get asyncSlice() {
-      const asyncSlice = mergeStateWithMuations(state, mutations.current)
+    get multipleMutations() {
+      const multipleMutations = createMultipleMutations(
+        state,
+        mutations.current
+      )
 
-      return asyncSlice
+      return multipleMutations
     },
   }
 }

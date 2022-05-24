@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks'
 
-import { useAsync } from '../../src/hooks/hooks'
+import { useMultipleMutations } from '../../src/hooks/hooks'
 import { wait } from '../tests.utils'
 
 const mockUser = {
@@ -20,15 +20,15 @@ const object = {
   },
 }
 
-describe('useAsync', () => {
+describe('useMutationsMap', () => {
   it('should generate status for async action', () => {
     // arrange
     const {
       result: { current: hook },
-    } = renderHook(() => useAsync(object, () => {}))
+    } = renderHook(() => useMultipleMutations(object, () => {}))
 
     // assert
-    expect(hook.asyncSlice).toMatchInlineSnapshot(`
+    expect(hook.multipleMutations).toMatchInlineSnapshot(`
       Object {
         "getUser": Array [
           [Function],
@@ -43,10 +43,10 @@ describe('useAsync', () => {
     const callback = jest.fn()
     const {
       result: { current: hook },
-    } = renderHook(() => useAsync(object, callback))
+    } = renderHook(() => useMultipleMutations(object, callback))
 
     // when
-    const [getUser] = hook.asyncSlice.getUser
+    const [getUser] = hook.multipleMutations.getUser
 
     // when
     await getUser()
@@ -79,16 +79,16 @@ describe('useAsync', () => {
     const callback = jest.fn()
     const {
       result: { current: hook },
-    } = renderHook(() => useAsync(object, callback))
+    } = renderHook(() => useMultipleMutations(object, callback))
 
     // when
-    const [getUser] = hook.asyncSlice.getUser
+    const [getUser] = hook.multipleMutations.getUser
 
     // when
     await getUser()
 
     // then
-    const [, status] = hook.asyncSlice.getUser
+    const [, status] = hook.multipleMutations.getUser
     expect(status).toBe('success')
   })
 })

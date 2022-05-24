@@ -546,7 +546,7 @@ describe('remest', () => {
     getByText('counter: 0')
   })
 
-  it.only('should observe state on change', () => {
+  it('should observe state on change', () => {
     // given
     const { RemestProvider, useRemest } = remest(
       {

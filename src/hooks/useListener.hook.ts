@@ -5,17 +5,17 @@ import {
   useHasMounted,
   useForce,
   useFirstMount,
-  useAsync,
+  useMultipleMutations,
 } from '../hooks/hooks'
 import { isAsyncFunction, flatObject, partition } from '../utils/utils'
 
-import type { AsyncSlice, Status } from '../hooks/useAsync.hook'
 import type { AddBy, AsyncFunction, ArrowFunction } from '../types/types'
+import type { MultipleMutations, Status } from './useMultipleMutations.hook'
 
 type AsyncActions = Record<PropertyKey, AsyncFunction>
 type SyncActions = Record<PropertyKey, ArrowFunction>
 
-const createManager = <
+const createStore = <
   TState extends Record<PropertyKey, unknown>,
   TSyncActions extends SyncActions
 >(
@@ -30,7 +30,7 @@ const createManager = <
     // eslint-disable-next-line functional/prefer-readonly-type -- sync symbol is mutable
     [syncSymbol]?: TSyncActions
     // eslint-disable-next-line functional/prefer-readonly-type -- async symbol is mutable
-    [asyncSymbol]?: AsyncSlice
+    [asyncSymbol]?: MultipleMutations
   }
 
   let savedState: State = cloneDeep(initialState)
@@ -45,8 +45,8 @@ const createManager = <
     savedState = stateToSaved
   }
 
-  const updateAsync = (asyncSlice: AsyncSlice) => {
-    savedState[asyncSymbol] = asyncSlice
+  const updateAsync = (multipleMutations: MultipleMutations) => {
+    savedState[asyncSymbol] = multipleMutations
   }
 
   return {
@@ -74,32 +74,32 @@ export const useListener = <
     () => partition<AsyncActions, SyncActions>(actions || {}, isAsyncFunction),
     []
   )
-  const manager = useMemo(
-    () => createManager(initialState, syncActions, fn),
-    []
-  )
+  const store = useMemo(() => createStore(initialState, syncActions, fn), [])
 
   const hasMounted = useHasMounted()
   const isFirstMount = useFirstMount()
   const force = useForce()
 
-  const { asyncSlice } = useAsync(asyncActions, (nextAsyncSlice) => {
-    manager.updateAsync(nextAsyncSlice)
+  const { multipleMutations } = useMultipleMutations(
+    asyncActions,
+    (nextMultipleMutations) => {
+      store.updateAsync(nextMultipleMutations)
 
-    force()
-  })
+      force()
+    }
+  )
 
   if (isFirstMount) {
-    manager.updateAsync(asyncSlice)
+    store.updateAsync(multipleMutations)
   }
 
   const listener = useCallback((_: TState, nextState: TState) => {
     if (hasMounted.current) {
-      manager.setState(nextState)
+      store.setState(nextState)
 
       force()
     }
   }, [])
 
-  return [manager.state as State, listener] as const
+  return [store.state as State, listener] as const
 }
