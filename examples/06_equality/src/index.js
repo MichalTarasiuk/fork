@@ -1,16 +1,16 @@
 import { StrictMode } from 'react'
 import { render } from 'react-dom'
-import remest from 'remest'
+import fork from 'fork'
 
 import { useReRender } from './helpers'
 
-const { RemestProvider, useRemest } = remest({ counter: 0 }, (set) => ({
+const { ForkProvider, useFork } = fork({ counter: 0 }, (set) => ({
   increase: () => set((state) => ({ counter: state.counter + 1 })),
   decrease: () => set((state) => ({ counter: state.counter - 1 })),
 }))
 
 const Counter = () => {
-  const { state } = useRemest((state) => state.counter, {
+  const { state } = useFork((state) => state.counter, {
     equality: (slice, nextSlice) => nextSlice > slice,
   })
 
@@ -26,9 +26,9 @@ const Counter = () => {
 }
 
 const App = () => (
-  <RemestProvider>
+  <ForkProvider>
     <Counter />
-  </RemestProvider>
+  </ForkProvider>
 )
 
 render(

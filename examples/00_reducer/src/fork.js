@@ -1,4 +1,4 @@
-import remest from 'remest'
+import fork from 'fork'
 
 export const action = {
   increase: 'INCREASE',
@@ -22,15 +22,12 @@ const reducer = (counter, action) => {
   }
 }
 
-export const { RemestProvider, useRemest } = remest(
-  { counter: 0 },
-  (set, get) => ({
-    counter: 0,
-    setCounter: (action) => {
-      set((state) => reducer(state.counter, action))
-    },
-    isDivisible() {
-      return get().counter % 2 === 0
-    },
-  })
-)
+export const { ForkProvider, useFork } = fork({ counter: 0 }, (set, get) => ({
+  counter: 0,
+  setCounter: (action) => {
+    set((state) => reducer(state.counter, action))
+  },
+  isDivisible() {
+    return get().counter % 2 === 0
+  },
+}))

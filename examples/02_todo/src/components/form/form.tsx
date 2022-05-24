@@ -1,12 +1,12 @@
 import React, { useEffect } from 'react'
 
-import { useRemest } from 'store/store'
+import { useFork } from 'store/store'
 import { useForm } from './useForm.hook'
 import './form.css'
 
 const Form = () => {
   const [values, handler] = useForm({ title: '', content: '' })
-  const { setState, unsubscribe } = useRemest()
+  const { setState, unsubscribe } = useFork()
 
   useEffect(() => {
     unsubscribe()

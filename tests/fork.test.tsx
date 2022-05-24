@@ -4,7 +4,7 @@ import { wait } from './tests.utils'
 import fork from '../src/fork'
 import { useMount } from '../src/hooks/hooks'
 
-describe('remest', () => {
+describe('fork', () => {
   it('should resolve plain action', () => {
     // arrange
     const { ForkProvider, useFork } = fork(

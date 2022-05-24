@@ -1,12 +1,12 @@
-import remest from 'remest'
+import fork from 'fork'
 
-export const { RemestProvider, useRemest } = remest({ counter: 0 }, (set) => ({
+export const { ForkProvider, useFork } = fork({ counter: 0 }, (set) => ({
   setToInitial: () => set({ counter: 0 }),
   increase: () => set((state) => ({ counter: state.counter + 1 })),
 }))
 
 function App() {
-  const { state } = useRemest()
+  const { state } = useFork()
 
   return (
     <div>

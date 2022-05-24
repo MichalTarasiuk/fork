@@ -1,4 +1,4 @@
-import remest from 'remest'
+import fork from 'fork'
 
 import { wait } from './store.helpers'
 
@@ -8,7 +8,7 @@ export type Note = {
   content: string
 }
 
-export const { RemestProvider, useRemest } = remest(
+export const { ForkProvider, useFork } = fork(
   { block: true, notes: [] as Note[] },
   (set) => ({
     async unlock() {

@@ -1,22 +1,19 @@
 import React from 'react'
 import { createRoot } from 'react-dom/client'
-import remest from 'remest'
+import fork from 'fork'
 
-const { RemestProvider, useRemest, setState } = remest(
-  { counter: 0 },
-  (set) => ({
-    increase: () => {
-      set((state) => ({ counter: state.counter + 1 }))
-    },
-  })
-)
+const { ForkProvider, useFork, setState } = fork({ counter: 0 }, (set) => ({
+  increase: () => {
+    set((state) => ({ counter: state.counter + 1 }))
+  },
+}))
 
 const decrease = () => {
   setState((state) => ({ counter: state.counter - 1 }))
 }
 
 const App = () => {
-  const { state } = useRemest()
+  const { state } = useFork()
 
   return (
     <div>
@@ -28,7 +25,7 @@ const App = () => {
 }
 
 createRoot(document.querySelector('#app')).render(
-  <RemestProvider>
+  <ForkProvider>
     <App />
-  </RemestProvider>
+  </ForkProvider>
 )

@@ -2,11 +2,11 @@ import React from 'react'
 
 import { Form, NotesList } from 'components'
 
-import { useRemest } from './store/store'
+import { useFork } from './store/store'
 import './app.css'
 
 const App = () => {
-  const [state] = useRemest()
+  const [state] = useFork()
   const [unlock, status] = state.unlock
 
   return (

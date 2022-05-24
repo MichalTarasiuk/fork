@@ -1,10 +1,10 @@
 import { StrictMode } from 'react'
 import { render } from 'react-dom'
-import remest from 'remest'
+import fork from 'fork'
 
 import { useReRender } from './helpers'
 
-const { RemestProvider, useRemest } = remest(
+const { ForkProvider, useFork } = fork(
   { counter: 0, dakrMode: false },
   (set) => ({
     increase: () =>
@@ -15,13 +15,13 @@ const { RemestProvider, useRemest } = remest(
 )
 
 const CounterDisplay = () => {
-  const [state] = useRemest((state) => state.counter)
+  const [state] = useFork((state) => state.counter)
 
   return <p>counter: {state.counter}</p>
 }
 
 const CounterManager = () => {
-  const [state] = useRemest((state) => state.increase)
+  const [state] = useFork((state) => state.increase)
 
   return <button onClick={state.increase}>increase</button>
 }
@@ -36,7 +36,7 @@ const Counter = () => {
 }
 
 const DarkModeSwitch = () => {
-  const [state, setState] = useRemest((state) => state.darkMode)
+  const [state, setState] = useFork((state) => state.darkMode)
 
   useReRender('DarkModeSwitch')
 
@@ -61,10 +61,10 @@ const DarkModeSwitch = () => {
 const App = () => {
   return (
     <StrictMode>
-      <RemestProvider>
+      <ForkProvider>
         <Counter />
         <DarkModeSwitch />
-      </RemestProvider>
+      </ForkProvider>
     </StrictMode>
   )
 }

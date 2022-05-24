@@ -1,10 +1,10 @@
 import { StrictMode } from 'react'
 import { render } from 'react-dom'
-import remest from 'remest'
+import fork from 'fork'
 
 const wait = (ms = 1000) => new Promise((res) => setTimeout(res, ms))
 
-const { RemestProvider, useRemest } = remest({ counter: 0 }, (set) => ({
+const { ForkProvider, useFork } = fork({ counter: 0 }, (set) => ({
   increase: async () => {
     await wait()
     set((state) => {
@@ -14,13 +14,13 @@ const { RemestProvider, useRemest } = remest({ counter: 0 }, (set) => ({
 }))
 
 const CounterDisplay = () => {
-  const [state] = useRemest()
+  const [state] = useFork()
 
   return <h1>Counter {state.counter}</h1>
 }
 
 const CounterManager = () => {
-  const [state] = useRemest()
+  const [state] = useFork()
   const [increase, status] = state.increase
 
   return (
@@ -32,10 +32,10 @@ const CounterManager = () => {
 
 const App = () => {
   return (
-    <RemestProvider>
+    <ForkProvider>
       <CounterDisplay />
       <CounterManager />
-    </RemestProvider>
+    </ForkProvider>
   )
 }
 

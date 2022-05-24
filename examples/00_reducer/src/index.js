@@ -2,10 +2,10 @@ import { StrictMode } from 'react'
 import { render } from 'react-dom'
 
 import { useReRenderCount } from './helpers'
-import { RemestProvider, useRemest, action } from './remest'
+import { ForkProvider, useFork, action } from './fork'
 
 const Counter = () => {
-  const [state] = useRemest()
+  const [state] = useFork()
   const rerenderCount = useReRenderCount()
 
   return (
@@ -35,9 +35,9 @@ const Counter = () => {
 
 const App = () => {
   return (
-    <RemestProvider>
+    <ForkProvider>
       <Counter />
-    </RemestProvider>
+    </ForkProvider>
   )
 }
 
