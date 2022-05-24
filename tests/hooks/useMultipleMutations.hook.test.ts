@@ -20,7 +20,7 @@ const object = {
   },
 }
 
-describe('useMutationsMap', () => {
+describe('useMultipleMutations', () => {
   it('should generate status for async action', () => {
     // arrange
     const {
@@ -28,7 +28,7 @@ describe('useMutationsMap', () => {
     } = renderHook(() => useMultipleMutations(object, () => {}))
 
     // assert
-    expect(hook.multipleMutations).toMatchInlineSnapshot(`
+    expect(hook).toMatchInlineSnapshot(`
       Object {
         "getUser": Array [
           [Function],
@@ -46,7 +46,7 @@ describe('useMutationsMap', () => {
     } = renderHook(() => useMultipleMutations(object, callback))
 
     // when
-    const [getUser] = hook.multipleMutations.getUser
+    const [getUser] = hook.getUser
 
     // when
     await getUser()
@@ -74,7 +74,7 @@ describe('useMutationsMap', () => {
     `)
   })
 
-  it('should return update async slice', async () => {
+  it('should return stale state after async action call', async () => {
     // given
     const callback = jest.fn()
     const {
@@ -82,13 +82,12 @@ describe('useMutationsMap', () => {
     } = renderHook(() => useMultipleMutations(object, callback))
 
     // when
-    const [getUser] = hook.multipleMutations.getUser
+    const [getUser, status] = hook.getUser
 
     // when
     await getUser()
 
     // then
-    const [, status] = hook.multipleMutations.getUser
-    expect(status).toBe('success')
+    expect(status).toBe('idle')
   })
 })

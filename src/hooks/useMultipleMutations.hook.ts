@@ -94,14 +94,5 @@ export const useMultipleMutations = <
     return result
   }, [object])
 
-  return {
-    get multipleMutations() {
-      const multipleMutations = createMultipleMutations(
-        state,
-        mutations.current
-      )
-
-      return multipleMutations
-    },
-  }
+  return useMemo(() => createMultipleMutations(state, mutations.current), [])
 }

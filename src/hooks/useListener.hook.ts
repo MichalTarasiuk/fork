@@ -80,7 +80,7 @@ export const useListener = <
   const isFirstMount = useFirstMount()
   const force = useForce()
 
-  const { multipleMutations } = useMultipleMutations(
+  const multipleMutations = useMultipleMutations(
     asyncActions,
     (nextMultipleMutations) => {
       store.updateAsync(nextMultipleMutations)
