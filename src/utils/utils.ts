@@ -1,6 +1,6 @@
 import type { ArrowFunction, Nil } from '../types/types'
 
-export * from './observer.utility'
+export * from './eventEmitter.utility'
 export * from './resolve.utility'
 export * from './entries.utility'
 export { assign } from './assign.utility'

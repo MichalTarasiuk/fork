@@ -1,6 +1,6 @@
 export type Listener<TState> = (state: TState, nextState: TState) => void
 
-const createObserver = <TState>() => {
+const createEventEmitter = <TState>() => {
   // eslint-disable-next-line functional/prefer-readonly-type -- Listeners are mutable
   const _listeners: Set<Listener<TState>> = new Set()
 
@@ -38,4 +38,4 @@ const createObserver = <TState>() => {
   }
 }
 
-export { createObserver }
+export { createEventEmitter }
