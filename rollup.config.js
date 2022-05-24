@@ -7,24 +7,24 @@ import Pkg from './package.json'
 
 const config = [
   {
-    input: 'src/remest.ts',
+    input: 'src/fork.ts',
     output: [
       {
-        name: 'remest',
+        name: 'fork',
         format: 'es',
         dir: './',
         entryFileNames: Pkg.exports.import.replace(/^\.\//, ''),
         sourcemap: true,
       },
       {
-        name: 'remest',
+        name: 'fork',
         format: 'cjs',
         dir: './',
         entryFileNames: Pkg.exports.require.replace(/^\.\//, ''),
         sourcemap: true,
       },
       {
-        name: 'remest',
+        name: 'fork',
         format: 'umd',
         dir: './',
         entryFileNames: Pkg.exports.browser.replace(/^\.\//, ''),

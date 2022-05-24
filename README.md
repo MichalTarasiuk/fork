@@ -1,9 +1,9 @@
 Liblary can cause errors. Please not use.
 
-# Remest
+# Fork
 
 ```bash
-npm install remest # or yarn add remest
+npm install fork # or yarn add fork
 ```
 
 ## Initializing State
@@ -11,9 +11,9 @@ npm install remest # or yarn add remest
 The first argument is the initial state and the second is the actions that access functions such as set and get as described below
 
 ```jsx
-import remest from 'remest'
+import fork from 'fork'
 
-const { useRemest } = remest({ ideas: [] }, (set, get) => ({
+const { useFork } = fork({ ideas: [] }, (set, get) => ({
   sendAnIdea: (idea) => set((state) => ({ ideas: [...state.ideas, idea] })),
   isEmpty: () => get().ideas.length === 0,
 }))
@@ -24,13 +24,13 @@ const { useRemest } = remest({ ideas: [] }, (set, get) => ({
 
 ## Then bind your components, and that's it!
 
-Use the `useRemest` anywhere you want. This hook will decide when your component get rerendered.
+Use the `useFork` anywhere you want. This hook will decide when your component get rerendered.
 
 `Selector`: causes the component to re-render only when the scope value changes
 
 ```jsx
 function IdeasDisplay() {
-  const { state } = useRemest((state) => state.ideas)
+  const { state } = useFork((state) => state.ideas)
 
   return (
     <ul>
@@ -46,7 +46,7 @@ const ideas = [
 ]
 
 function Controls() {
-  const { state } = useRemest()
+  const { state } = useFork()
   return (
     <button
       onClick={() => {
@@ -63,13 +63,13 @@ function Controls() {
 Function which manage state.
 
 ```js
-const { setState } = remest(
+const { setState } = fork(
   {
     /* */
   },
   (set) => ({
     sendAndIdea: () => {
-      // emitter is provided here automatically by useRemest
+      // emitter is provided here automatically by useFork
       set(patch, config)
     },
   })
@@ -105,10 +105,10 @@ const config = {
 
 ## Async
 
-Remest will generate you status for each async action.
+Fork will generate you status for each async action.
 
 ```jsx
-const { useRemest } = remest({ ideas: [] }, (set, get) => ({
+const { useFork } = fork({ ideas: [] }, (set, get) => ({
   sendAnIdea: async (id) => {
     const idea = await myFetcher(id)
 
@@ -117,7 +117,7 @@ const { useRemest } = remest({ ideas: [] }, (set, get) => ({
 }))
 
 const Component = () => {
-  const [state] = useRemest()
+  const [state] = useFork()
   const [sendAnIdea, status] = state.sendAnIdea
 
   /* return */
@@ -126,10 +126,10 @@ const Component = () => {
 
 ## Immer
 
-Remest supports immer 🔥
+Fork supports immer 🔥
 
 ```jsx
-const { useRemest } = remest({ ideas: [] }, (set, get) => ({
+const { useFork } = fork({ ideas: [] }, (set, get) => ({
   sendAnIdea: async (id) => {
     const idea = await myFetcher(id)
 
@@ -140,7 +140,7 @@ const { useRemest } = remest({ ideas: [] }, (set, get) => ({
 }))
 
 const Component = () => {
-  const [state] = useRemest()
+  const [state] = useFork()
   const [sendAnIdea, status] = state.sendAnIdea
 
   /* return */
@@ -152,7 +152,7 @@ const Component = () => {
 Sometimes you need to access state outside components.
 
 ```js
-const { setState, subscribe } = remest({ ideas: [] }, (set, get) => ({
+const { setState, subscribe } = fork({ ideas: [] }, (set, get) => ({
   sendAnIdea: async (id) => {
     const idea = await myFetcher(id)
 
@@ -181,7 +181,7 @@ subscriber.unsubscribe()
 If you are use async action status not for display in JSX. The set state action should have emitt property set to false.
 
 ```jsx
-const { useRemest } = remest({ ideas: [] }, (set, get) => ({
+const { useFork } = fork({ ideas: [] }, (set, get) => ({
   sendAnIdea: async (id) => {
     const idea = await myFetcher(id)
 
@@ -190,7 +190,7 @@ const { useRemest } = remest({ ideas: [] }, (set, get) => ({
 }))
 
 const Component = () => {
-  const [state] = useRemest()
+  const [state] = useFork()
   const [sendAnIdea, status] = state.sendAnIdea
 
   useEffect(() => {

@@ -1,13 +1,13 @@
 import { render, fireEvent, act } from '@testing-library/react'
 import { wait } from './tests.utils'
 
-import remest from '../src/remest'
+import fork from '../src/fork'
 import { useMount } from '../src/hooks/hooks'
 
 describe('remest', () => {
   it('should resolve plain action', () => {
     // arrange
-    const { RemestProvider, useRemest } = remest(
+    const { ForkProvider, useFork } = fork(
       { counter: 0 },
       {
         increase: () => {
@@ -17,7 +17,7 @@ describe('remest', () => {
     )
     const spy = jest.fn()
     const Counter = () => {
-      const { state } = useRemest()
+      const { state } = useFork()
 
       useMount(() => {
         spy(state.increase())
@@ -26,9 +26,9 @@ describe('remest', () => {
       return null
     }
     render(
-      <RemestProvider>
+      <ForkProvider>
         <Counter />
-      </RemestProvider>
+      </ForkProvider>
     )
 
     // assert
@@ -37,13 +37,13 @@ describe('remest', () => {
 
   it('should rerender component', () => {
     // arrange
-    const { RemestProvider, useRemest } = remest({ counter: 0 }, (set) => ({
+    const { ForkProvider, useFork } = fork({ counter: 0 }, (set) => ({
       increase: () => {
         set((state) => ({ counter: state.counter + 1 }))
       },
     }))
     const Counter = () => {
-      const { state } = useRemest()
+      const { state } = useFork()
 
       useMount(() => {
         state.increase()
@@ -57,9 +57,9 @@ describe('remest', () => {
       )
     }
     const { getByText } = render(
-      <RemestProvider>
+      <ForkProvider>
         <Counter />
-      </RemestProvider>
+      </ForkProvider>
     )
 
     // assert
@@ -69,9 +69,9 @@ describe('remest', () => {
   it('should not rerender component when state is not changed', () => {
     // arrange
     const spy = jest.fn()
-    const { RemestProvider, useRemest } = remest({ counter: 0 }, () => ({}))
+    const { ForkProvider, useFork } = fork({ counter: 0 }, () => ({}))
     const Counter = () => {
-      const { setState } = useRemest()
+      const { setState } = useFork()
 
       spy()
 
@@ -82,9 +82,9 @@ describe('remest', () => {
       return null
     }
     render(
-      <RemestProvider>
+      <ForkProvider>
         <Counter />
-      </RemestProvider>
+      </ForkProvider>
     )
 
     // assert
@@ -93,7 +93,7 @@ describe('remest', () => {
 
   it('should not rerender component when scope state is the same', async () => {
     // arrange
-    const { RemestProvider, useRemest } = remest(
+    const { ForkProvider, useFork } = fork(
       {
         counter: 0,
         darkMode: false,
@@ -101,7 +101,7 @@ describe('remest', () => {
       () => ({})
     )
     const Counter = () => {
-      const [state, setState] = useRemest((state) => state.darkMode)
+      const [state, setState] = useFork((state) => state.darkMode)
 
       useMount(() => {
         setState((state) => ({
@@ -113,9 +113,9 @@ describe('remest', () => {
     }
 
     const { findByText } = render(
-      <RemestProvider>
+      <ForkProvider>
         <Counter />
-      </RemestProvider>
+      </ForkProvider>
     )
 
     // assert
@@ -124,7 +124,7 @@ describe('remest', () => {
 
   it('should not rerender component when scope state is not the same', async () => {
     // arrange
-    const { RemestProvider, useRemest } = remest(
+    const { ForkProvider, useFork } = fork(
       {
         counter: 0,
         darkMode: false,
@@ -132,7 +132,7 @@ describe('remest', () => {
       () => ({})
     )
     const Counter = () => {
-      const [state, setState] = useRemest((state) => state.counter)
+      const [state, setState] = useFork((state) => state.counter)
 
       useMount(() => {
         setState((state) => ({
@@ -144,9 +144,9 @@ describe('remest', () => {
     }
 
     const { findByText } = render(
-      <RemestProvider>
+      <ForkProvider>
         <Counter />
-      </RemestProvider>
+      </ForkProvider>
     )
 
     // assert
@@ -155,7 +155,7 @@ describe('remest', () => {
 
   it('should rerender component when scope state is not the same after setState action from beyond component', () => {
     // given
-    const { RemestProvider, useRemest, setState } = remest(
+    const { ForkProvider, useFork, setState } = fork(
       {
         counter: 0,
         darkMode: false,
@@ -164,7 +164,7 @@ describe('remest', () => {
     )
     const spy = jest.fn()
     const Counter = () => {
-      const [state] = useRemest((state) => state.counter)
+      const [state] = useFork((state) => state.counter)
 
       spy()
 
@@ -172,9 +172,9 @@ describe('remest', () => {
     }
 
     render(
-      <RemestProvider>
+      <ForkProvider>
         <Counter />
-      </RemestProvider>
+      </ForkProvider>
     )
 
     // when
@@ -186,7 +186,7 @@ describe('remest', () => {
 
   it('should unsubscribe after unmount', () => {
     // given
-    const { RemestProvider, useRemest } = remest(
+    const { ForkProvider, useFork } = fork(
       { isUnmount: false, counter: 0 },
       (set) => ({
         unmount: () => {
@@ -201,7 +201,7 @@ describe('remest', () => {
     const spy2 = jest.fn()
     const Root = {
       Parent() {
-        const { state } = useRemest()
+        const { state } = useFork()
 
         return (
           <>
@@ -213,7 +213,7 @@ describe('remest', () => {
         )
       },
       Child({ spy }) {
-        useRemest()
+        useFork()
 
         spy()
 
@@ -221,9 +221,9 @@ describe('remest', () => {
       },
     }
     const { getByText } = render(
-      <RemestProvider>
+      <ForkProvider>
         <Root.Parent />
-      </RemestProvider>
+      </ForkProvider>
     )
 
     // when
@@ -237,7 +237,7 @@ describe('remest', () => {
 
   it('should update async action status', () => {
     // given
-    const { RemestProvider, useRemest } = remest({ counter: 0 }, (set) => ({
+    const { ForkProvider, useFork } = fork({ counter: 0 }, (set) => ({
       increase: async () => {
         await wait(1000)
 
@@ -246,7 +246,7 @@ describe('remest', () => {
     }))
     const spy = jest.fn()
     const Counter = () => {
-      const { state } = useRemest()
+      const { state } = useFork()
       const [increase, status] = state.increase
 
       spy(status)
@@ -254,9 +254,9 @@ describe('remest', () => {
       return <button onClick={increase}>increase</button>
     }
     const { getByText } = render(
-      <RemestProvider>
+      <ForkProvider>
         <Counter />
-      </RemestProvider>
+      </ForkProvider>
     )
 
     // when
@@ -268,14 +268,14 @@ describe('remest', () => {
 
   it('should remove listener after unsubscribe', () => {
     // given
-    const { RemestProvider, useRemest } = remest({ counter: 0 }, (set) => ({
+    const { ForkProvider, useFork } = fork({ counter: 0 }, (set) => ({
       increase: () => {
         set((state) => ({ counter: state.counter + 1 }))
       },
     }))
     const spy = jest.fn()
     const Counter = () => {
-      const { state, unsubscribe } = useRemest()
+      const { state, unsubscribe } = useFork()
 
       useMount(() => {
         unsubscribe()
@@ -286,9 +286,9 @@ describe('remest', () => {
       return <button onClick={state.increase}>increase</button>
     }
     const { getByText } = render(
-      <RemestProvider>
+      <ForkProvider>
         <Counter />
-      </RemestProvider>
+      </ForkProvider>
     )
 
     // when
@@ -300,16 +300,13 @@ describe('remest', () => {
 
   it('should return true when counter value is divisible', () => {
     // given
-    const { RemestProvider, useRemest } = remest(
-      { counter: 0 },
-      (set, get) => ({
-        increase: () => set((state) => ({ counter: state.counter + 1 })),
-        isDivisible: () => get().counter % 2 === 0,
-      })
-    )
+    const { ForkProvider, useFork } = fork({ counter: 0 }, (set, get) => ({
+      increase: () => set((state) => ({ counter: state.counter + 1 })),
+      isDivisible: () => get().counter % 2 === 0,
+    }))
 
     const Counter = () => {
-      const { state } = useRemest()
+      const { state } = useFork()
 
       return (
         <div>
@@ -321,9 +318,9 @@ describe('remest', () => {
     }
 
     const { getByText } = render(
-      <RemestProvider>
+      <ForkProvider>
         <Counter />
-      </RemestProvider>
+      </ForkProvider>
     )
 
     // when
@@ -336,13 +333,13 @@ describe('remest', () => {
 
   it('should rerender component when next value is bigger', () => {
     // given
-    const { RemestProvider, useRemest } = remest({ counter: 0 }, (set) => ({
+    const { ForkProvider, useFork } = fork({ counter: 0 }, (set) => ({
       increase: () => set((state) => ({ counter: state.counter + 1 })),
       decrease: () => set((state) => ({ counter: state.counter - 1 })),
     }))
 
     const Counter = () => {
-      const { state } = useRemest((state) => state.counter, {
+      const { state } = useFork((state) => state.counter, {
         equality: (slice, nextSlice) => nextSlice > slice,
       })
 
@@ -356,9 +353,9 @@ describe('remest', () => {
     }
 
     const { getByText } = render(
-      <RemestProvider>
+      <ForkProvider>
         <Counter />
-      </RemestProvider>
+      </ForkProvider>
     )
 
     // when
@@ -376,10 +373,10 @@ describe('remest', () => {
 
   it('should replace state without rerender', () => {
     // given
-    const { RemestProvider, useRemest } = remest({ counter: 0 }, () => ({}))
+    const { ForkProvider, useFork } = fork({ counter: 0 }, () => ({}))
 
     const Counter = () => {
-      const { state, setState } = useRemest()
+      const { state, setState } = useFork()
 
       const block = () => {
         setState({}, { replace: true })
@@ -398,9 +395,9 @@ describe('remest', () => {
     }
 
     const { getByText } = render(
-      <RemestProvider>
+      <ForkProvider>
         <Counter />
-      </RemestProvider>
+      </ForkProvider>
     )
 
     // when
@@ -412,7 +409,7 @@ describe('remest', () => {
 
   it('should generare status for async action', () => {
     // arrange
-    const { RemestProvider, useRemest } = remest({ counter: 0 }, (set) => ({
+    const { ForkProvider, useFork } = fork({ counter: 0 }, (set) => ({
       increase: async () => {
         await wait(1000)
 
@@ -421,7 +418,7 @@ describe('remest', () => {
     }))
     const spy = jest.fn()
     const Counter = () => {
-      const { state } = useRemest()
+      const { state } = useFork()
       const [_, status] = state.increase
 
       spy(status)
@@ -429,9 +426,9 @@ describe('remest', () => {
       return null
     }
     render(
-      <RemestProvider>
+      <ForkProvider>
         <Counter />
-      </RemestProvider>
+      </ForkProvider>
     )
 
     // assert
@@ -440,14 +437,14 @@ describe('remest', () => {
 
   it('should immer work with setState action', () => {
     // given
-    const { RemestProvider, useRemest } = remest(
+    const { ForkProvider, useFork } = fork(
       {
         counter: 0,
       },
       () => ({})
     )
     const Counter = () => {
-      const { state, setState } = useRemest()
+      const { state, setState } = useFork()
 
       const increase = () => {
         setState((state) => {
@@ -463,9 +460,9 @@ describe('remest', () => {
       )
     }
     const { getByText } = render(
-      <RemestProvider>
+      <ForkProvider>
         <Counter />
-      </RemestProvider>
+      </ForkProvider>
     )
 
     // when
@@ -477,14 +474,14 @@ describe('remest', () => {
 
   it('should immer work with setState action from beyond component', () => {
     // given
-    const { RemestProvider, useRemest, setState } = remest(
+    const { ForkProvider, useFork, setState } = fork(
       {
         counter: 0,
       },
       () => ({})
     )
     const Counter = () => {
-      const { state } = useRemest()
+      const { state } = useFork()
 
       return (
         <div>
@@ -493,9 +490,9 @@ describe('remest', () => {
       )
     }
     const { getByText } = render(
-      <RemestProvider>
+      <ForkProvider>
         <Counter />
-      </RemestProvider>
+      </ForkProvider>
     )
 
     // when
@@ -511,7 +508,7 @@ describe('remest', () => {
 
   it('should not rerender component when emitt option in config is falsy', () => {
     // given
-    const { RemestProvider, useRemest } = remest(
+    const { ForkProvider, useFork } = fork(
       {
         counter: 0,
       },
@@ -524,7 +521,7 @@ describe('remest', () => {
       })
     )
     const Counter = () => {
-      const { state } = useRemest()
+      const { state } = useFork()
 
       return (
         <div>
@@ -534,9 +531,9 @@ describe('remest', () => {
       )
     }
     const { getByText } = render(
-      <RemestProvider>
+      <ForkProvider>
         <Counter />
-      </RemestProvider>
+      </ForkProvider>
     )
 
     // when
@@ -548,14 +545,14 @@ describe('remest', () => {
 
   it('should observe state on change', () => {
     // given
-    const { RemestProvider, useRemest } = remest(
+    const { ForkProvider, useFork } = fork(
       {
         counter: 0,
       },
       {}
     )
     const Counter = () => {
-      const { state } = useRemest((state) => state, {
+      const { state } = useFork((state) => state, {
         observe: true,
       })
 
@@ -571,9 +568,9 @@ describe('remest', () => {
       )
     }
     const { getByText } = render(
-      <RemestProvider>
+      <ForkProvider>
         <Counter />
-      </RemestProvider>
+      </ForkProvider>
     )
 
     // when

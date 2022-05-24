@@ -1,16 +1,16 @@
 {
-    "name": "remest",
+    "name": "fork",
     "private": true,
     "version": "1.0.1",
-    "description": "Remest is library for state management in React",
-    "repository": "https://github.com/MichalTarasiuk/remest.git",
+    "description": "Fork is library for state management in React",
+    "repository": "https://github.com/MichalTarasiuk/fork.git",
     "exports": {
         "import": "./build/index.mjs",
         "default": "./build/index.mjs",
         "require": "./build/index.cjs",
         "browser": "./build/index.umd.js"
     },
-    "types": "./build/src/remest.d.ts",
+    "types": "./build/src/fork.d.ts",
     "main": "./build/index.cjs",
     "module": "./build/index.mjs",
     "browser": "build/index.umd.js",
@@ -38,7 +38,7 @@
         "store"
     ],
     "bugs": {
-        "url": "https://github.com/MichalTarasiuk/remests/issues"
+        "url": "https://github.com/MichalTarasiuk/fork/issues"
     },
     "license": "MIT",
     "scripts": {

@@ -16,11 +16,11 @@ import {
 import { createStore } from './store'
 import { filterObject, assign, compose } from './utils/utils'
 
-import type { HookConfig } from './remest.types'
+import type { HookConfig } from './fork.types'
 import type { ActionsCreator, Selector, Patch, SetConfig } from './store.types'
 import type { ArrowFunction } from './types/types'
 
-const remest = <
+const fork = <
   TState extends Record<PropertyKey, unknown>,
   TActions extends Record<PropertyKey, ArrowFunction>
 >(
@@ -31,10 +31,10 @@ const remest = <
   const pluginsManager = createPluginsManager<TState>()
   const observer = createObserver<TState>()
   const {
-    Provider: RemestProvider,
+    Provider: ForkProvider,
     safeHookCall,
     setProviderBody,
-  } = createSafeHookCall('remest')
+  } = createSafeHookCall('fork')
 
   pluginsManager.add('observe', (state) => observer.observe(state))
 
@@ -50,7 +50,7 @@ const remest = <
     })
   })
 
-  const useRemest = safeHookCall(
+  const useFork = safeHookCall(
     <TSelector extends Selector<TState>>(
       selector?: TSelector,
       config: HookConfig<TState, TSelector> = {}
@@ -120,12 +120,12 @@ const remest = <
   const { setState, subscribe } = store
 
   return {
-    RemestProvider,
-    useRemest,
+    ForkProvider,
+    useFork,
     setState,
     subscribe,
   }
 }
 
 // eslint-disable-next-line import/no-default-export -- library export
-export default remest
+export default fork
