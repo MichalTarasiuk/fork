@@ -28,15 +28,15 @@ const fork = <
   actionsCreator?: ActionsCreator<TState, TActions>
 ) => {
   const store = createStore(initialState, actionsCreator)
-  const pluginsManager = createPluginsManager<TState>()
+  const pluginsManager = createPluginsManager<TState>({
+    observe: (state) => observer.observe(state),
+  })
   const observer = createObserver<TState>()
   const {
     Provider: ForkProvider,
     safeHookCall,
     setProviderBody,
   } = createSafeHookCall('fork')
-
-  pluginsManager.add('observe', (state) => observer.observe(state))
 
   setProviderBody(() => {
     const force = useForce()
