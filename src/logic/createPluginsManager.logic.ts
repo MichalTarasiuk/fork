@@ -9,7 +9,7 @@ export const createPluginsManager = <
 >(
   plugins: Record<string, Plugin<TState>>
 ) => {
-  const initialPlugins = {} as Record<string, Plugin<TState>>
+  const initialPlugins: Record<string, Plugin<TState>> = {}
   const pluginsMap = new Map(entries(initialPlugins))
 
   const addPlugin = (name: string, plugin: Plugin<TState>) => {

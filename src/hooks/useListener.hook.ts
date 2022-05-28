@@ -15,7 +15,7 @@ import type { MultipleMutations, Status } from './useMultipleMutations.hook'
 type AsyncActions = Record<PropertyKey, AsyncFunction>
 type SyncActions = Record<PropertyKey, ArrowFunction>
 
-const createStore = <
+const createHookStore = <
   TState extends Record<PropertyKey, unknown>,
   TSyncActions extends SyncActions
 >(
@@ -74,7 +74,10 @@ export const useListener = <
     () => partition<AsyncActions, SyncActions>(actions || {}, isAsyncFunction),
     []
   )
-  const store = useMemo(() => createStore(initialState, syncActions, fn), [])
+  const store = useMemo(
+    () => createHookStore(initialState, syncActions, fn),
+    []
+  )
 
   const hasMounted = useHasMounted()
   const isFirstMount = useFirstMount()
