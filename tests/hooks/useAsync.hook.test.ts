@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks'
 
-import { useMultipleMutations } from '../../src/hooks/hooks'
+import { useAsync } from '../../src/hooks/hooks'
 import { wait } from '../tests.utils'
 
 const mockUser = {
@@ -25,7 +25,7 @@ describe('useMultipleMutations', () => {
     // arrange
     const {
       result: { current: hook },
-    } = renderHook(() => useMultipleMutations(object, () => {}))
+    } = renderHook(() => useAsync(object, () => {}))
 
     // assert
     expect(hook).toMatchInlineSnapshot(`
@@ -43,7 +43,7 @@ describe('useMultipleMutations', () => {
     const callback = jest.fn()
     const {
       result: { current: hook },
-    } = renderHook(() => useMultipleMutations(object, callback))
+    } = renderHook(() => useAsync(object, callback))
 
     // when
     const [getUser] = hook.getUser
@@ -79,7 +79,7 @@ describe('useMultipleMutations', () => {
     const callback = jest.fn()
     const {
       result: { current: hook },
-    } = renderHook(() => useMultipleMutations(object, callback))
+    } = renderHook(() => useAsync(object, callback))
 
     // when
     const [getUser, status] = hook.getUser

@@ -7,9 +7,8 @@ import { useCreation } from './hooks'
 import type { AsyncFunction } from '../types/types'
 
 export type Status = 'idle' | 'loading' | 'success' | 'error'
-type Mutation = () => Promise<unknown>
 
-export type MultipleMutations = Record<PropertyKey, readonly [Mutation, Status]>
+export type Mutations = Record<PropertyKey, readonly [AsyncFunction, Status]>
 
 const initialStatus = 'idle' as Status
 
@@ -31,30 +30,25 @@ const createState = <TObject extends Record<PropertyKey, AsyncFunction>>(
   }
 }
 
-export const useMultipleMutations = <
-  TObject extends Record<PropertyKey, AsyncFunction>
->(
+export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
   object: TObject,
-  fn: (multipleMutations: MultipleMutations) => void
+  fn: (mutations: Mutations) => void
 ) => {
   type Name = keyof TObject
 
   const { state, setStatus } = useMemo(() => {
     const listener = (nextState: Record<keyof TObject, Status>) => {
-      const multipleMutations = createMultipleMutations(
-        nextState,
-        mutations.current
-      )
+      const mutations = createMutations(nextState, actions.current)
 
-      fn(multipleMutations)
+      fn(mutations)
     }
 
     return createState(object, listener)
   }, [])
 
-  const createMutation = useCallback(
+  const createAction = useCallback(
     (name: Name, asyncFunction: AsyncFunction) => {
-      const mutation = async () => {
+      const action = async () => {
         setStatus(name, 'loading')
 
         try {
@@ -68,31 +62,31 @@ export const useMultipleMutations = <
         }
       }
 
-      return mutation
+      return action
     },
     []
   )
 
-  const createMultipleMutations = useCallback(
-    (state: Record<Name, Status>, mutations: Record<Name, Mutation>) => {
-      const multipleMutations = merge(
+  const createMutations = useCallback(
+    (state: Record<Name, Status>, actions: Record<Name, AsyncFunction>) => {
+      const mutations = merge(
         state,
-        mutations,
-        (status, mutation) => [mutation, status] as const
+        actions,
+        (status, action) => [action, status] as const
       )
 
-      return multipleMutations
+      return mutations
     },
     []
   )
 
-  const mutations = useCreation(() => {
+  const actions = useCreation(() => {
     const result = mapObject(object, (name, asyncFunction) =>
-      createMutation(name, asyncFunction)
+      createAction(name, asyncFunction)
     )
 
     return result
   }, [object])
 
-  return useMemo(() => createMultipleMutations(state, mutations.current), [])
+  return useMemo(() => createMutations(state, actions.current), [])
 }

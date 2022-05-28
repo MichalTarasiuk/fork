@@ -5,17 +5,17 @@ import {
   useHasMounted,
   useForce,
   useFirstMount,
-  useMultipleMutations,
+  useAsync,
 } from '../hooks/hooks'
 import { isAsyncFunction, flatObject, partition } from '../utils/utils'
 
 import type { AddBy, AsyncFunction, ArrowFunction } from '../types/types'
-import type { MultipleMutations, Status } from './useMultipleMutations.hook'
+import type { Mutations, Status } from './useAsync.hook'
 
 type AsyncActions = Record<PropertyKey, AsyncFunction>
 type SyncActions = Record<PropertyKey, ArrowFunction>
 
-const createHookStore = <
+const createState = <
   TState extends Record<PropertyKey, unknown>,
   TSyncActions extends SyncActions
 >(
@@ -23,40 +23,40 @@ const createHookStore = <
   syncActions: TSyncActions,
   fn: (state: TState) => TState
 ) => {
-  const asyncSymbol = Symbol('async')
-  const syncSymbol = Symbol('sync')
+  const syncActionsSymbol = Symbol('sync')
+  const mutationsSymbol = Symbol('mutations')
 
   type State = TState & {
     // eslint-disable-next-line functional/prefer-readonly-type -- sync symbol is mutable
-    [syncSymbol]?: TSyncActions
+    [syncActionsSymbol]?: TSyncActions
     // eslint-disable-next-line functional/prefer-readonly-type -- async symbol is mutable
-    [asyncSymbol]?: MultipleMutations
+    [mutationsSymbol]?: Mutations
   }
 
   let savedState: State = cloneDeep(initialState)
-  savedState[syncSymbol] = syncActions
+  savedState[syncActionsSymbol] = syncActions
 
   const setState = (nextState: TState) => {
     const stateToSaved: State = cloneDeep(nextState)
 
-    stateToSaved[asyncSymbol] = savedState[asyncSymbol]
-    stateToSaved[syncSymbol] = savedState[syncSymbol]
+    stateToSaved[mutationsSymbol] = savedState[mutationsSymbol]
+    stateToSaved[syncActionsSymbol] = savedState[syncActionsSymbol]
 
     savedState = stateToSaved
   }
 
-  const updateAsync = (multipleMutations: MultipleMutations) => {
-    savedState[asyncSymbol] = multipleMutations
+  const updateMutations = (mutations: Mutations) => {
+    savedState[mutationsSymbol] = mutations
   }
 
   return {
-    get state() {
+    get current() {
       const copy = fn(cloneDeep(savedState))
 
-      return flatObject(copy, asyncSymbol, syncSymbol)
+      return flatObject(copy, mutationsSymbol, syncActionsSymbol)
     },
     setState,
-    updateAsync,
+    updateMutations,
   }
 }
 
@@ -74,35 +74,29 @@ export const useListener = <
     () => partition<AsyncActions, SyncActions>(actions || {}, isAsyncFunction),
     []
   )
-  const store = useMemo(
-    () => createHookStore(initialState, syncActions, fn),
-    []
-  )
+  const state = useMemo(() => createState(initialState, syncActions, fn), [])
 
   const hasMounted = useHasMounted()
   const isFirstMount = useFirstMount()
   const force = useForce()
 
-  const multipleMutations = useMultipleMutations(
-    asyncActions,
-    (nextMultipleMutations) => {
-      store.updateAsync(nextMultipleMutations)
+  const mutations = useAsync(asyncActions, (nextMutations) => {
+    state.updateMutations(nextMutations)
 
-      force()
-    }
-  )
+    force()
+  })
 
   if (isFirstMount) {
-    store.updateAsync(multipleMutations)
+    state.updateMutations(mutations)
   }
 
   const listener = useCallback((_: TState, nextState: TState) => {
     if (hasMounted.current) {
-      store.setState(nextState)
+      state.setState(nextState)
 
       force()
     }
   }, [])
 
-  return [store.state as State, listener] as const
+  return [state.current as State, listener] as const
 }
