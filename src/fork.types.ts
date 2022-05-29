@@ -1,7 +1,7 @@
 import type { Selector } from './store.types'
 
-export type HookConfig<
-  TState extends Record<PropertyKey, unknown>,
+export type Config<
+  TState extends Record<string, unknown>,
   TSelector extends Selector<TState>
 > = {
   readonly equality?: (

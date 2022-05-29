@@ -5,7 +5,7 @@ import { useReRenderCount } from './helpers'
 import { ForkProvider, useFork, action } from './fork'
 
 const Counter = () => {
-  const [state] = useFork()
+  const { state } = useFork()
   const rerenderCount = useReRenderCount()
 
   return (

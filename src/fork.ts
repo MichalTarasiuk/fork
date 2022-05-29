@@ -1,22 +1,22 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion -- safty assertion  */
-import { useMemo, useCallback, useRef } from 'react'
+import { useCallback, useRef } from 'react'
 
 import {
   useFirstMount,
   useListener,
   useUnmount,
-  useMount,
   useForce,
+  useMount,
 } from './hooks/hooks'
 import {
   createPluginsManager,
-  createObserver,
   createSafeHookCall,
+  createObserver,
 } from './logic/logic'
 import { createStore } from './store'
-import { filterObject, assign, compose } from './utils/utils'
+import { filterObject, compose } from './utils/utils'
 
-import type { HookConfig } from './fork.types'
+import type { Config } from './fork.types'
 import type { ActionsCreator, Selector, Patch, SetConfig } from './store.types'
 import type { ArrowFunction } from './types/types'
 
@@ -32,11 +32,8 @@ const fork = <
     observe: (state) => observer.observe(state),
   })
   const observer = createObserver<TState>()
-  const {
-    Provider: ForkProvider,
-    safeHookCall,
-    setProviderBody,
-  } = createSafeHookCall('fork')
+
+  const { Provider, safeHookCall, setProviderBody } = createSafeHookCall('fork')
 
   setProviderBody(() => {
     const force = useForce()
@@ -50,80 +47,81 @@ const fork = <
     })
   })
 
-  const useFork = safeHookCall(
-    <TSelector extends Selector<TState>>(
-      selector?: TSelector,
-      config: HookConfig<TState, TSelector> = {}
-    ) => {
-      type Subscriber = ReturnType<typeof store['subscribe']>
+  const useFork = <
+    TSelector extends Selector<TState>,
+    TConfig extends Config<TState, TSelector>
+  >(
+    selector?: TSelector,
+    config?: TConfig
+  ) => {
+    const subscriber = useRef<ReturnType<typeof store['subscribe']> | null>(
+      null
+    )
+    const listener = useRef((_: TState, __: TState) => {})
 
-      const savedSubscriber = useRef<Subscriber | null>(null)
-      const savedListener = useRef((_: TState, __: TState) => {})
+    const isFirstMount = useFirstMount()
 
-      const isFirstMount = useFirstMount()
+    if (isFirstMount) {
+      subscriber.current = store.subscribe(
+        (state, nextState) => listener.current(state, nextState),
+        selector,
+        config?.equality
+      )
+    }
 
-      if (isFirstMount) {
-        savedSubscriber.current = store.subscribe(
-          (state, nextState) => savedListener.current(state, nextState),
-          selector,
-          config.equality
-        )
-      }
-
-      const actions = savedSubscriber.current!.actions
-      const [state, listener] = useListener(initialState, actions, (state) => {
-        const pickedPlugins = Object.values(
-          filterObject(
+    const actions = subscriber.current?.actions
+    const [state, listenerImpl] = useListener(
+      initialState,
+      actions,
+      (state) => {
+        if (config) {
+          const filteredPlugins = filterObject(
             pluginsManager.plugins,
             // @ts-ignore
             (key) => key in config && config[key] === true
           )
-        )
-        const combinedPlugins = compose(...pickedPlugins)
+          const pickedPlugins = Object.values(filteredPlugins)
+          const combinedPlugins = compose(...pickedPlugins)
 
-        return combinedPlugins(state)
-      })
-
-      if (isFirstMount) {
-        savedListener.current = listener
-      }
-
-      useUnmount(() => {
-        if (savedSubscriber.current) {
-          savedSubscriber.current.unsubscribe()
-          savedSubscriber.current = null
+          return combinedPlugins(state)
         }
-      })
 
-      const setState = useCallback(
-        (patch: Patch<TState>, config?: SetConfig) => {
-          const emitter = savedSubscriber.current!.body
+        return state
+      }
+    )
 
-          store.setState(patch, config, emitter)
-        },
-        []
-      )
-
-      const result = useMemo(
-        () => ({
-          state,
-          setState,
-          unsubscribe: savedSubscriber.current!.unsubscribe,
-        }),
-        [state]
-      )
-
-      return assign([result.state, result.setState] as const, result)
+    if (isFirstMount) {
+      listener.current = listenerImpl
     }
-  )
 
-  const { setState, subscribe } = store
+    useUnmount(() => {
+      unsubscribe()
+    })
+
+    const unsubscribe = useCallback(() => {
+      if (subscriber.current) {
+        subscriber.current.unsubscribe()
+        subscriber.current = null
+      }
+    }, [])
+
+    const setState = useCallback((patch: Patch<TState>, config?: SetConfig) => {
+      const emitter = subscriber.current?.body
+
+      store.setState(patch, config, emitter)
+    }, [])
+
+    return {
+      state,
+      setState,
+    }
+  }
 
   return {
-    ForkProvider,
-    useFork,
-    setState,
-    subscribe,
+    ForkProvider: Provider,
+    useFork: safeHookCall(useFork),
+    setState: store.setState,
+    subscribe: store.subscribe,
   }
 }
 

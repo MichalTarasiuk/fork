@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 
 import { useFork } from 'store/store'
 import { useForm } from './useForm.hook'
@@ -6,11 +6,7 @@ import './form.css'
 
 const Form = () => {
   const [values, handler] = useForm({ title: '', content: '' })
-  const { setState, unsubscribe } = useFork()
-
-  useEffect(() => {
-    unsubscribe()
-  }, [unsubscribe])
+  const { setState } = useFork()
 
   const submit = (formValues: typeof values) => {
     if (handler.isFilled()) {

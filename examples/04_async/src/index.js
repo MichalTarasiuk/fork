@@ -14,13 +14,13 @@ const { ForkProvider, useFork } = fork({ counter: 0 }, (set) => ({
 }))
 
 const CounterDisplay = () => {
-  const [state] = useFork()
+  const { state } = useFork()
 
   return <h1>Counter {state.counter}</h1>
 }
 
 const CounterManager = () => {
-  const [state] = useFork()
+  const { state } = useFork()
   const [increase, status] = state.increase
 
   return (

@@ -15,13 +15,13 @@ const { ForkProvider, useFork } = fork(
 )
 
 const CounterDisplay = () => {
-  const [state] = useFork((state) => state.counter)
+  const { state } = useFork((state) => state.counter)
 
   return <p>counter: {state.counter}</p>
 }
 
 const CounterManager = () => {
-  const [state] = useFork((state) => state.increase)
+  const { state } = useFork((state) => state.increase)
 
   return <button onClick={state.increase}>increase</button>
 }
@@ -36,7 +36,7 @@ const Counter = () => {
 }
 
 const DarkModeSwitch = () => {
-  const [state, setState] = useFork((state) => state.darkMode)
+  const { state, setState } = useFork((state) => state.darkMode)
 
   useReRender('DarkModeSwitch')
 

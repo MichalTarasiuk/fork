@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion -- safty assertion */
 import { createProxy, createRef } from '../utils/utils'
 
+// Deep observable state
 export const createObserver = <
   TState extends Record<PropertyKey, unknown>
 >() => {

@@ -117,7 +117,7 @@ const { useFork } = fork({ ideas: [] }, (set, get) => ({
 }))
 
 const Component = () => {
-  const [state] = useFork()
+  const { state } = useFork()
   const [sendAnIdea, status] = state.sendAnIdea
 
   /* return */
@@ -140,7 +140,7 @@ const { useFork } = fork({ ideas: [] }, (set, get) => ({
 }))
 
 const Component = () => {
-  const [state] = useFork()
+  const { state } = useFork()
   const [sendAnIdea, status] = state.sendAnIdea
 
   /* return */
@@ -190,7 +190,7 @@ const { useFork } = fork({ ideas: [] }, (set, get) => ({
 }))
 
 const Component = () => {
-  const [state] = useFork()
+  const { state } = useFork()
   const [sendAnIdea, status] = state.sendAnIdea
 
   useEffect(() => {

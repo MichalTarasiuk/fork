@@ -6,7 +6,7 @@ import { useFork } from './store/store'
 import './app.css'
 
 const App = () => {
-  const [state] = useFork()
+  const { state } = useFork()
   const [unlock, status] = state.unlock
 
   return (

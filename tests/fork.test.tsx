@@ -101,7 +101,7 @@ describe('fork', () => {
       () => ({})
     )
     const Counter = () => {
-      const [state, setState] = useFork((state) => state.darkMode)
+      const { state, setState } = useFork((state) => state.darkMode)
 
       useMount(() => {
         setState((state) => ({
@@ -132,7 +132,7 @@ describe('fork', () => {
       () => ({})
     )
     const Counter = () => {
-      const [state, setState] = useFork((state) => state.counter)
+      const { state, setState } = useFork((state) => state.counter)
 
       useMount(() => {
         setState((state) => ({
@@ -164,7 +164,7 @@ describe('fork', () => {
     )
     const spy = jest.fn()
     const Counter = () => {
-      const [state] = useFork((state) => state.counter)
+      const { state } = useFork((state) => state.counter)
 
       spy()
 
@@ -264,38 +264,6 @@ describe('fork', () => {
 
     // when
     expect(spy).toHaveBeenCalledTimes(2)
-  })
-
-  it('should remove listener after unsubscribe', () => {
-    // given
-    const { ForkProvider, useFork } = fork({ counter: 0 }, (set) => ({
-      increase: () => {
-        set((state) => ({ counter: state.counter + 1 }))
-      },
-    }))
-    const spy = jest.fn()
-    const Counter = () => {
-      const { state, unsubscribe } = useFork()
-
-      useMount(() => {
-        unsubscribe()
-      })
-
-      spy('rerender')
-
-      return <button onClick={state.increase}>increase</button>
-    }
-    const { getByText } = render(
-      <ForkProvider>
-        <Counter />
-      </ForkProvider>
-    )
-
-    // when
-    fireEvent.click(getByText('increase'))
-
-    // when
-    expect(spy).toHaveBeenCalledTimes(1)
   })
 
   it('should return true when counter value is divisible', () => {
