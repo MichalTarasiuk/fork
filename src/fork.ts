@@ -95,10 +95,10 @@ const fork = <
     }
 
     useUnmount(() => {
-      unsubscribe()
+      tearDown()
     })
 
-    const unsubscribe = useCallback(() => {
+    const tearDown = useCallback(() => {
       if (subscriber.current) {
         subscriber.current.unsubscribe()
         subscriber.current = null
