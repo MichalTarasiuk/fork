@@ -10,7 +10,6 @@ export { empty } from './empty.utility'
 export { flatObject } from './flatObject.utility'
 export { filterObject } from './filterObject.utility'
 export { partition } from './partition.utility'
-export { createProxy } from './createProxy.utility'
 
 export const noop = () => {}
 

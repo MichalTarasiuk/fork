@@ -47,10 +47,10 @@
     "build:watch": "rollup --config --watch",
     "build:publish": "yarn build && yarn publish",
     "lint": "eslint"
-    },
+  },
   "lint-staged": {
     "*": "prettier --write"
-    },
+  },
   "devDependencies": {
     "@babel/core": "7.17.9",
     "@babel/preset-env": "7.16.11",
@@ -72,6 +72,7 @@
     "jest": "27.5.1",
     "lint-staged": "12.3.7",
     "lodash": "^4.17.21",
+    "on-change": "^4.0.1",
     "prettier": "2.6.2",
     "react": "^18.1.0",
     "react-dom": "^18.1.0",
@@ -79,14 +80,14 @@
     "rollup-plugin-filesize": "9.1.2",
     "rollup-plugin-jsx": "^1.0.3",
     "rollup-plugin-license": "2.6.1",
-    "ts-jest": "27.1.4",
+    "ts-jest": "^28.0.3",
     "typescript": "4.6.3"
   },
   "peerDependencies": {
     "immer": ">=9.0.0",
     "lodash": ">=4.0.0",
     "react": ">=16.8",
-    "react-dom": ">=16.8"
+    "react-dom": ">=16.8"  
   },
   "resolutions": {
     "immer": ">8.0.0",

@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion -- safty assertion */
-import { createProxy } from '../utils/utils'
+import OnChange from 'on-change'
 
 export const createObserver = <
   TState extends Record<PropertyKey, unknown>
@@ -14,9 +14,10 @@ export const createObserver = <
       return observers.get(state)!
     }
 
-    const proxy = createProxy(state, (state) => {
+    const proxy = OnChange(state, function (this: TState) {
       if (savedListener) {
-        savedListener(state)
+        // eslint-disable-next-line functional/no-this-expression -- liblary api
+        savedListener(this)
       }
     })
 
