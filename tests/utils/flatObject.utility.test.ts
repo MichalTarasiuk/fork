@@ -33,17 +33,4 @@ describe('flatObject', () => {
       },
     })
   })
-
-  it('should return object with the same refference', () => {
-    // arrange
-    const object = {
-      a: 1,
-      b: {
-        c: 2,
-      },
-    }
-
-    // assert
-    expect(flatObject(object, 'b')).toBe(object)
-  })
 })

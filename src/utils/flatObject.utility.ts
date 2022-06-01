@@ -1,6 +1,7 @@
+import { cloneDeep } from 'lodash'
+
 import { isPlainObject } from './utils'
 
-// utility mutate the object
 export const flatObject = <TObject extends Record<PropertyKey, unknown>>(
   object: TObject,
   ...keys: ReadonlyArray<keyof TObject>
@@ -15,4 +16,4 @@ export const flatObject = <TObject extends Record<PropertyKey, unknown>>(
     }
 
     return collector
-  }, object)
+  }, cloneDeep(object))

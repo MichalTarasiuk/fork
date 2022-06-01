@@ -51,9 +51,9 @@ const createState = <
 
   return {
     get current() {
-      const copy = fn(cloneDeep(savedState))
+      const flatten = flatObject(savedState, mutationsSymbol, syncActionsSymbol)
 
-      return flatObject(copy, mutationsSymbol, syncActionsSymbol)
+      return fn(flatten)
     },
     setState,
     updateMutations,
