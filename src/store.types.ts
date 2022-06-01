@@ -29,3 +29,7 @@ export type Patch<TState extends Record<PropertyKey, unknown>> =
 export type ResolvableState<TState extends Record<PropertyKey, unknown>> =
   | TState
   | ((state: TState) => TState)
+
+export type Store<TState extends Record<PropertyKey, unknown>> = {
+  readonly setState: SetState<TState>
+}

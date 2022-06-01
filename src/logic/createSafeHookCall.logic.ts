@@ -7,11 +7,13 @@ import type { ReactNode } from 'react'
 
 type ProviderProps = { readonly children: ReactNode }
 
+const LIBLARY_NAME = 'fork'
+
 const uppercaseFirst = (value: string) =>
   value.charAt(0).toUpperCase() + value.slice(1)
 
-export const createSafeHookCall = (name: string) => {
-  const formatedName = uppercaseFirst(name)
+export const createSafeHookCall = () => {
+  const formatedName = uppercaseFirst(LIBLARY_NAME)
   const border = createContext(false)
 
   const safeHookCall = <THook extends ArrowFunction>(hook: THook) => {

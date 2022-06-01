@@ -1,18 +1,8 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion -- safty assertion  */
 import { useCallback, useRef } from 'react'
 
-import {
-  useFirstMount,
-  useListener,
-  useUnmount,
-  useForce,
-  useMount,
-} from './hooks/hooks'
-import {
-  createPluginsManager,
-  createSafeHookCall,
-  createObserver,
-} from './logic/logic'
+import { useFirstMount, useListener, useUnmount } from './hooks/hooks'
+import { createHookControl } from './logic/logic'
 import { createStore } from './store'
 import { filterObject, compose } from './utils/utils'
 
@@ -28,24 +18,7 @@ const fork = <
   actionsCreator?: ActionsCreator<TState, TActions>
 ) => {
   const store = createStore(initialState, actionsCreator)
-  const pluginsManager = createPluginsManager<TState>({
-    observe: (state) => observer.observe(state),
-  })
-  const observer = createObserver<TState>()
-
-  const { Provider, safeHookCall, setProviderBody } = createSafeHookCall('fork')
-
-  setProviderBody(() => {
-    const force = useForce()
-
-    useMount(() => {
-      observer.configure((state) => {
-        store.setState(state, { replace: true })
-
-        force()
-      })
-    })
-  })
+  const { Provider, safeHookCall, pluginsManager } = createHookControl(store)
 
   const useFork = <
     TSelector extends Selector<TState>,
