@@ -1,14 +1,13 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion -- safty assertion */
-import { createProxy, createRef } from '../utils/utils'
+import { createProxy } from '../utils/utils'
 
-// Deep observable state
 export const createObserver = <
   TState extends Record<PropertyKey, unknown>
 >() => {
-  type Fn = (state: TState) => void
+  type Listener = (state: TState) => void
 
   const observers = new WeakMap<TState, TState>()
-  const { ref, setRef } = createRef<Fn | null>(null)
+  let savedListener: Listener | null = null
 
   const observe = (state: TState) => {
     if (observers.has(state)) {
@@ -16,8 +15,8 @@ export const createObserver = <
     }
 
     const proxy = createProxy(state, (state) => {
-      if (ref.current) {
-        ref.current(state)
+      if (savedListener) {
+        savedListener(state)
       }
     })
 
@@ -26,12 +25,12 @@ export const createObserver = <
     return proxy
   }
 
-  const configure = (fn: Fn) => {
-    setRef(fn)
+  const setListener = (listener: Listener) => {
+    savedListener = listener
   }
 
   return {
     observe,
-    configure,
+    setListener,
   }
 }

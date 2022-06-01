@@ -1,8 +1,8 @@
 import React, { createContext, useContext } from 'react'
 
-import { createRef, noop } from '../utils/utils'
+import { noop } from '../utils/utils'
 
-import type { ArrowFunction } from '../types/types'
+import type { ArrowFunction, Noop } from '../types/types'
 import type { ReactNode } from 'react'
 
 type ProviderProps = { readonly children: ReactNode }
@@ -30,11 +30,14 @@ export const createSafeHookCall = () => {
     }) as THook
   }
 
-  const { ref: providerBody, setRef: setProviderBody } =
-    createRef<ArrowFunction>(noop)
+  let providerBody = noop
+
+  const setProviderBody = (nextProviderBody: Noop) => {
+    providerBody = nextProviderBody
+  }
 
   const Provider = ({ children }: ProviderProps) => {
-    providerBody.current()
+    providerBody()
 
     return React.createElement(border.Provider, { value: true }, children)
   }

@@ -22,7 +22,7 @@ export const createHookControl = <TState extends Record<PropertyKey, unknown>>(
     const force = useForce()
 
     useMount(() => {
-      observer.configure((state) => {
+      observer.setListener((state) => {
         store.setState(state, { replace: true })
 
         force()

@@ -11,7 +11,6 @@ export { flatObject } from './flatObject.utility'
 export { filterObject } from './filterObject.utility'
 export { partition } from './partition.utility'
 export { createProxy } from './createProxy.utility'
-export { createRef } from './createRef.utility'
 
 export const noop = () => {}
 
