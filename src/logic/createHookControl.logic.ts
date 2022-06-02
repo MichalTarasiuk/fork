@@ -1,3 +1,5 @@
+import OnChange from 'on-change'
+
 import { useForce, useMount } from '../hooks/hooks'
 
 import {
@@ -23,7 +25,9 @@ export const createHookControl = <TState extends Record<PropertyKey, unknown>>(
 
     useMount(() => {
       observer.setListener((state) => {
-        store.setState(state, { replace: true })
+        const target = OnChange.target(state)
+
+        store.setState(target, { replace: true })
 
         force()
       })
