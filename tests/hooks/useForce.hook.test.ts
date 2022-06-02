@@ -1,8 +1,11 @@
 import { renderHook, act } from '@testing-library/react-hooks'
 
 import { useForce } from '../../src/hooks/hooks'
+import { ignoreReact18Error } from '../tests.utils'
 
 describe('useForce', () => {
+  ignoreReact18Error()
+
   it('should rerender component on each call force function', () => {
     // given
     const rerender = jest.fn()

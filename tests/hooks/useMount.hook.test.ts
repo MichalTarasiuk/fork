@@ -1,11 +1,14 @@
 import { renderHook, act } from '@testing-library/react-hooks'
 
 import { useMount } from '../../src/hooks/hooks'
+import { ignoreReact18Error } from '../tests.utils'
 
 const mockEffectCleanup = jest.fn()
 const mockEffectCallback = jest.fn().mockReturnValue(mockEffectCleanup)
 
 describe('useMount', () => {
+  ignoreReact18Error()
+
   beforeEach(() => {
     jest.clearAllMocks()
   })

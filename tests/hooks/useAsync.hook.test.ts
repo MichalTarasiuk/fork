@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react-hooks'
 
 import { useAsync } from '../../src/hooks/hooks'
-import { wait } from '../tests.utils'
+import { wait, ignoreReact18Error } from '../tests.utils'
 
 const mockUser = {
   name: 'John',
@@ -20,7 +20,9 @@ const object = {
   },
 }
 
-describe('useMultipleMutations', () => {
+describe('useAsync', () => {
+  ignoreReact18Error()
+
   it('should generate status for async action', () => {
     // arrange
     const {

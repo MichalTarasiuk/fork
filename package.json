@@ -47,11 +47,6 @@
   "bugs": {
     "url": "https://github.com/MichalTarasiuk/fork/issues"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "echo \"[Husky] pre-commit\""
-    }
-  },
   "prettier": {
     "semi": false,
     "trailingComma": "es5",
@@ -88,16 +83,6 @@
       "ts-jest": {
         "isolatedModules": true
       }
-    },
-    "transform": {
-      "^.+\\.jsx?$": "babel-jest"
-    },
-    "moduleDirectories": [
-      ".",
-      "node_modules"
-    ],
-    "moduleNameMapper": {
-      "^react(.*)$": "<rootDir>/node_modules/react$1"
     }
   },
   "devDependencies": {

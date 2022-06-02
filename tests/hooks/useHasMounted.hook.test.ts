@@ -1,8 +1,11 @@
 import { renderHook } from '@testing-library/react-hooks'
 
 import { useHasMounted } from '../../src/hooks/hooks'
+import { ignoreReact18Error } from '../tests.utils'
 
 describe('useHasMounted', () => {
+  ignoreReact18Error()
+
   it('should return true if component is mounted', () => {
     // arrange
     const {

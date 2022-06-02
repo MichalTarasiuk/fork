@@ -1,8 +1,11 @@
-import { renderHook } from '@testing-library/react-hooks'
+import { renderHook, act } from '@testing-library/react-hooks'
 
 import { useListener } from '../../src/hooks/hooks'
+import { ignoreReact18Error } from '../tests.utils'
 
 describe('useListener', () => {
+  ignoreReact18Error()
+
   it('should return merged initial state and actions', () => {
     // arrange
     const initialState = {
@@ -40,7 +43,9 @@ describe('useListener', () => {
 
     // when
     const [, listener] = hook
-    listener({ a: 1 }, { a: 2 })
+    act(() => {
+      listener({ a: 1 }, { a: 2 })
+    })
 
     // then
     expect(fn).toHaveBeenCalledTimes(2)
@@ -64,7 +69,9 @@ describe('useListener', () => {
     const [state] = hook
     const [mutate] = state.b
 
-    await mutate()
+    await act(async () => {
+      await mutate()
+    })
 
     // then
     expect(fn).toHaveBeenCalledTimes(3)

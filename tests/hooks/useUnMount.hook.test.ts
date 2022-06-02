@@ -1,8 +1,11 @@
 import { renderHook } from '@testing-library/react-hooks'
 
 import { useUnmount } from '../../src/hooks/hooks'
+import { ignoreReact18Error } from '../tests.utils'
 
 describe('useUnmount', () => {
+  ignoreReact18Error()
+
   it('should not call provided callback on mount', () => {
     // arrange
     const spy = jest.fn()

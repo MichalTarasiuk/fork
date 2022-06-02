@@ -2,6 +2,7 @@ import type { DependencyList } from 'react'
 import { renderHook } from '@testing-library/react-hooks'
 
 import { useCreation } from '../../src/hooks/hooks'
+import { ignoreReact18Error } from '../tests.utils'
 
 class Foo {
   number: number
@@ -13,6 +14,8 @@ class Foo {
 }
 
 describe('useCreation', () => {
+  ignoreReact18Error()
+
   it('should invoke foo constructor only on mount when dependency list is empty', () => {
     // given
     const spy = jest.fn()

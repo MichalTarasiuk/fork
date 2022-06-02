@@ -23,7 +23,7 @@ export const createObserver = <
 
     observers.set(state, proxy)
 
-    return proxy
+    return state
   }
 
   const setListener = (listener: Listener) => {

@@ -1,8 +1,11 @@
 import { renderHook } from '@testing-library/react-hooks'
 
 import { useFirstMount } from '../../src/hooks/hooks'
+import { ignoreReact18Error } from '../tests.utils'
 
 describe('useFirstMount', () => {
+  ignoreReact18Error()
+
   it('should return boolean', () => {
     // arrange
     const { result } = renderHook(() => useFirstMount())
