@@ -19,6 +19,13 @@
     "name": "Michał Tarasiuk",
     "email": "tarasiuk.michal03@gmail.com"
   },
+  "license": "MIT",
+  "scripts": {
+    "test": "jest --watch",
+    "build": "rimraf build && rollup --config",
+    "build:watch": "rollup --config --watch",
+    "build:publish": "yarn build && yarn publish"
+  },
   "files": [
     "build"
   ],
@@ -40,21 +47,55 @@
   "bugs": {
     "url": "https://github.com/MichalTarasiuk/fork/issues"
   },
-  "license": "MIT",
-  "scripts": {
-    "test": "jest --watch",
-    "build": "rimraf build && rollup --config",
-    "build:watch": "rollup --config --watch",
-    "build:publish": "yarn build && yarn publish",
-    "lint": "eslint"
+  "prettier": {
+    "semi": false,
+    "trailingComma": "es5",
+    "singleQuote": true,
+    "bracketSameLine": true,
+    "tabWidth": 2,
+    "printWidth": 80
   },
-  "lint-staged": {
-    "*": "prettier --write"
+  "eslintConfig": {
+    "root": true,
+    "parserOptions": {
+      "project": "tsconfig.json"
+    },
+    "plugins": [
+      "@typeofweb"
+    ],
+    "extends": [
+      "plugin:@typeofweb/recommended"
+    ],
+    "rules": {
+      "@typescript-eslint/consistent-type-assertions": "off",
+      "import/no-cycle": "off"
+    },
+    "ignorePatterns": [
+      "examples/**/*",
+      "dist/**/*",
+      "tests/**/*"
+    ]
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "jsdom",
+    "globals": {
+      "ts-jest": {
+        "isolatedModules": true
+      }
+    },
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest"
+    },
+    "moduleDirectories": [
+      ".",
+      "node_modules"
+    ],
+    "moduleNameMapper": {
+      "^react(.*)$": "<rootDir>/node_modules/react$1"
+    }
   },
   "devDependencies": {
-    "@babel/core": "7.17.9",
-    "@babel/preset-env": "7.16.11",
-    "@babel/preset-typescript": "7.16.7",
     "@rollup/plugin-commonjs": "21.0.3",
     "@rollup/plugin-typescript": "8.3.1",
     "@testing-library/react": "13.1.1",
@@ -67,10 +108,8 @@
     "babel-jest": "27.5.1",
     "eslint": "^8.14.0",
     "eslint-plugin-react-hooks": "^4.5.0",
-    "husky": "7.0.4",
     "immer": "^9.0.12",
     "jest": "27.5.1",
-    "lint-staged": "12.3.7",
     "lodash": "^4.17.21",
     "on-change": "^4.0.1",
     "prettier": "2.6.2",
@@ -87,7 +126,7 @@
     "immer": ">=9.0.0",
     "lodash": ">=4.0.0",
     "react": ">=16.8",
-    "react-dom": ">=16.8"  
+    "react-dom": ">=16.8"
   },
   "resolutions": {
     "immer": ">8.0.0",
