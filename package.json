@@ -13,8 +13,8 @@
   "types": "./build/src/fork.d.ts",
   "main": "./build/index.cjs",
   "module": "./build/index.mjs",
-  "browser": "build/index.umd.js",
-  "unpkg": "build/index.umd.js",
+  "browser": "./build/index.umd.js",
+  "unpkg": "./build/index.umd.js",
   "author": {
     "name": "Michał Tarasiuk",
     "email": "tarasiuk.michal03@gmail.com"
@@ -46,6 +46,11 @@
   ],
   "bugs": {
     "url": "https://github.com/MichalTarasiuk/fork/issues"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "echo \"[Husky] pre-commit\""
+    }
   },
   "prettier": {
     "semi": false,
@@ -125,11 +130,11 @@
   "peerDependencies": {
     "immer": ">=9.0.0",
     "lodash": ">=4.0.0",
-    "react": ">=16.8",
-    "react-dom": ">=16.8"
+    "react": ">=16.8"
   },
   "resolutions": {
     "immer": ">8.0.0",
+    "lodash": ">4.0.0",
     "react": ">16.8.0"
   }
 }
