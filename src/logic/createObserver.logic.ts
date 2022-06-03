@@ -14,7 +14,7 @@ export const createObserver = <
       return observers.get(state)!
     }
 
-    const proxy = OnChange(state, function (this: TState, _, value) {
+    const proxy = OnChange(state, function (this: TState) {
       if (savedListener) {
         // eslint-disable-next-line functional/no-this-expression -- liblary api
         savedListener(this)
@@ -26,12 +26,16 @@ export const createObserver = <
     return proxy
   }
 
-  const setListener = (listener: Listener) => {
+  const addListener = (listener: Listener) => {
     savedListener = listener
+
+    return () => {
+      savedListener = null
+    }
   }
 
   return {
     observe,
-    setListener,
+    addListener,
   }
 }

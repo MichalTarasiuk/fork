@@ -16,7 +16,7 @@ export const ignoreReact18Error = () => {
     }
   })
 
-  afterAll(async () => {
+  afterAll(() => {
     console.error = originalError
   })
 }
