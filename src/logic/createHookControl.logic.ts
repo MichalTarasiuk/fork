@@ -1,4 +1,4 @@
-import OnChange from 'on-change'
+import ObserveImpl from 'on-change'
 
 import { useForce, useMount } from '../hooks/hooks'
 
@@ -24,8 +24,8 @@ export const createHookControl = <TState extends Record<PropertyKey, unknown>>(
     const force = useForce()
 
     useMount(() => {
-      const removeListener = observer.addListener((state) => {
-        const target = OnChange.target(state)
+      const { removeListener } = observer.addListener((state) => {
+        const target = ObserveImpl.target(state)
 
         store.setState(target, { replace: true })
 
