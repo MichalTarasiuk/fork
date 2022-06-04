@@ -10,7 +10,7 @@
     "require": "./build/index.cjs",
     "browser": "./build/index.umd.js"
   },
-  "types": "./build/src/fork.d.ts",
+  "types": "./build/src/_api.d.ts",
   "main": "./build/index.cjs",
   "module": "./build/index.mjs",
   "browser": "./build/index.umd.js",

@@ -7,24 +7,24 @@ import Pkg from './package.json'
 
 const config = [
   {
-    input: 'src/fork.ts',
+    input: 'src/_api.ts',
     output: [
       {
-        name: 'fork',
+        name: 'api',
         format: 'es',
         dir: './',
         entryFileNames: Pkg.exports.import.replace(/^\.\//, ''),
         sourcemap: true,
       },
       {
-        name: 'fork',
+        name: 'api',
         format: 'cjs',
         dir: './',
         entryFileNames: Pkg.exports.require.replace(/^\.\//, ''),
         sourcemap: true,
       },
       {
-        name: 'fork',
+        name: 'api',
         format: 'umd',
         dir: './',
         entryFileNames: Pkg.exports.browser.replace(/^\.\//, ''),

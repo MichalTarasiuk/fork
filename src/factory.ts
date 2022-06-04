@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion -- safty assertion  */
 import { useCallback, useRef } from 'react'
 
 import { useFirstMount, useListener, useUnmount } from './hooks/hooks'
@@ -10,7 +9,7 @@ import type { Config } from './fork.types'
 import type { ActionsCreator, Selector, Patch, SetConfig } from './store.types'
 import type { ArrowFunction } from './types/types'
 
-const fork = <
+const factory = <
   TState extends Record<PropertyKey, unknown>,
   TActions extends Record<PropertyKey, ArrowFunction>
 >(
@@ -98,5 +97,4 @@ const fork = <
   }
 }
 
-// eslint-disable-next-line import/no-default-export -- library export
-export default fork
+export { factory }
