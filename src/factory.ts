@@ -28,7 +28,7 @@ const factory = <
 
   const useFork = <
     TSelector extends Selector<TState>,
-    TConfig extends HookConfig<TState, TSelector>
+    TConfig extends HookConfig<TState, TSelector> = Record<string, unknown>
   >(
     selector?: TSelector,
     hookConfig?: TConfig
@@ -58,8 +58,7 @@ const factory = <
           if (Object.values(errors).some(Boolean)) {
             const filteredPatch = filterObject(
               patch,
-              // @ts-ignore
-              (key) => key in errors && errors[key]
+              (key) => key in errors && Boolean(errors[key])
             )
             const resolvedState = Object.assign({}, nextState, filteredPatch)
 

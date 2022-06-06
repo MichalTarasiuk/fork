@@ -3,7 +3,12 @@ import { renderHook, act } from '@testing-library/react-hooks'
 import { useListener } from '../../src/hooks/hooks'
 import { ignoreReact18Error } from '../tests.utils'
 
-describe.only('useListener', () => {
+const mockLifeCycles = {
+  onListen: (state) => state,
+  beforeListen: () => true,
+}
+
+describe('useListener', () => {
   ignoreReact18Error()
 
   it('should return merged initial state and actions', () => {
@@ -17,7 +22,7 @@ describe.only('useListener', () => {
     }
 
     const { result } = renderHook(() =>
-      useListener(initialState, actions, (state) => state)
+      useListener(initialState, actions, mockLifeCycles)
     )
 
     // assert
@@ -39,7 +44,7 @@ describe.only('useListener', () => {
 
     const {
       result: { current: hook },
-    } = renderHook(() => useListener(initialState, actions, fn))
+    } = renderHook(() => useListener(initialState, actions, mockLifeCycles))
 
     // when
     const [, listener] = hook
@@ -63,7 +68,7 @@ describe.only('useListener', () => {
 
     const {
       result: { current: hook },
-    } = renderHook(() => useListener(initialState, actions, fn))
+    } = renderHook(() => useListener(initialState, actions, mockLifeCycles))
 
     // when
     const [state] = hook
