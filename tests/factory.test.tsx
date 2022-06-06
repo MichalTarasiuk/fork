@@ -1,7 +1,7 @@
 import { render, fireEvent, act } from '@testing-library/react'
 import { wait } from './tests.utils'
 
-import fork from '../src/fork'
+import { factory as fork } from '../src/factory'
 import { useMount } from '../src/hooks/hooks'
 
 describe('fork', () => {
@@ -513,12 +513,9 @@ describe('fork', () => {
 
   it('should observe state on change', () => {
     // given
-    const { ForkProvider, useFork } = fork(
-      {
-        counter: 0,
-      },
-      {}
-    )
+    const { ForkProvider, useFork } = fork({
+      counter: 0,
+    })
     const Counter = () => {
       const { state } = useFork((state) => state, {
         observe: true,
@@ -546,5 +543,58 @@ describe('fork', () => {
 
     // then
     getByText('counter: 1')
+  })
+
+  it.only('it should overwrite user', () => {
+    // given
+    type User = {
+      name: string
+      age: number
+    }
+
+    const { ForkProvider, useFork } = fork(
+      { user: null as User | null },
+      (set) => ({
+        fetchUser: () => {
+          set({ user: { name: 'John', age: 15 } })
+        },
+      }),
+      {
+        context: {
+          isValidUser: (user: User | null) => (user ? user.age < 18 : false),
+        },
+        resolver: (state, context) => {
+          return {
+            state: { user: null },
+            errors: {
+              user: context.isValidUser(state.user)
+                ? { type: 'age error', message: 'too young' }
+                : null,
+            },
+          }
+        },
+      }
+    )
+    const UserInterface = () => {
+      const { state } = useFork()
+
+      return (
+        <div>
+          {state.user ? state.user.name : 'guest'}
+          <button onClick={state.fetchUser}>fetch user</button>
+        </div>
+      )
+    }
+    const { getByText } = render(
+      <ForkProvider>
+        <UserInterface />
+      </ForkProvider>
+    )
+
+    // when
+    fireEvent.click(getByText('fetch user'))
+
+    // then
+    getByText('guest')
   })
 })

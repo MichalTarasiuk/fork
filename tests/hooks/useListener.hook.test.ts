@@ -3,7 +3,7 @@ import { renderHook, act } from '@testing-library/react-hooks'
 import { useListener } from '../../src/hooks/hooks'
 import { ignoreReact18Error } from '../tests.utils'
 
-describe('useListener', () => {
+describe.only('useListener', () => {
   ignoreReact18Error()
 
   it('should return merged initial state and actions', () => {

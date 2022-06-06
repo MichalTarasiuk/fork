@@ -5,26 +5,33 @@ import { createHookControl } from './logic/logic'
 import { createStore } from './store'
 import { filterObject, compose } from './utils/utils'
 
-import type { Config } from './fork.types'
+import type { GlobalConfig, HookConfig } from './factory.types'
 import type { ActionsCreator, Selector, Patch, SetConfig } from './store.types'
 import type { ArrowFunction } from './types/types'
 
 const factory = <
   TState extends Record<PropertyKey, unknown>,
-  TActions extends Record<PropertyKey, ArrowFunction>
+  TActions extends Record<PropertyKey, ArrowFunction>,
+  TContext extends Record<PropertyKey, unknown>
 >(
   initialState: TState,
-  actionsCreator?: ActionsCreator<TState, TActions>
+  actionsCreator?: ActionsCreator<TState, TActions>,
+  globalConfig?: GlobalConfig<TState, TContext>
 ) => {
   const store = createStore(initialState, actionsCreator)
-  const { Provider, safeHookCall, pluginsManager } = createHookControl(store)
+  const {
+    Provider,
+    safeHookCall,
+    pluginsManager,
+    errorReporter: { errors, setErrors },
+  } = createHookControl(store)
 
   const useFork = <
     TSelector extends Selector<TState>,
-    TConfig extends Config<TState, TSelector>
+    TConfig extends HookConfig<TState, TSelector>
   >(
     selector?: TSelector,
-    config?: TConfig
+    hookConfig?: TConfig
   ) => {
     const subscriber = useRef<ReturnType<typeof store['subscribe']> | null>(
       null
@@ -37,30 +44,43 @@ const factory = <
       subscriber.current = store.subscribe(
         (state, nextState) => listener.current(state, nextState),
         selector,
-        config?.equality
+        hookConfig?.equality
       )
     }
 
     const actions = subscriber.current?.actions
-    const [state, listenerImpl] = useListener(
-      initialState,
-      actions,
-      (state) => {
-        if (config) {
+    const [state, listenerImpl] = useListener(initialState, actions, {
+      beforeListen: (nextState) => {
+        if (globalConfig) {
+          const { resolver, context } = globalConfig
+          const { state: resolvedState, errors } = resolver(nextState, context)
+
+          if (Object.values(errors).some(Boolean)) {
+            store.setState(resolvedState)
+            setErrors(errors)
+
+            return false
+          }
+        }
+
+        return true
+      },
+      onListen: (nextState) => {
+        if (hookConfig) {
           const filteredPlugins = filterObject(
             pluginsManager.plugins,
             // @ts-ignore
-            (key) => key in config && config[key] === true
+            (key) => key in hookConfig && hookConfig[key] === true
           )
           const pickedPlugins = Object.values(filteredPlugins)
           const combinedPlugins = compose(...pickedPlugins)
 
-          return combinedPlugins(state)
+          return combinedPlugins(nextState)
         }
 
-        return state
-      }
-    )
+        return nextState
+      },
+    })
 
     if (isFirstMount) {
       listener.current = listenerImpl
@@ -86,6 +106,7 @@ const factory = <
     return {
       state,
       setState,
+      errors,
     }
   }
 

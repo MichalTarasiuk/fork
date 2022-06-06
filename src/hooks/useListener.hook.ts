@@ -15,7 +15,12 @@ import type { Mutations, Status } from './useAsync.hook'
 type AsyncActions = Record<PropertyKey, AsyncFunction>
 type SyncActions = Record<PropertyKey, ArrowFunction>
 
-const createState = <
+type Lifecycles<TState extends Record<PropertyKey, unknown>> = {
+  readonly beforeListen: (nextState: TState) => boolean
+  readonly onListen: (nextState: TState) => TState
+}
+
+const createHookState = <
   TState extends Record<PropertyKey, unknown>,
   TSyncActions extends SyncActions
 >(
@@ -66,7 +71,7 @@ export const useListener = <
 >(
   initialState: TState,
   actions: TActions | undefined,
-  fn: (state: TState) => TState
+  { onListen, beforeListen }: Lifecycles<TState>
 ) => {
   type State = TState & AddBy<TActions, AsyncFunction, Status>
 
@@ -74,29 +79,32 @@ export const useListener = <
     () => partition<AsyncActions, SyncActions>(actions || {}, isAsyncFunction),
     []
   )
-  const state = useMemo(() => createState(initialState, syncActions, fn), [])
+  const hookState = useMemo(
+    () => createHookState(initialState, syncActions, onListen),
+    []
+  )
 
   const hasMounted = useHasMounted()
   const isFirstMount = useFirstMount()
   const force = useForce()
 
   const mutations = useAsync(asyncActions, (nextMutations) => {
-    state.updateMutations(nextMutations)
+    hookState.updateMutations(nextMutations)
 
     force()
   })
 
   if (isFirstMount) {
-    state.updateMutations(mutations)
+    hookState.updateMutations(mutations)
   }
 
   const listener = useCallback((_: TState, nextState: TState) => {
-    if (hasMounted.current) {
-      state.setState(nextState)
+    if (hasMounted.current && beforeListen(nextState)) {
+      hookState.setState(nextState)
 
       force()
     }
   }, [])
 
-  return [state.current as State, listener] as const
+  return [hookState.current as State, listener] as const
 }

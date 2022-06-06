@@ -84,10 +84,11 @@ const createStore = <
   const getState = () => state.current
 
   return {
+    state: state.current,
+    notify: eventEmitter.notify,
     get listeners() {
       return eventEmitter.listeners
     },
-    notify: eventEmitter.notify,
     setState,
     subscribe,
   }

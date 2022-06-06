@@ -31,5 +31,6 @@ export type ResolvableState<TState extends Record<PropertyKey, unknown>> =
   | ((state: TState) => TState)
 
 export type Store<TState extends Record<PropertyKey, unknown>> = {
+  readonly state: TState
   readonly setState: SetState<TState>
 }
