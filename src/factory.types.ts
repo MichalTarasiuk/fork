@@ -10,7 +10,7 @@ export type GlobalConfig<
     state: TState,
     context: TContext
   ) => {
-    readonly state: TState
+    readonly state: Partial<TState>
     readonly errors: Record<keyof TState, StateError | null>
   }
 }

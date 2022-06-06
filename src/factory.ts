@@ -23,7 +23,7 @@ const factory = <
     Provider,
     safeHookCall,
     pluginsManager,
-    errorReporter: { errors, setErrors },
+    errorReporter: { errors, setErrors, resetErrors },
   } = createHookControl(store)
 
   const useFork = <
@@ -53,9 +53,16 @@ const factory = <
       beforeListen: (nextState) => {
         if (globalConfig) {
           const { resolver, context } = globalConfig
-          const { state: resolvedState, errors } = resolver(nextState, context)
+          const { state: patch, errors } = resolver(nextState, context)
 
           if (Object.values(errors).some(Boolean)) {
+            const filteredPatch = filterObject(
+              patch,
+              // @ts-ignore
+              (key) => key in errors && errors[key]
+            )
+            const resolvedState = Object.assign({}, nextState, filteredPatch)
+
             store.setState(resolvedState)
             setErrors(errors)
 
@@ -101,6 +108,7 @@ const factory = <
       const emitter = subscriber.current?.body
 
       store.setState(patch, config, emitter)
+      resetErrors()
     }, [])
 
     return {

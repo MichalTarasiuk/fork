@@ -2,16 +2,16 @@ import React from 'react'
 import { createRoot } from 'react-dom/client'
 import fork from 'fork'
 
-const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 
 const { ForkProvider, useFork } = fork(
-  { user: null },
+  { user: null, counter: 0 },
   (set) => ({
-    fetchUser: async () => {
-      await wait(1000)
-
-      set({ user: { name: 'John', age: random(15, 50) } }, { emitt: false })
+    fetchUser: () => {
+      set({ user: { name: 'John', age: random(0, 99) } })
+    },
+    increase: () => {
+      set((state) => ({ counter: state.counter + 1 }))
     },
     resetUser: () => set({ user: null }),
   }),
@@ -21,11 +21,12 @@ const { ForkProvider, useFork } = fork(
     },
     resolver: (state, context) => {
       return {
-        state: { ...state, user: null },
+        state: { user: null, counter: 0 },
         errors: {
           user: context.isValidUser(state.user)
             ? { type: 'age error', message: 'too young' }
             : null,
+          counter: null,
         },
       }
     },
@@ -33,19 +34,25 @@ const { ForkProvider, useFork } = fork(
 )
 
 const App = () => {
-  const { state } = useFork()
-  const [fetchUser, status] = state.fetchUser
+  const {
+    state: { user, fetchUser, resetUser, counter, increase },
+  } = useFork()
 
-  if (state.user) {
+  if (user) {
     return (
       <div>
-        <pre>{JSON.stringify(state.user, undefined, 2)}</pre>
-        <button onClick={state.resetUser}>reset</button>
+        <pre>{JSON.stringify({ counter, user }, undefined, 2)}</pre>
+        <button onClick={resetUser}>reset</button>
       </div>
     )
   }
 
-  return <button onClick={fetchUser}>{status}</button>
+  return (
+    <div>
+      <button onClick={increase}>increase {counter}</button>
+      <button onClick={fetchUser}>fetch user</button>
+    </div>
+  )
 }
 
 createRoot(document.querySelector('#app')).render(
