@@ -545,7 +545,7 @@ describe('fork', () => {
     getByText('counter: 1')
   })
 
-  it.only('it should overwrite user', () => {
+  it('it should overwrite user', () => {
     // given
     type User = {
       name: string
