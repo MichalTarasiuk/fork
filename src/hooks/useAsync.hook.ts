@@ -52,11 +52,11 @@ export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
         setStatus(name, 'loading')
 
         try {
-          const result = await asyncFunction()
+          const data = await asyncFunction()
 
           setStatus(name, 'success')
 
-          return result
+          return data
         } catch {
           setStatus(name, 'error')
         }

@@ -6,7 +6,15 @@ import { ignoreReact18Error } from '../tests.utils'
 describe('useForce', () => {
   ignoreReact18Error()
 
-  it('should rerender component on each call force function', () => {
+  it('should return function', () => {
+    // arrange
+    const { result } = renderHook(() => useForce())
+
+    // assert
+    expect(result.current).toEqual(expect.any(Function))
+  })
+
+  it('should rerender component on each call force', () => {
     // given
     const rerender = jest.fn()
     const { result } = renderHook(() => {
@@ -28,13 +36,5 @@ describe('useForce', () => {
 
     // then
     expect(rerender).toHaveBeenCalledTimes(4)
-  })
-
-  it('should return function', () => {
-    // arrange
-    const { result } = renderHook(() => useForce())
-
-    // assert
-    expect(result.current).toEqual(expect.any(Function))
   })
 })

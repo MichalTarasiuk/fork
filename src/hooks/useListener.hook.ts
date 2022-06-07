@@ -15,7 +15,7 @@ import type { Mutations, Status } from './useAsync.hook'
 type AsyncActions = Record<PropertyKey, AsyncFunction>
 type SyncActions = Record<PropertyKey, ArrowFunction>
 
-type Lifecycles<TState extends Record<PropertyKey, unknown>> = {
+type LifeCycles<TState extends Record<PropertyKey, unknown>> = {
   readonly beforeListen: (nextState: TState) => boolean
   readonly onListen: (nextState: TState) => TState
 }
@@ -67,11 +67,12 @@ const createHookState = <
 
 export const useListener = <
   TState extends Record<PropertyKey, unknown>,
-  TActions extends Record<PropertyKey, Function>
+  TActions extends Record<PropertyKey, Function>,
+  TLifeCycles extends LifeCycles<TState>
 >(
   initialState: TState,
   actions: TActions | undefined,
-  { onListen, beforeListen }: Lifecycles<TState>
+  { onListen, beforeListen }: TLifeCycles
 ) => {
   type State = TState & AddBy<TActions, AsyncFunction, Status>
 

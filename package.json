@@ -72,8 +72,7 @@
     },
     "ignorePatterns": [
       "examples/**/*",
-      "dist/**/*",
-      "tests/**/*"
+      "dist/**/*"
     ]
   },
   "jest": {

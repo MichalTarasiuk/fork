@@ -12,27 +12,36 @@ const mockUser = {
   getSurname: () => Promise.resolve('Doe'),
 }
 
-const object = {
-  async getUser() {
+const handler = {
+  async fetchUser() {
     await wait(1000)
 
     return mockUser
+  },
+  async fetchUserName() {
+    await wait(1000)
+
+    return mockUser.name
   },
 }
 
 describe('useAsync', () => {
   ignoreReact18Error()
 
-  it('should generate status for async action', () => {
+  it('should generate status for each async action', () => {
     // arrange
     const {
       result: { current: hook },
-    } = renderHook(() => useAsync(object, () => {}))
+    } = renderHook(() => useAsync(handler, () => {}))
 
     // assert
     expect(hook).toMatchInlineSnapshot(`
       Object {
-        "getUser": Array [
+        "fetchUser": Array [
+          [Function],
+          "idle",
+        ],
+        "fetchUserName": Array [
           [Function],
           "idle",
         ],
@@ -40,35 +49,43 @@ describe('useAsync', () => {
     `)
   })
 
-  it('should invoke callback on each state change', async () => {
+  it('should invoke fn on each state change', async () => {
     // given
-    const callback = jest.fn()
+    const fn = jest.fn()
     const {
       result: { current: hook },
-    } = renderHook(() => useAsync(object, callback))
+    } = renderHook(() => useAsync(handler, fn))
 
     // when
-    const [getUser] = hook.getUser
+    const [fetchUser] = hook.fetchUser
 
     // when
-    await getUser()
+    await fetchUser()
 
     // then
-    expect(callback.mock.calls).toMatchInlineSnapshot(`
+    expect(fn.mock.calls).toMatchInlineSnapshot(`
       Array [
         Array [
           Object {
-            "getUser": Array [
+            "fetchUser": Array [
               [Function],
               "loading",
+            ],
+            "fetchUserName": Array [
+              [Function],
+              "idle",
             ],
           },
         ],
         Array [
           Object {
-            "getUser": Array [
+            "fetchUser": Array [
               [Function],
               "success",
+            ],
+            "fetchUserName": Array [
+              [Function],
+              "idle",
             ],
           },
         ],
@@ -76,18 +93,17 @@ describe('useAsync', () => {
     `)
   })
 
-  it('should return stale state after async action call', async () => {
+  it('should always return stale state', async () => {
     // given
-    const callback = jest.fn()
     const {
       result: { current: hook },
-    } = renderHook(() => useAsync(object, callback))
+    } = renderHook(() => useAsync(handler, () => {}))
 
     // when
-    const [getUser, status] = hook.getUser
+    const [fetchUser, status] = hook.fetchUser
 
     // when
-    await getUser()
+    await fetchUser()
 
     // then
     expect(status).toBe('idle')

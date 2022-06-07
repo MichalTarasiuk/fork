@@ -3,15 +3,10 @@ import { renderHook, act } from '@testing-library/react-hooks'
 import { useListener } from '../../src/hooks/hooks'
 import { ignoreReact18Error } from '../tests.utils'
 
-const mockLifeCycles = {
-  onListen: (state) => state,
-  beforeListen: () => true,
-}
-
 describe('useListener', () => {
   ignoreReact18Error()
 
-  it('should return merged initial state and actions', () => {
+  it('should merge state and actions', () => {
     // arrange
     const initialState = {
       a: 1,
@@ -22,7 +17,10 @@ describe('useListener', () => {
     }
 
     const { result } = renderHook(() =>
-      useListener(initialState, actions, mockLifeCycles)
+      useListener(initialState, actions, {
+        onListen: (state) => state,
+        beforeListen: () => true,
+      })
     )
 
     // assert
@@ -45,7 +43,7 @@ describe('useListener', () => {
     const {
       result: { current: hook },
     } = renderHook(() =>
-      useListener(initialState, actions, { ...mockLifeCycles, onListen })
+      useListener(initialState, actions, { beforeListen: () => true, onListen })
     )
 
     // when
@@ -71,7 +69,7 @@ describe('useListener', () => {
     const {
       result: { current: hook },
     } = renderHook(() =>
-      useListener(initialState, actions, { ...mockLifeCycles, onListen })
+      useListener(initialState, actions, { beforeListen: () => true, onListen })
     )
 
     // when
@@ -86,7 +84,7 @@ describe('useListener', () => {
     expect(onListen).toHaveBeenCalledTimes(3)
   })
 
-  it('should invoke beforeListen on listener invoke', async () => {
+  it('should invoke beforeListen on listener invoke', () => {
     // arrange
     const initialState = {
       a: 1,
@@ -100,14 +98,14 @@ describe('useListener', () => {
       result: { current: hook },
     } = renderHook(() =>
       useListener(initialState, actions, {
-        ...mockLifeCycles,
         beforeListen,
+        onListen: (state) => state,
       })
     )
 
     // when
     const [_, listener] = hook
-    await act(async () => {
+    act(() => {
       listener({ a: 1 }, { a: 2 })
     })
 

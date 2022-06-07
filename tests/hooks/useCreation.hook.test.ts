@@ -1,14 +1,17 @@
-import type { DependencyList } from 'react'
 import { renderHook } from '@testing-library/react-hooks'
 
 import { useCreation } from '../../src/hooks/hooks'
 import { ignoreReact18Error } from '../tests.utils'
 
-class Foo {
-  number: number
+import type { ArrowFunction } from '../../src/types/types'
+import type { DependencyList } from 'react'
 
-  constructor(spy: Function) {
+class Foo {
+  readonly number: number
+
+  constructor(spy: ArrowFunction) {
     spy()
+    // eslint-disable-next-line functional/no-this-expression -- tests
     this.number = Math.random()
   }
 }
@@ -33,7 +36,7 @@ describe('useCreation', () => {
   it('should invoke foo constructor when dependency list change', () => {
     // given
     type Props = {
-      dependencyList: DependencyList
+      readonly dependencyList: DependencyList
     }
     const spy = jest.fn()
     const { rerender } = renderHook(
@@ -54,7 +57,7 @@ describe('useCreation', () => {
   it('should not invoke foo constructor when dependency list is the same', () => {
     // given
     type Props = {
-      dependencyList: DependencyList
+      readonly dependencyList: DependencyList
     }
     const spy = jest.fn()
     const { rerender } = renderHook(
