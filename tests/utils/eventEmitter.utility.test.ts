@@ -52,7 +52,7 @@ describe('observer', () => {
 
   it('should not invoke emitter when is defined', () => {
     //given
-    const eventEmitter = createEventEmitter<string>()
+    const eventEmitter = createEventEmitter<string | undefined>()
 
     // when
     const spy1 = jest.fn()

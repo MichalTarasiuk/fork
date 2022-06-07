@@ -33,7 +33,6 @@ describe('compose', () => {
 
     // assert
     expect(() => compose(square, add, false as unknown as Func)(1, 2)).toThrow()
-    expect(() => compose(square, add, undefined)(1, 2)).toThrow()
     expect(() => compose(square, add, true as unknown as Func)(1, 2)).toThrow()
     expect(() => compose(square, add, NaN as unknown as Func)(1, 2)).toThrow()
     expect(() => compose(square, add, '42' as unknown as Func)(1, 2)).toThrow()
