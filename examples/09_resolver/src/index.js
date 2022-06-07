@@ -1,13 +1,16 @@
 import React from 'react'
-import { createRoot } from 'react-dom/client'
+import { render } from 'react-dom'
 import fork from 'fork'
 
+const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 
 const { ForkProvider, useFork } = fork(
   { user: null, counter: 0 },
   (set) => ({
-    fetchUser: () => {
+    fetchUser: async () => {
+      await wait(1000)
+
       set({ user: { name: 'John', age: random(0, 99) } })
     },
     increase: () => {
@@ -47,16 +50,21 @@ const App = () => {
     )
   }
 
+  const [fetchUserMutate, status] = fetchUser
+
   return (
     <div>
       <button onClick={increase}>increase {counter}</button>
-      <button onClick={fetchUser}>fetch user</button>
+      <button onClick={fetchUserMutate}>
+        {status === 'loading' ? 'loading' : 'fetch user'}
+      </button>
     </div>
   )
 }
 
-createRoot(document.querySelector('#app')).render(
+render(
   <ForkProvider>
     <App />
-  </ForkProvider>
+  </ForkProvider>,
+  document.getElementById('app')
 )

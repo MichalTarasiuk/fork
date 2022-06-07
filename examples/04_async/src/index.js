@@ -7,9 +7,12 @@ const wait = (ms = 1000) => new Promise((res) => setTimeout(res, ms))
 const { ForkProvider, useFork } = fork({ counter: 0 }, (set) => ({
   increase: async () => {
     await wait()
-    set((state) => {
-      state.counter++
-    })
+    set(
+      (state) => {
+        state.counter++
+      },
+      { emitt: false }
+    )
   },
 }))
 
@@ -23,11 +26,7 @@ const CounterManager = () => {
   const { state } = useFork()
   const [increase, status] = state.increase
 
-  return (
-    <button onClick={increase}>
-      {status === 'loading' ? status : 'increase'}
-    </button>
-  )
+  return <button onClick={increase}>{status}</button>
 }
 
 const App = () => {

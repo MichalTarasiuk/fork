@@ -28,7 +28,7 @@ const factory = <
 
   const useFork = <
     TSelector extends Selector<TState>,
-    TConfig extends HookConfig<TState, TSelector> = Record<string, unknown>
+    TConfig extends HookConfig<TState, TSelector>
   >(
     selector?: TSelector,
     hookConfig?: TConfig

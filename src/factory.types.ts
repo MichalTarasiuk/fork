@@ -3,7 +3,7 @@ import type { Selector } from './store.types'
 
 export type GlobalConfig<
   TState extends Record<PropertyKey, unknown>,
-  TContext extends Record<PropertyKey, unknown> = Record<PropertyKey, unknown>
+  TContext extends Record<PropertyKey, unknown>
 > = {
   readonly context: TContext
   readonly resolver: (
