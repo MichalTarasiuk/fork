@@ -8,6 +8,7 @@ export const ignoreReact18Error = () => {
       const regex =
         /Warning: ReactDOM.render is no longer supported in React 18./
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument -- safty check
       if (regex.test(args[0])) {
         return
       }

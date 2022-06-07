@@ -1,8 +1,11 @@
 import { render, fireEvent, act } from '@testing-library/react'
-import { wait } from './tests.utils'
 
 import { factory as fork } from '../src/factory'
 import { useMount } from '../src/hooks/hooks'
+
+import { wait } from './tests.utils'
+
+import type { ArrowFunction } from '../src/types/types'
 
 describe('fork', () => {
   it('should resolve plain action', () => {
@@ -212,7 +215,7 @@ describe('fork', () => {
           </>
         )
       },
-      Child({ spy }) {
+      Child({ spy }: { readonly spy: ArrowFunction }) {
         useFork()
 
         spy()
@@ -548,8 +551,8 @@ describe('fork', () => {
   it('it should overwrite user', () => {
     // given
     type User = {
-      name: string
-      age: number
+      readonly name: string
+      readonly age: number
     }
 
     const { ForkProvider, useFork } = fork(
