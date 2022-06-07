@@ -32,7 +32,7 @@ describe('useListener', () => {
     })
   })
 
-  it('should invoke fn on listener call', () => {
+  it('should invoke onListen on listener call', () => {
     // arrange
     const initialState = {
       a: 1,
@@ -40,23 +40,25 @@ describe('useListener', () => {
     const actions = {
       b: () => {},
     }
-    const fn = jest.fn().mockImplementation((state) => state)
+    const onListen = jest.fn().mockImplementation((state) => state)
 
     const {
       result: { current: hook },
-    } = renderHook(() => useListener(initialState, actions, mockLifeCycles))
+    } = renderHook(() =>
+      useListener(initialState, actions, { ...mockLifeCycles, onListen })
+    )
 
     // when
-    const [, listener] = hook
+    const [_, listener] = hook
     act(() => {
       listener({ a: 1 }, { a: 2 })
     })
 
     // then
-    expect(fn).toHaveBeenCalledTimes(2)
+    expect(onListen).toHaveBeenCalledTimes(2)
   })
 
-  it('should invoke fn on mutate call', async () => {
+  it('should invoke onListen on mutate call', async () => {
     // arrange
     const initialState = {
       a: 1,
@@ -64,11 +66,13 @@ describe('useListener', () => {
     const actions = {
       b: async () => {},
     }
-    const fn = jest.fn().mockImplementation((state) => state)
+    const onListen = jest.fn().mockImplementation((state) => state)
 
     const {
       result: { current: hook },
-    } = renderHook(() => useListener(initialState, actions, mockLifeCycles))
+    } = renderHook(() =>
+      useListener(initialState, actions, { ...mockLifeCycles, onListen })
+    )
 
     // when
     const [state] = hook
@@ -79,6 +83,35 @@ describe('useListener', () => {
     })
 
     // then
-    expect(fn).toHaveBeenCalledTimes(3)
+    expect(onListen).toHaveBeenCalledTimes(3)
+  })
+
+  it('should invoke beforeListen on listener invoke', async () => {
+    // arrange
+    const initialState = {
+      a: 1,
+    }
+    const actions = {
+      b: () => {},
+    }
+    const beforeListen = jest.fn().mockImplementation(() => true)
+
+    const {
+      result: { current: hook },
+    } = renderHook(() =>
+      useListener(initialState, actions, {
+        ...mockLifeCycles,
+        beforeListen,
+      })
+    )
+
+    // when
+    const [_, listener] = hook
+    await act(async () => {
+      listener({ a: 1 }, { a: 2 })
+    })
+
+    // then
+    expect(beforeListen).toHaveBeenCalledTimes(1)
   })
 })
