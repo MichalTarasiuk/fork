@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { render } from 'react-dom'
 import fork from 'fork'
 
@@ -21,6 +21,7 @@ const { ForkProvider, useFork } = fork(
   {
     context: {
       isValidUser: (user) => (user ? user.age < 18 : false),
+      shouldResetCounter: (number) => number > 10,
     },
     resolver: (state, context) => {
       return {
@@ -29,7 +30,9 @@ const { ForkProvider, useFork } = fork(
           user: context.isValidUser(state.user)
             ? { type: 'age error', message: 'too young' }
             : null,
-          counter: null,
+          counter: context.shouldResetCounter(state.counter)
+            ? { type: 'counter error', message: 'too high' }
+            : null,
         },
       }
     },
@@ -39,7 +42,16 @@ const { ForkProvider, useFork } = fork(
 const App = () => {
   const {
     state: { user, fetchUser, resetUser, counter, increase },
+    errors,
   } = useFork()
+
+  useEffect(() => {
+    if (errors.user) {
+      const { type, message } = errors.user
+
+      alert(`${type}: ${message}`)
+    }
+  }, [errors.user])
 
   if (user) {
     return (
