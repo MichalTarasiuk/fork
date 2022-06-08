@@ -1,4 +1,4 @@
-Liblary can cause errors. Please not use.
+Liblary does not support react 18
 
 # Fork
 
