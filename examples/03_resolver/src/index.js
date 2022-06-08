@@ -11,7 +11,7 @@ const { ForkProvider, useFork } = fork(
     fetchUser: async () => {
       await wait(1000)
 
-      set({ user: { name: 'John', age: random(0, 99) } })
+      set({ user: { name: 'John', age: random(0, 99) } }, { emitt: false })
     },
     increase: () => {
       set((state) => ({ counter: state.counter + 1 }))

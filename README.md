@@ -103,6 +103,54 @@ const config = {
 }
 ```
 
+## Resolver
+
+Resolver call on each setState action.
+
+```jsx
+const { ForkProvider, useFork } = fork(
+  { user: null, counter: 0 },
+  (set) => ({
+    fetchUser: async () => {
+      await wait(1000)
+
+      set({ user: { name: 'John', age: random(0, 99) } }, { emitt: false })
+    },
+    increase: () => {
+      set((state) => ({ counter: state.counter + 1 }))
+    },
+  }),
+  {
+    context: {
+      isValidUser: (user) => (user ? user.age < 18 : false),
+      shouldResetCounter: (number) => number > 10,
+    },
+    resolver: (state, context) => {
+      return {
+        state: { user: null, counter: 0 },
+        errors: {
+          user: context.isValidUser(state.user)
+            ? { type: 'age error', message: 'too young' }
+            : null,
+          counter: context.shouldResetCounter(state.counter)
+            ? { type: 'counter error', message: 'too high' }
+            : null,
+        },
+      }
+    },
+  }
+)
+
+const Component = () => {
+  // you can get errors from hook
+  const { errors } = useFork()
+
+  /* return */
+}
+```
+
+If an error occurs in the user, it will be replaced with the version given in the resolver state. (same behavior for counter)
+
 ## Async
 
 Fork will generate you status for each async action.
