@@ -23,7 +23,7 @@ const factory = <
     Provider,
     safeHookCall,
     pluginsManager,
-    errorReporter: { errors, setErrors, resetErrors },
+    errorReporter: { errors, setErrors },
   } = createHookControl(store)
 
   const useFork = <
@@ -107,7 +107,6 @@ const factory = <
       const emitter = subscriber.current?.body
 
       store.setState(patch, config, emitter)
-      resetErrors()
     }, [])
 
     return {

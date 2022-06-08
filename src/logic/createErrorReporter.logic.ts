@@ -19,9 +19,5 @@ export const createErrorReporter = <
     errors = Object.assign(errors, nextErrors)
   }
 
-  const resetErrors = () => {
-    errors = initialErrors
-  }
-
-  return { errors, setErrors, resetErrors }
+  return { errors, setErrors }
 }
