@@ -20,7 +20,7 @@ type LifeCycles<TState extends Record<PropertyKey, unknown>> = {
   readonly onListen: (nextState: TState) => TState
 }
 
-const createHookState = <
+const createLocalHookControl = <
   TState extends Record<PropertyKey, unknown>,
   TSyncActions extends SyncActions
 >(
@@ -38,27 +38,33 @@ const createHookState = <
     [mutationsSymbol]?: Mutations
   }
 
-  let savedState: State = cloneDeep(initialState)
-  savedState[syncActionsSymbol] = syncActions
+  let state: State = cloneDeep(initialState)
+  state[syncActionsSymbol] = syncActions
 
   const setState = (nextState: TState) => {
     const stateToSaved: State = cloneDeep(nextState)
 
-    stateToSaved[mutationsSymbol] = savedState[mutationsSymbol]
-    stateToSaved[syncActionsSymbol] = savedState[syncActionsSymbol]
+    stateToSaved[mutationsSymbol] = state[mutationsSymbol]
+    stateToSaved[syncActionsSymbol] = state[syncActionsSymbol]
 
-    savedState = stateToSaved
+    state = stateToSaved
   }
 
   const updateMutations = (mutations: Mutations) => {
-    savedState[mutationsSymbol] = mutations
+    state[mutationsSymbol] = mutations
+  }
+
+  const setPlugins = (state: State) => {
+    const flatten = flatObject(state, mutationsSymbol, syncActionsSymbol)
+
+    return fn(flatten)
   }
 
   return {
-    get current() {
-      const flatten = flatObject(savedState, mutationsSymbol, syncActionsSymbol)
+    get state() {
+      const extendedState = setPlugins(state)
 
-      return fn(flatten)
+      return extendedState
     },
     setState,
     updateMutations,
@@ -80,8 +86,8 @@ export const useListener = <
     () => partition<AsyncActions, SyncActions>(actions || {}, isAsyncFunction),
     []
   )
-  const hookState = useMemo(
-    () => createHookState(initialState, syncActions, onListen),
+  const hookControl = useMemo(
+    () => createLocalHookControl(initialState, syncActions, onListen),
     []
   )
 
@@ -90,22 +96,22 @@ export const useListener = <
   const force = useForce()
 
   const mutations = useAsync(asyncActions, (nextMutations) => {
-    hookState.updateMutations(nextMutations)
+    hookControl.updateMutations(nextMutations)
 
     force()
   })
 
   if (isFirstMount) {
-    hookState.updateMutations(mutations)
+    hookControl.updateMutations(mutations)
   }
 
   const listener = useCallback((_: TState, nextState: TState) => {
     if (hasMounted.current && beforeListen(nextState)) {
-      hookState.setState(nextState)
+      hookControl.setState(nextState)
 
       force()
     }
   }, [])
 
-  return [hookState.current as State, listener] as const
+  return [hookControl.state as State, listener] as const
 }

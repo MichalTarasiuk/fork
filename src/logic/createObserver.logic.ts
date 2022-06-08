@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion -- safty assertion */
-import ObserveImpl from 'on-change'
+// import ObserveImpl from 'on-change'
 
 export const createObserver = <
   TState extends Record<PropertyKey, unknown>
@@ -14,16 +14,16 @@ export const createObserver = <
       return observers.get(state)!
     }
 
-    const proxy = ObserveImpl(state, function (this: TState) {
-      if (savedListener) {
-        // eslint-disable-next-line functional/no-this-expression -- liblary api
-        savedListener(this)
-      }
-    })
+    // const proxy = ObserveImpl(state, function (this: TState) {
+    //   if (savedListener) {
+    //     // eslint-disable-next-line functional/no-this-expression -- liblary api
+    //     savedListener(this)
+    //   }
+    // })
 
-    observers.set(state, proxy)
+    // observers.set(state, proxy)
 
-    return proxy
+    return state
   }
 
   const addListener = (listener: Listener) => {
