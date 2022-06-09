@@ -65,6 +65,8 @@ const factory = <
           }
         }
 
+        errorReporter.resetErrors()
+
         return true
       },
       onListen: (nextState) => {

@@ -2,16 +2,13 @@ import React, { useEffect } from 'react'
 import { render } from 'react-dom'
 import fork from 'fork'
 
-const wait = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 
 const { ForkProvider, useFork } = fork(
   { user: null, counter: 0 },
   (set) => ({
-    fetchUser: async () => {
-      await wait(1000)
-
-      set({ user: { name: 'John', age: random(0, 99) } })
+    fetchUser: () => {
+      set({ user: { name: 'John', age: random(9, 36) } })
     },
     increase: () => {
       set((state) => ({ counter: state.counter + 1 }))
@@ -39,9 +36,17 @@ const { ForkProvider, useFork } = fork(
   }
 )
 
+const CounterButton = () => {
+  const {
+    state: { counter, increase },
+  } = useFork()
+
+  return <button onClick={increase}>increase {counter}</button>
+}
+
 const App = () => {
   const {
-    state: { user, fetchUser, resetUser, counter, increase },
+    state: { user, fetchUser, resetUser, counter },
     errors,
   } = useFork()
 
@@ -62,14 +67,10 @@ const App = () => {
     )
   }
 
-  const [fetchUserMutate, status] = fetchUser
-
   return (
     <div>
-      <button onClick={increase}>increase {counter}</button>
-      <button onClick={fetchUserMutate}>
-        {status === 'loading' ? 'loading' : 'fetch user'}
-      </button>
+      <CounterButton />
+      <button onClick={fetchUser}>fetchuser</button>
     </div>
   )
 }
