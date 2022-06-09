@@ -2,7 +2,7 @@ import { cloneDeep } from 'lodash'
 
 import { mapObject } from '../utils/utils'
 
-export type StateError = {
+export type Error = {
   readonly type: string
   readonly message: string
 }
@@ -12,7 +12,7 @@ export const createErrorReporter = <
 >(
   state: TState
 ) => {
-  type Errors = Record<keyof TState, StateError | null>
+  type Errors = Record<keyof TState, Error | null>
 
   const initialErrors = mapObject(state, () => null) as Errors
   let errors = cloneDeep(initialErrors)

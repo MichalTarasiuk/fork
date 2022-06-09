@@ -1,4 +1,4 @@
-import type { StateError } from './logic/createErrorReporter.logic'
+import type { Error } from './logic/createErrorReporter.logic'
 import type { Selector } from './store.types'
 
 export type GlobalConfig<
@@ -11,11 +11,11 @@ export type GlobalConfig<
     context: TContext
   ) => {
     readonly state: Partial<TState>
-    readonly errors: Record<keyof TState, StateError | null>
+    readonly errors: Record<keyof TState, Error | null>
   }
 }
 
-export type HookConfig<
+export type LocalConfig<
   TState extends Record<string, unknown>,
   TSelector extends Selector<TState>
 > = {

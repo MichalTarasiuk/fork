@@ -34,8 +34,6 @@ export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
   object: TObject,
   fn: (mutations: Mutations) => void
 ) => {
-  type Name = keyof TObject
-
   const { state, setStatus } = useMemo(() => {
     const listener = (nextState: Record<keyof TObject, Status>) => {
       const mutations = createMutations(nextState, actions.current)
@@ -47,12 +45,12 @@ export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
   }, [])
 
   const createAction = useCallback(
-    (name: Name, asyncFunction: AsyncFunction) => {
+    (name: keyof TObject, actionImpl: AsyncFunction) => {
       const action = async () => {
         setStatus(name, 'loading')
 
         try {
-          const data = await asyncFunction()
+          const data = await actionImpl()
 
           setStatus(name, 'success')
 
@@ -68,7 +66,10 @@ export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
   )
 
   const createMutations = useCallback(
-    (state: Record<Name, Status>, actions: Record<Name, AsyncFunction>) => {
+    (
+      state: Record<keyof TObject, Status>,
+      actions: Record<keyof TObject, AsyncFunction>
+    ) => {
       const mutations = merge(
         state,
         actions,

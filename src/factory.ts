@@ -5,7 +5,7 @@ import { createHookControl, createErrorReporter } from './logic/logic'
 import { createStore } from './store'
 import { filterObject, compose } from './utils/utils'
 
-import type { GlobalConfig, HookConfig } from './factory.types'
+import type { GlobalConfig, LocalConfig } from './factory.types'
 import type { ActionsCreator, Selector, Patch, SetConfig } from './store.types'
 import type { ArrowFunction } from './types/types'
 
@@ -19,14 +19,14 @@ const factory = <
   globalConfig?: GlobalConfig<TState, TContext>
 ) => {
   const store = createStore(initialState, actionsCreator)
-  const { Provider, safeHookCall, pluginsManager } = createHookControl(store)
+  const { Provider, safeHookCall, pluginsControl } = createHookControl(store)
 
   const useFork = <
     TSelector extends Selector<TState>,
-    TConfig extends HookConfig<TState, TSelector>
+    TConfig extends LocalConfig<TState, TSelector>
   >(
     selector?: TSelector,
-    hookConfig?: TConfig
+    localConfig?: TConfig
   ) => {
     const subscriber = useRef<ReturnType<typeof store['subscribe']> | null>(
       null
@@ -40,7 +40,7 @@ const factory = <
       subscriber.current = store.subscribe(
         (state, nextState) => listener.current(state, nextState),
         selector,
-        hookConfig?.equality
+        localConfig?.equality
       )
     }
 
@@ -49,14 +49,14 @@ const factory = <
       beforeListen: (nextState) => {
         if (globalConfig) {
           const { resolver, context } = globalConfig
-          const { state: patch, errors } = resolver(nextState, context)
+          const { state: fallbackPatch, errors } = resolver(nextState, context)
 
           if (Object.values(errors).some(Boolean)) {
-            const filteredPatch = filterObject(
-              patch,
+            const resolvedPatch = filterObject(
+              fallbackPatch,
               (key) => key in errors && Boolean(errors[key])
             )
-            const resolvedState = Object.assign({}, nextState, filteredPatch)
+            const resolvedState = Object.assign({}, nextState, resolvedPatch)
 
             store.setState(resolvedState)
             errorReporter.setErrors(errors)
@@ -70,11 +70,11 @@ const factory = <
         return true
       },
       onListen: (nextState) => {
-        if (hookConfig) {
+        if (localConfig) {
           const filteredPlugins = filterObject(
-            pluginsManager.plugins,
+            pluginsControl.plugins,
             // @ts-ignore
-            (key) => key in hookConfig && hookConfig[key] === true
+            (key) => key in hookConfig && localConfig[key] === true
           )
           const pickedPlugins = Object.values(filteredPlugins)
           const combinedPlugins = compose(...pickedPlugins)

@@ -4,7 +4,7 @@ type Plugin<TState extends Record<PropertyKey, unknown>> = (
   state: TState
 ) => TState
 
-export const createPluginsManager = <
+export const createPluginsControl = <
   TState extends Record<PropertyKey, unknown>
 >(
   plugins?: Record<string, Plugin<TState>>

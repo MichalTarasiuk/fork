@@ -5,7 +5,7 @@ import { useForce, useMount } from '../hooks/hooks'
 import {
   createObserver,
   createSafeHookCall,
-  createPluginsManager,
+  createPluginsControl,
 } from './logic'
 
 import type { Store } from '../store.types'
@@ -13,11 +13,10 @@ import type { Store } from '../store.types'
 export const createHookControl = <TState extends Record<PropertyKey, unknown>>(
   store: Store<TState>
 ) => {
-  const pluginsManager = createPluginsManager<TState>({
+  const pluginsControl = createPluginsControl<TState>({
     observe: (state) => observer.observe(state),
   })
   const observer = createObserver<TState>()
-
   const { Provider, safeHookCall, setProviderBody } = createSafeHookCall()
 
   setProviderBody(() => {
@@ -41,6 +40,6 @@ export const createHookControl = <TState extends Record<PropertyKey, unknown>>(
   return {
     Provider,
     safeHookCall,
-    pluginsManager,
+    pluginsControl,
   }
 }

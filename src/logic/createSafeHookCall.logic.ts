@@ -1,13 +1,12 @@
 import React, { createContext, useContext } from 'react'
 
+import { LIBLARY_NAME } from '../constants'
 import { noop } from '../utils/utils'
 
 import type { ArrowFunction, Noop } from '../types/types'
 import type { ReactNode } from 'react'
 
 type ProviderProps = { readonly children: ReactNode }
-
-const LIBLARY_NAME = 'fork'
 
 const uppercaseFirst = (value: string) =>
   value.charAt(0).toUpperCase() + value.slice(1)

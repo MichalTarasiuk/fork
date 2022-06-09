@@ -1,4 +1,4 @@
-export { createPluginsManager } from './createPluginsManager.logic'
+export { createPluginsControl } from './createPluginsControl.logic'
 export { createObserver } from './createObserver.logic'
 export { createSafeHookCall } from './createSafeHookCall.logic'
 export { createHookControl } from './createHookControl.logic'
