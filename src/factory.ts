@@ -1,7 +1,7 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useRef, useMemo } from 'react'
 
 import { useFirstMount, useListener, useUnmount } from './hooks/hooks'
-import { createHookControl } from './logic/logic'
+import { createHookControl, createErrorReporter } from './logic/logic'
 import { createStore } from './store'
 import { filterObject, compose } from './utils/utils'
 
@@ -19,12 +19,7 @@ const factory = <
   globalConfig?: GlobalConfig<TState, TContext>
 ) => {
   const store = createStore(initialState, actionsCreator)
-  const {
-    Provider,
-    safeHookCall,
-    pluginsManager,
-    errorReporter: { errors, setErrors },
-  } = createHookControl(store)
+  const { Provider, safeHookCall, pluginsManager } = createHookControl(store)
 
   const useFork = <
     TSelector extends Selector<TState>,
@@ -39,6 +34,7 @@ const factory = <
     const listener = useRef((_: TState, __: TState) => {})
 
     const isFirstMount = useFirstMount()
+    const errorReporter = useMemo(() => createErrorReporter(store.state), [])
 
     if (isFirstMount) {
       subscriber.current = store.subscribe(
@@ -63,7 +59,7 @@ const factory = <
             const resolvedState = Object.assign({}, nextState, filteredPatch)
 
             store.setState(resolvedState)
-            setErrors(errors)
+            errorReporter.setErrors(errors)
 
             return false
           }
@@ -112,7 +108,7 @@ const factory = <
     return {
       state,
       setState,
-      errors,
+      errors: errorReporter.errors,
     }
   }
 

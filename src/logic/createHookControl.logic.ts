@@ -6,7 +6,6 @@ import {
   createObserver,
   createSafeHookCall,
   createPluginsManager,
-  createErrorReporter,
 } from './logic'
 
 import type { Store } from '../store.types'
@@ -18,7 +17,6 @@ export const createHookControl = <TState extends Record<PropertyKey, unknown>>(
     observe: (state) => observer.observe(state),
   })
   const observer = createObserver<TState>()
-  const errorReporter = createErrorReporter(store.state)
 
   const { Provider, safeHookCall, setProviderBody } = createSafeHookCall()
 
@@ -44,6 +42,5 @@ export const createHookControl = <TState extends Record<PropertyKey, unknown>>(
     Provider,
     safeHookCall,
     pluginsManager,
-    errorReporter,
   }
 }
