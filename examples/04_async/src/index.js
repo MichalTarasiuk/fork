@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { render } from 'react-dom'
-import fork from 'fork'
+import fork from 'react-fork'
 
 const wait = (ms = 1000) => new Promise((res) => setTimeout(res, ms))
 

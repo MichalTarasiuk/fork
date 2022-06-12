@@ -1,4 +1,4 @@
-import fork from 'fork'
+import fork from 'react-fork'
 
 export const action = {
   increase: 'INCREASE',

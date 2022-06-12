@@ -1,6 +1,6 @@
 import React from 'react'
 import { createRoot } from 'react-dom/client'
-import fork from 'fork'
+import fork from 'react-fork'
 
 const { ForkProvider, useFork } = fork({ counter: 0, cache: [] })
 

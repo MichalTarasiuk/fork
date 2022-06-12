@@ -1,6 +1,6 @@
 import { StrictMode } from 'react'
 import { render } from 'react-dom'
-import fork from 'fork'
+import fork from 'react-fork'
 
 import { useReRender } from './helpers'
 

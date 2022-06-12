@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { render } from 'react-dom'
-import fork from 'fork'
+import fork from 'react-fork'
 
 const random = (min, max) => Math.floor(Math.random() * (max - min)) + min
 

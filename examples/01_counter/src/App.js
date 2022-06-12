@@ -1,4 +1,4 @@
-import fork from 'fork'
+import fork from 'react-fork'
 
 export const { ForkProvider, useFork } = fork({ counter: 0 }, (set) => ({
   setToInitial: () => set({ counter: 0 }),

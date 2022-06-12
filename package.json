@@ -1,7 +1,7 @@
 {
-  "name": "fork",
-  "private": true,
-  "version": "1.0.1",
+  "name": "react-fork",
+  "private": false,
+  "version": "1.0.0",
   "description": "Fork is library for state management in React",
   "repository": "https://github.com/MichalTarasiuk/fork.git",
   "exports": {
@@ -102,8 +102,10 @@
     "transform": {
       "^.+\\.ts?$": "ts-jest"
     },
-    "transformIgnorePatterns": ["<rootDir>/node_modules/"]
-},
+    "transformIgnorePatterns": [
+      "<rootDir>/node_modules/"
+    ]
+  },
   "devDependencies": {
     "@babel/core": "^7.18.2",
     "@babel/preset-env": "^7.18.2",

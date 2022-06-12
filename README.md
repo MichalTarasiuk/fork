@@ -3,7 +3,7 @@ Liblary does not support react 18
 # Fork
 
 ```bash
-npm install fork # or yarn add fork
+npm install react-fork # or yarn add react-fork
 ```
 
 ## Initializing State
@@ -11,7 +11,7 @@ npm install fork # or yarn add fork
 The first argument is the initial state and the second is the actions that access functions such as set and get as described below
 
 ```jsx
-import fork from 'fork'
+import fork from 'react-fork'
 
 const { useFork } = fork({ ideas: [] }, (set, get) => ({
   sendAnIdea: (idea) => set((state) => ({ ideas: [...state.ideas, idea] })),

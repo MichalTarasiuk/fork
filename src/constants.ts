@@ -1,1 +1,1 @@
-export const LIBLARY_NAME = 'fork'
+export const LIBLARY_NAME = 'react-fork'
