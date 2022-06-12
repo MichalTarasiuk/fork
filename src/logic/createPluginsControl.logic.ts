@@ -7,7 +7,7 @@ type Plugin<TState extends Record<PropertyKey, unknown>> = (
 export const createPluginsControl = <
   TState extends Record<PropertyKey, unknown>
 >(
-  plugins?: Record<string, Plugin<TState>>
+  plugins: Record<string, Plugin<TState>>
 ) => {
   const initialPlugins: Record<string, Plugin<TState>> = {}
   const pluginsMap = new Map(entries(initialPlugins))
@@ -20,7 +20,7 @@ export const createPluginsControl = <
     pluginsMap.set(name, plugin)
   }
 
-  entries(plugins || {}).forEach(([name, plugin]) => {
+  entries(plugins).forEach(([name, plugin]) => {
     addPlugin(name, plugin)
   })
 

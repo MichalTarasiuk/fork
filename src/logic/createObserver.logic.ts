@@ -4,29 +4,27 @@ import ObserveImpl from 'on-change'
 export const createObserver = <
   TState extends Record<PropertyKey, unknown>
 >() => {
-  type Listener = (state: TState) => void
-
   const observers = new WeakMap<TState, TState>()
-  let savedListener: Listener | null = null
+  let savedListener: ((state: TState) => void) | null = null
 
   const observe = (state: TState) => {
     if (observers.has(state)) {
       return observers.get(state)!
     }
 
-    const proxy = ObserveImpl(state, function (this: TState) {
+    const observer = ObserveImpl(state, function (this: TState) {
       if (savedListener) {
         // eslint-disable-next-line functional/no-this-expression -- liblary api
         savedListener(this)
       }
     })
 
-    observers.set(state, proxy)
+    observers.set(state, observer)
 
     return state
   }
 
-  const addListener = (listener: Listener) => {
+  const addListener = (listener: (state: TState) => void) => {
     savedListener = listener
 
     return {
