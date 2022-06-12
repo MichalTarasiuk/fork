@@ -1,7 +1,7 @@
 {
   "name": "react-fork",
   "private": false,
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Fork is library for state management in React",
   "repository": "https://github.com/MichalTarasiuk/fork.git",
   "exports": {
@@ -135,8 +135,8 @@
   },
   "peerDependencies": {
     "immer": ">=9.0",
-    "react": ">=16.8",
+    "lodash": ">=4.0.0",
     "on-change": ">=4.0.0",
-    "lodash": ">=4.0.0"
+    "react": ">=16.8"
   }
 }
