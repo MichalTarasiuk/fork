@@ -1,6 +1,8 @@
-Liblary does not support react 18
+```
+WARNING: react-fork does't support react 18
+```
 
-# Fork
+# Install
 
 ```bash
 npm install react-fork # or yarn add react-fork
