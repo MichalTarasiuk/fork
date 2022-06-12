@@ -29,3 +29,8 @@ export const isFunction = (value: unknown): value is ArrowFunction =>
 
 export const isNil = (value: unknown): value is Nil =>
   value === undefined || value === null
+
+export const keyInObject = <TObject extends Record<PropertyKey, unknown>>(
+  object: TObject,
+  key: PropertyKey
+): key is keyof TObject => key in object

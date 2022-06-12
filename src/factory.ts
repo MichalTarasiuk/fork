@@ -3,7 +3,7 @@ import { useCallback, useRef, useMemo } from 'react'
 import { useFirstMount, useListener, useUnmount } from './hooks/hooks'
 import { createHookControl, createErrorReporter } from './logic/logic'
 import { createStore } from './store'
-import { filterObject, compose } from './utils/utils'
+import { filterObject, compose, keyInObject } from './utils/utils'
 
 import type { GlobalConfig, LocalConfig } from './factory.types'
 import type { ActionsCreator, Selector, Patch, SetConfig } from './store.types'
@@ -21,12 +21,9 @@ const factory = <
   const store = createStore(initialState, actionsCreator)
   const { Provider, safeHookCall, pluginsControl } = createHookControl(store)
 
-  const useFork = <
-    TSelector extends Selector<TState>,
-    TConfig extends LocalConfig<TState, TSelector>
-  >(
+  const useFork = <TSelector extends Selector<TState>>(
     selector?: TSelector,
-    localConfig?: TConfig
+    localConfig?: LocalConfig<TState, TSelector>
   ) => {
     const subscriber = useRef<ReturnType<typeof store['subscribe']> | null>(
       null
@@ -71,10 +68,8 @@ const factory = <
       },
       onListen: (nextState) => {
         if (localConfig) {
-          const filteredPlugins = filterObject(
-            pluginsControl.plugins,
-            // @ts-ignore
-            (key) => key in hookConfig && localConfig[key] === true
+          const filteredPlugins = filterObject(pluginsControl.plugins, (key) =>
+            keyInObject(localConfig, key) ? localConfig[key] === true : false
           )
           const pickedPlugins = Object.values(filteredPlugins)
           const combinedPlugins = compose(...pickedPlugins)
