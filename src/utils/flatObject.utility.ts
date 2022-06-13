@@ -12,7 +12,7 @@ export const flatObject = <TObject extends Record<PropertyKey, unknown>>(
     if (isPlainObject(value)) {
       delete collector[key]
 
-      return Object.assign(collector, value) as TObject
+      return Object.assign(collector, value)
     }
 
     return collector

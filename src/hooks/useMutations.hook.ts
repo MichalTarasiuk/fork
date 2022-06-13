@@ -30,7 +30,9 @@ const createState = <TObject extends Record<PropertyKey, AsyncFunction>>(
   }
 }
 
-export const useAsync = <TObject extends Record<PropertyKey, AsyncFunction>>(
+export const useMutations = <
+  TObject extends Record<PropertyKey, AsyncFunction>
+>(
   object: TObject,
   fn: (mutations: Mutations) => void
 ) => {

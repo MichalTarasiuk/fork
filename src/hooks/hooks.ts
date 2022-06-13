@@ -1,5 +1,5 @@
 export { useListener } from './useListener.hook'
 export { useForce } from './useForce.hook'
-export { useAsync } from './useAsync.hook'
+export { useMutations } from './useMutations.hook'
 export { useCreation } from './useCreation.hook'
-export * from './lifecycles.hooks'
+export * from './lifeCycles.hooks'

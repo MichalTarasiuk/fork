@@ -1,6 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks'
 
-import { useAsync } from '../../src/hooks/hooks'
+import { useMutations } from '../../src/hooks/hooks'
 import { wait, ignoreReact18Error } from '../tests.utils'
 
 const mockUser = {
@@ -25,14 +25,14 @@ const handler = {
   },
 }
 
-describe('useAsync', () => {
+describe('useMutations', () => {
   ignoreReact18Error()
 
   it('should generate status for each async action', () => {
     // arrange
     const {
       result: { current: hook },
-    } = renderHook(() => useAsync(handler, () => {}))
+    } = renderHook(() => useMutations(handler, () => {}))
 
     // assert
     expect(hook).toMatchInlineSnapshot(`
@@ -54,7 +54,7 @@ describe('useAsync', () => {
     const fn = jest.fn()
     const {
       result: { current: hook },
-    } = renderHook(() => useAsync(handler, fn))
+    } = renderHook(() => useMutations(handler, fn))
 
     // when
     const [fetchUser] = hook.fetchUser
@@ -97,7 +97,7 @@ describe('useAsync', () => {
     // given
     const {
       result: { current: hook },
-    } = renderHook(() => useAsync(handler, () => {}))
+    } = renderHook(() => useMutations(handler, () => {}))
 
     // when
     const [fetchUser, status] = hook.fetchUser
