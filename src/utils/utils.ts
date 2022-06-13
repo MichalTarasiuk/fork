@@ -1,15 +1,13 @@
 import type { ArrowFunction, Nil } from '../types/types'
 
-export * from './eventEmitter.utility'
+export * from './createSubject.utility'
 export * from './resolve.utility'
-export * from './entries.utility'
 export { compose } from './compose.utility'
-export { mapObject } from './mapObject.utility'
 export { merge } from './merge.utility'
 export { empty } from './empty.utility'
 export { flatObject } from './flatObject.utility'
-export { filterObject } from './filterObject.utility'
 export { partition } from './partition.utility'
+export * from './object.utils'
 
 export const noop = () => {}
 
@@ -29,8 +27,3 @@ export const isFunction = (value: unknown): value is ArrowFunction =>
 
 export const isNil = (value: unknown): value is Nil =>
   value === undefined || value === null
-
-export const keyInObject = <TObject extends Record<PropertyKey, unknown>>(
-  object: TObject,
-  key: PropertyKey
-): key is keyof TObject => key in object

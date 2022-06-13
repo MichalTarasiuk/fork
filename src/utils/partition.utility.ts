@@ -1,3 +1,5 @@
+import { objectKeys } from '../utils/utils'
+
 export const partition = <
   TA extends Record<PropertyKey, unknown>,
   TB extends Record<PropertyKey, unknown>
@@ -5,8 +7,8 @@ export const partition = <
   object: Record<PropertyKey, unknown>,
   fn: (value: unknown) => boolean
 ) =>
-  Object.keys(object).reduce(
-    (collector, key: PropertyKey) => {
+  objectKeys(object).reduce(
+    (collector, key) => {
       const index = fn(object[key]) ? 0 : 1
       // @ts-ignore
       collector[index][key] = object[key]

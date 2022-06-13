@@ -68,8 +68,9 @@ const factory = <
       },
       onListen: (nextState) => {
         if (localConfig) {
-          const filteredPlugins = filterObject(pluginsControl.plugins, (key) =>
-            keyInObject(localConfig, key) ? localConfig[key] === true : false
+          const filteredPlugins = filterObject(
+            pluginsControl.plugins,
+            (key) => keyInObject(localConfig, key) && localConfig[key] === true
           )
           const pickedPlugins = Object.values(filteredPlugins)
           const combinedPlugins = compose(...pickedPlugins)

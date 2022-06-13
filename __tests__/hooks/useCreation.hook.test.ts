@@ -33,7 +33,7 @@ describe('useCreation', () => {
     expect(spy).toHaveBeenCalledTimes(1)
   })
 
-  it('should invoke foo constructor when dependency list change', () => {
+  it.only('should invoke foo constructor when dependency list change', () => {
     // given
     type Props = {
       readonly dependencyList: DependencyList

@@ -1,7 +1,7 @@
-export function resolve<TReturnType, TArgs extends readonly unknown[]>(
-  resolvable: TReturnType | ((...args: TArgs) => TReturnType),
+export function resolve<TDate, TArgs extends readonly unknown[]>(
+  resolvable: TDate | ((...args: TArgs) => TDate),
   ...args: TArgs
-): TReturnType {
+): TDate {
   if (typeof resolvable === 'function') {
     return (resolvable as Function)(...args)
   }

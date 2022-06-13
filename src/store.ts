@@ -1,7 +1,7 @@
 import Produce from 'immer'
 import { cloneDeep, isEqual } from 'lodash'
 
-import { createEventEmitter, resolve, empty } from './utils/utils'
+import { createSubject, resolve, empty } from './utils/utils'
 
 import type {
   ActionsCreator,
@@ -23,7 +23,7 @@ const createStore = <
   actionsCreator?: ActionsCreator<TState, TActions>
 ) => {
   const state = createState(initialState)
-  const eventEmitter = createEventEmitter<TState>()
+  const subject = createSubject<TState>()
 
   const customListener = <TSelector extends Selector<TState>>(
     listener: Listener<TState>,
@@ -52,7 +52,7 @@ const createStore = <
     const readydListener = selector
       ? customListener(listener, selector, equality)
       : listener
-    const subscriber = eventEmitter.subscribe(readydListener)
+    const subscriber = subject.subscribe(readydListener)
     const customSetState = (patch: Patch<TState>, config?: SetConfig) => {
       setState(patch, config, subscriber.body)
     }
@@ -77,7 +77,7 @@ const createStore = <
     })
 
     if (!isEqual(oldState, nextState)) {
-      eventEmitter.notify(oldState, nextState, emitt ? undefined : emitter)
+      subject.notify(oldState, nextState, emitt ? undefined : emitter)
     }
   }
 
@@ -85,9 +85,9 @@ const createStore = <
 
   return {
     state: state.current,
-    notify: eventEmitter.notify,
+    notify: subject.notify,
     get listeners() {
-      return eventEmitter.listeners
+      return subject.listeners
     },
     setState,
     subscribe,

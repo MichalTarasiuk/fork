@@ -1,4 +1,5 @@
 import { createStore } from '../src/store'
+
 import { wait } from './tests.utils'
 
 describe('store', () => {
