@@ -1,6 +1,7 @@
-export type Listener<TState> = (state: TState, nextState: TState) => void
+import type { Listener } from '../store.types'
+import type { PlainObject } from '../types/types'
 
-const createSubject = <TState>() => {
+const createSubject = <TState extends PlainObject>() => {
   // eslint-disable-next-line functional/prefer-readonly-type -- Listeners are mutable
   const _listeners: Set<Listener<TState>> = new Set()
 

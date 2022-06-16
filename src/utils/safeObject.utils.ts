@@ -1,6 +1,6 @@
-export const entries = <TObject extends Record<PropertyKey, unknown>>(
-  obj: TObject
-) =>
+import type { PlainObject } from '../types/types'
+
+export const entries = <TObject extends PlainObject>(obj: TObject) =>
   Object.entries(obj) as readonly (readonly [
     keyof TObject,
     TObject[keyof TObject]
@@ -14,7 +14,7 @@ export const fromEntries = <
   return Object.fromEntries(arr) as Record<TArr[number][0], TArr[number][1]>
 }
 
-export const filterObject = <TObject extends Record<PropertyKey, unknown>>(
+export const filterObject = <TObject extends PlainObject>(
   object: TObject,
   fn: (key: keyof TObject, value: TObject[keyof TObject]) => boolean
 ) =>
@@ -22,7 +22,7 @@ export const filterObject = <TObject extends Record<PropertyKey, unknown>>(
     entries(object).filter(([key, value]) => fn(key, value))
   ) as TObject
 
-export const mapObject = <TObject extends Record<PropertyKey, unknown>, TValue>(
+export const mapObject = <TObject extends PlainObject, TValue>(
   obj: TObject,
   fn: (key: keyof TObject, value: TObject[keyof TObject]) => TValue
 ): Record<keyof TObject, TValue> =>
@@ -30,11 +30,10 @@ export const mapObject = <TObject extends Record<PropertyKey, unknown>, TValue>(
     entries(obj).map(([key, value]) => [key, fn(key, value)] as const)
   )
 
-export const objectKeys = <TObject extends Record<PropertyKey, unknown>>(
-  object: TObject
-) => Object.keys(object) as readonly (keyof TObject)[]
+export const objectKeys = <TObject extends PlainObject>(object: TObject) =>
+  Object.keys(object) as readonly (keyof TObject)[]
 
-export const keyInObject = <TObject extends Record<PropertyKey, unknown>>(
+export const keyInObject = <TObject extends PlainObject>(
   object: TObject,
   key: PropertyKey
 ): key is keyof TObject => key in object
@@ -44,7 +43,7 @@ export const keyInObject = <TObject extends Record<PropertyKey, unknown>>(
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/is
  */
 
-function is(x: any, y: any) {
+const is = (x: any, y: any) => {
   return (x === y && (x !== 0 || 1 / x === 1 / y)) || (x !== x && y !== y)
 }
 

@@ -7,12 +7,12 @@ import { filterObject, compose, keyInObject } from './utils/utils'
 
 import type { GlobalConfig, LocalConfig } from './factory.types'
 import type { ActionsCreator, Selector, Patch, SetConfig } from './store.types'
-import type { ArrowFunction } from './types/types'
+import type { PlainFunction, PlainObject } from './types/types'
 
 const factory = <
-  TState extends Record<PropertyKey, unknown>,
-  TActions extends Record<PropertyKey, ArrowFunction>,
-  TContext extends Record<PropertyKey, unknown>
+  TState extends PlainObject,
+  TActions extends Record<PropertyKey, PlainFunction>,
+  TContext extends PlainObject
 >(
   initialState: TState,
   actionsCreator?: ActionsCreator<TState, TActions>,

@@ -1,12 +1,10 @@
 import { fromEntries, entries } from '../utils/utils'
 
-type Plugin<TState extends Record<PropertyKey, unknown>> = (
-  state: TState
-) => TState
+import type { PlainObject } from '../types/types'
 
-export const createPluginsControl = <
-  TState extends Record<PropertyKey, unknown>
->(
+type Plugin<TState extends PlainObject> = (state: TState) => TState
+
+export const createPluginsControl = <TState extends PlainObject>(
   plugins: Record<string, Plugin<TState>>
 ) => {
   const initialPlugins: Record<string, Plugin<TState>> = {}

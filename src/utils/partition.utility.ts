@@ -1,10 +1,9 @@
 import { objectKeys } from '../utils/utils'
 
-export const partition = <
-  TA extends Record<PropertyKey, unknown>,
-  TB extends Record<PropertyKey, unknown>
->(
-  object: Record<PropertyKey, unknown>,
+import type { PlainObject } from '../types/types'
+
+export const partition = <TA extends PlainObject, TB extends PlainObject>(
+  object: PlainObject,
   fn: (value: unknown) => boolean
 ) =>
   objectKeys(object).reduce(

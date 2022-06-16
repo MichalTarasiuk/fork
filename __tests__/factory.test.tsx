@@ -5,7 +5,7 @@ import { useMount } from '../src/hooks/hooks'
 
 import { wait } from './tests.utils'
 
-import type { ArrowFunction } from '../src/types/types'
+import type { PlainFunction } from '../src/types/types'
 
 describe('fork', () => {
   it('should resolve plain action', () => {
@@ -215,7 +215,7 @@ describe('fork', () => {
           </>
         )
       },
-      Child({ spy }: { readonly spy: ArrowFunction }) {
+      Child({ spy }: { readonly spy: PlainFunction }) {
         useFork()
 
         spy()

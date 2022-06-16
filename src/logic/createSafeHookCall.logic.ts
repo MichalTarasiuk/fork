@@ -3,7 +3,7 @@ import React, { createContext, useContext } from 'react'
 import { LIBLARY_NAME } from '../constants'
 import { noop } from '../utils/utils'
 
-import type { ArrowFunction, Noop } from '../types/types'
+import type { PlainFunction, Noop } from '../types/types'
 import type { ReactNode } from 'react'
 
 type ProviderProps = { readonly children: ReactNode }
@@ -15,7 +15,7 @@ export const createSafeHookCall = () => {
   const formatedName = uppercaseFirst(LIBLARY_NAME)
   const border = createContext(false)
 
-  const safeHookCall = <THook extends ArrowFunction>(hook: THook) => {
+  const safeHookCall = <THook extends PlainFunction>(hook: THook) => {
     return ((...params: Parameters<THook>) => {
       const isSafeCall = useContext(border)
 

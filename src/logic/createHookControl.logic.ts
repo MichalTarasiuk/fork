@@ -9,8 +9,9 @@ import {
 } from './logic'
 
 import type { Store } from '../store.types'
+import type { PlainObject } from '../types/types'
 
-export const createHookControl = <TState extends Record<PropertyKey, unknown>>(
+export const createHookControl = <TState extends PlainObject>(
   store: Store<TState>
 ) => {
   const pluginsControl = createPluginsControl<TState>({

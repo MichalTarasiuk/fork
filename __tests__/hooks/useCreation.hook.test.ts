@@ -3,13 +3,13 @@ import { renderHook } from '@testing-library/react-hooks'
 import { useCreation } from '../../src/hooks/hooks'
 import { ignoreReact18Error } from '../tests.utils'
 
-import type { ArrowFunction } from '../../src/types/types'
+import type { PlainFunction } from '../../src/types/types'
 import type { DependencyList } from 'react'
 
 class Foo {
   readonly number: number
 
-  constructor(spy: ArrowFunction) {
+  constructor(spy: PlainFunction) {
     spy()
     // eslint-disable-next-line functional/no-this-expression -- tests
     this.number = Math.random()

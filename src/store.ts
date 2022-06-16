@@ -11,16 +11,16 @@ import type {
   ResolvableState,
   SetConfig,
   Patch,
+  Listener,
 } from './store.types'
-import type { ArrowFunction } from './types/types'
-import type { Listener } from './utils/utils'
+import type { PlainFunction, PlainObject } from './types/types'
 
 const createStore = <
-  TState extends Record<PropertyKey, unknown>,
-  TActions extends Record<PropertyKey, ArrowFunction>
+  TState extends PlainObject,
+  TActions extends Record<PropertyKey, PlainFunction> | undefined = undefined
 >(
   initialState: TState,
-  actionsCreator?: ActionsCreator<TState, TActions>
+  actionsCreator?: ActionsCreator<TState, Exclude<TActions, undefined>>
 ) => {
   const state = createState(initialState)
   const subject = createSubject<TState>()
@@ -28,14 +28,13 @@ const createStore = <
   const customListener = <TSelector extends Selector<TState>>(
     listener: Listener<TState>,
     selector: TSelector,
-    equality?: Equality<ReturnType<TSelector>>
+    equality?: Equality<TState>
   ) => {
     return (state: TState, nextState: TState) => {
       const nextSlice = selector(nextState)
       const slice = selector(state)
       const notify = equality
-        ? // @ts-ignore
-          equality(slice, nextSlice)
+        ? equality(slice, nextSlice)
         : !isEqual(slice, nextSlice)
 
       if (notify) {
@@ -47,7 +46,7 @@ const createStore = <
   const subscribe = <TSelector extends Selector<TState>>(
     listener: Listener<TState>,
     selector?: TSelector,
-    equality?: Equality<ReturnType<TSelector>>
+    equality?: Equality<TState>
   ) => {
     const readydListener = selector
       ? customListener(listener, selector, equality)
@@ -94,9 +93,7 @@ const createStore = <
   }
 }
 
-const createState = <TState extends Record<PropertyKey, unknown>>(
-  initialState: TState
-) => {
+const createState = <TState extends PlainObject>(initialState: TState) => {
   const state = {
     current: initialState,
     set(resolvableState: ResolvableState<TState>) {

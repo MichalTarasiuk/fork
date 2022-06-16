@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion -- safty assertion */
 import ObserveImpl from 'on-change'
 
-export const createObserver = <
-  TState extends Record<PropertyKey, unknown>
->() => {
+import type { PlainObject } from '../types/types'
+
+export const createObserver = <TState extends PlainObject>() => {
   const observers = new WeakMap<TState, TState>()
   let savedListener: ((state: TState) => void) | null = null
 

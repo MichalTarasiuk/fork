@@ -2,4 +2,9 @@ export { useListener } from './useListener.hook'
 export { useForce } from './useForce.hook'
 export { useMutations } from './useMutations.hook'
 export { useCreation } from './useCreation.hook'
-export * from './lifeCycles.hooks'
+export {
+  useMount,
+  useUnmount,
+  useHasMounted,
+  useFirstMount,
+} from './lifeCycles.hooks'

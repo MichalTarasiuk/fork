@@ -70,16 +70,18 @@ describe('store', () => {
     // then
     expect(store.listeners).toHaveLength(1)
 
-    // when
-    actions.increase()
+    if (actions) {
+      // when
+      actions.increase()
 
-    // then
-    expect(spy).toHaveBeenCalledWith({ counter: 0 }, { counter: 1 })
+      // then
+      expect(spy).toHaveBeenCalledWith({ counter: 0 }, { counter: 1 })
+    }
   })
 
   it('should update state after set state action', () => {
     // given
-    const store = createStore({ counter: 0 }, () => ({}))
+    const store = createStore({ counter: 0 })
 
     // when
     const spy = jest.fn()
@@ -112,11 +114,13 @@ describe('store', () => {
     // then
     expect(store.listeners).toHaveLength(1)
 
-    // when
-    actions.increase()
+    if (actions) {
+      // when
+      actions.increase()
 
-    // then
-    expect(spy).toHaveBeenCalled()
+      // then
+      expect(spy).toHaveBeenCalled()
+    }
   })
 
   it('should not invoke subscriber when scope state is the same', () => {
@@ -134,11 +138,13 @@ describe('store', () => {
     // then
     expect(store.listeners).toHaveLength(1)
 
-    // when
-    actions.increase()
+    if (actions) {
+      // when
+      actions.increase()
 
-    // then
-    expect(spy).not.toHaveBeenCalled()
+      // then
+      expect(spy).not.toHaveBeenCalled()
+    }
   })
 
   it('should not invoke subscriber when scope state is not the same', () => {
@@ -156,11 +162,13 @@ describe('store', () => {
     // then
     expect(store.listeners).toHaveLength(1)
 
-    // when
-    actions.increase()
+    if (actions) {
+      // when
+      actions.increase()
 
-    // then
-    expect(spy).toHaveBeenCalled()
+      // then
+      expect(spy).toHaveBeenCalled()
+    }
   })
 
   it('should remove subscriber', () => {
@@ -201,11 +209,13 @@ describe('store', () => {
     // then
     expect(store.listeners).toHaveLength(1)
 
-    // when
-    await actions.increase()
+    if (actions) {
+      // when
+      await actions.increase()
 
-    // then
-    expect(spy).toHaveBeenCalledWith({ counter: 0 }, { counter: 1 })
+      // then
+      expect(spy).toHaveBeenCalledWith({ counter: 0 }, { counter: 1 })
+    }
   })
 
   it('should return true when counter is divisible', () => {
@@ -221,12 +231,14 @@ describe('store', () => {
     // then
     expect(store.listeners).toHaveLength(1)
 
-    // when
-    actions.increase()
-    actions.increase()
+    if (actions) {
+      // when
+      actions.increase()
+      actions.increase()
 
-    // then
-    expect(actions.isDivisible()).toBe(true)
+      // then
+      expect(actions.isDivisible()).toBe(true)
+    }
   })
 
   it('should invoke subscriber when next counter value is bigger', () => {
@@ -256,17 +268,19 @@ describe('store', () => {
     // then
     expect(store.listeners).toHaveLength(1)
 
-    // when
-    actions.increase()
+    if (actions) {
+      // when
+      actions.increase()
 
-    // then
-    expect(spy).toHaveBeenCalled()
+      // then
+      expect(spy).toHaveBeenCalled()
 
-    // when
-    actions.decrease()
+      // when
+      actions.decrease()
 
-    // then
-    expect(spy).toHaveBeenCalledTimes(1)
+      // then
+      expect(spy).toHaveBeenCalledTimes(1)
+    }
   })
 
   it('should replace state after set state action with replace option', () => {
@@ -323,11 +337,13 @@ describe('store', () => {
     // then
     expect(store.listeners).toHaveLength(1)
 
-    // when
-    actions.increase()
+    if (actions) {
+      // when
+      actions.increase()
 
-    // then
-    expect(spy).toHaveBeenCalledWith({ counter: 0 }, { counter: 1 })
+      // then
+      expect(spy).toHaveBeenCalledWith({ counter: 0 }, { counter: 1 })
+    }
   })
 
   it('should not invoke emitter', () => {
@@ -355,10 +371,12 @@ describe('store', () => {
     // then
     expect(store.listeners).toHaveLength(1)
 
-    // when
-    actions.increase()
+    if (actions) {
+      // when
+      actions.increase()
 
-    // then
-    expect(spy).not.toHaveBeenCalled()
+      // then
+      expect(spy).not.toHaveBeenCalled()
+    }
   })
 })

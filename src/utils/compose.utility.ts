@@ -1,13 +1,13 @@
-import type { ArrowFunction } from '../types/types'
+import type { PlainFunction } from '../types/types'
 
 export function compose(
   ...functions: readonly never[]
 ): <TArgument>(argument: TArgument) => TArgument
-export function compose<TFunction extends ArrowFunction>(
+export function compose<TFunction extends PlainFunction>(
   ...functions: readonly TFunction[]
 ): (...args: Parameters<TFunction>) => ReturnType<TFunction>
 
-export function compose(...functions: readonly ArrowFunction[]) {
+export function compose(...functions: readonly PlainFunction[]) {
   if (functions.length === 0) {
     // infer the argument type so it is usable in inference down the line
     return <TArg>(arg: TArg) => arg

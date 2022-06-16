@@ -2,14 +2,14 @@ import { cloneDeep } from 'lodash'
 
 import { mapObject } from '../utils/utils'
 
+import type { PlainObject } from '../types/types'
+
 export type Error = {
   readonly type: string
   readonly message: string
 }
 
-export const createErrorReporter = <
-  TState extends Record<PropertyKey, unknown>
->(
+export const createErrorReporter = <TState extends PlainObject>(
   state: TState
 ) => {
   type Errors = Record<keyof TState, Error | null>

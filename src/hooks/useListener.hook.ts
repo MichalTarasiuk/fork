@@ -9,19 +9,24 @@ import {
 } from '../hooks/hooks'
 import { isAsyncFunction, flatObject, partition } from '../utils/utils'
 
-import type { AddBy, AsyncFunction, ArrowFunction } from '../types/types'
+import type {
+  AddBy,
+  AsyncFunction,
+  PlainFunction,
+  PlainObject,
+} from '../types/types'
 import type { Mutations, Status } from './useMutations.hook'
 
 type AsyncActions = Record<PropertyKey, AsyncFunction>
-type SyncActions = Record<PropertyKey, ArrowFunction>
+type SyncActions = Record<PropertyKey, PlainFunction>
 
-type Lifecycles<TState extends Record<PropertyKey, unknown>> = {
+type Lifecycles<TState extends PlainObject> = {
   readonly beforeListen: (nextState: TState) => boolean
   readonly onListen: (nextState: TState) => TState
 }
 
 const createLocalHookControl = <
-  TState extends Record<PropertyKey, unknown>,
+  TState extends PlainObject,
   TSyncActions extends SyncActions
 >(
   initialState: TState,
@@ -72,7 +77,7 @@ const createLocalHookControl = <
 }
 
 export const useListener = <
-  TState extends Record<PropertyKey, unknown>,
+  TState extends PlainObject,
   TActions extends Record<PropertyKey, Function>,
   TLifecycles extends Lifecycles<TState>
 >(
