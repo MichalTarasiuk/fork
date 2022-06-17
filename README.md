@@ -113,9 +113,7 @@ Resolver call on each setState action.
 const { ForkProvider, useFork } = fork(
   { user: null, counter: 0 },
   (set) => ({
-    fetchUser: async () => {
-      await wait(1000)
-
+    fetchUser: () => {
       set({ user: { name: 'John', age: random(0, 99) } }, { emitt: false })
     },
     increase: () => {
@@ -153,35 +151,14 @@ const Component = () => {
 
 If an error occurs in the user, it will be replaced with the version given in the resolver state. (same behavior for counter)
 
-## Async
-
-Fork will generate you status for each async action.
-
-```jsx
-const { useFork } = fork({ ideas: [] }, (set, get) => ({
-  sendAnIdea: async (id) => {
-    const idea = await myFetcher(id)
-
-    set((state) => ({ ideas: [...state.ideas, idea] }))
-  },
-}))
-
-const Component = () => {
-  const { state } = useFork()
-  const [sendAnIdea, status] = state.sendAnIdea
-
-  /* return */
-}
-```
-
 ## Immer
 
 Fork supports immer 🔥
 
 ```jsx
 const { useFork } = fork({ ideas: [] }, (set, get) => ({
-  sendAnIdea: async (id) => {
-    const idea = await myFetcher(id)
+  sendAnIdea: (id) => {
+    const idea = getIdea(id)
 
     set((state) => {
       state.push(idea)
@@ -191,7 +168,6 @@ const { useFork } = fork({ ideas: [] }, (set, get) => ({
 
 const Component = () => {
   const { state } = useFork()
-  const [sendAnIdea, status] = state.sendAnIdea
 
   /* return */
 }
@@ -203,8 +179,8 @@ Sometimes you need to access state outside components.
 
 ```js
 const { setState, subscribe } = fork({ ideas: [] }, (set, get) => ({
-  sendAnIdea: async (id) => {
-    const idea = await myFetcher(id)
+  sendAnIdea: (id) => {
+    const idea = getIdea(id)
 
     set((state) => ({ ideas: [...state.ideas, idea] }))
   },
@@ -223,32 +199,3 @@ subscriber.actions
 // Unsubscirbe listener
 subscriber.unsubscribe()
 ```
-
-## Good practices
-
-### Async
-
-If you are use async action status not for display in JSX. The set state action should have emitt property set to false.
-
-```jsx
-const { useFork } = fork({ ideas: [] }, (set, get) => ({
-  sendAnIdea: async (id) => {
-    const idea = await myFetcher(id)
-
-    set((state) => ({ ideas: [...state.ideas, idea] }), { emitt: false })
-  },
-}))
-
-const Component = () => {
-  const { state } = useFork()
-  const [sendAnIdea, status] = state.sendAnIdea
-
-  useEffect(() => {
-    // logic
-  }, [status])
-
-  /* return */
-}
-```
-
-This tip will remove one extra rerender caused by set state action.

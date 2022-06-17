@@ -3,8 +3,6 @@ import { render, fireEvent, act } from '@testing-library/react'
 import { factory as fork } from '../src/factory'
 import { useMount } from '../src/hooks/hooks'
 
-import { wait } from './tests.utils'
-
 import type { PlainFunction } from '../src/types/types'
 
 describe('fork', () => {
@@ -238,37 +236,6 @@ describe('fork', () => {
     expect(spy2).toHaveBeenCalledTimes(2)
   })
 
-  it('should update async action status', () => {
-    // given
-    const { ForkProvider, useFork } = fork({ counter: 0 }, (set) => ({
-      increase: async () => {
-        await wait(1000)
-
-        set((state) => ({ counter: state.counter + 1 }))
-      },
-    }))
-    const spy = jest.fn()
-    const Counter = () => {
-      const { state } = useFork()
-      const [increase, status] = state.increase
-
-      spy(status)
-
-      return <button onClick={increase}>increase</button>
-    }
-    const { getByText } = render(
-      <ForkProvider>
-        <Counter />
-      </ForkProvider>
-    )
-
-    // when
-    fireEvent.click(getByText('increase'))
-
-    // when
-    expect(spy).toHaveBeenCalledTimes(2)
-  })
-
   it('should return true when counter value is divisible', () => {
     // given
     const { ForkProvider, useFork } = fork({ counter: 0 }, (set, get) => ({
@@ -376,34 +343,6 @@ describe('fork', () => {
 
     // then
     getByText('status: block')
-  })
-
-  it('should generare status for async action', () => {
-    // arrange
-    const { ForkProvider, useFork } = fork({ counter: 0 }, (set) => ({
-      increase: async () => {
-        await wait(1000)
-
-        set((state) => ({ counter: state.counter + 1 }))
-      },
-    }))
-    const spy = jest.fn()
-    const Counter = () => {
-      const { state } = useFork()
-      const [_, status] = state.increase
-
-      spy(status)
-
-      return null
-    }
-    render(
-      <ForkProvider>
-        <Counter />
-      </ForkProvider>
-    )
-
-    // assert
-    expect(spy).toHaveBeenCalledWith('idle')
   })
 
   it('should immer work with setState action', () => {

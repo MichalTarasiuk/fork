@@ -1,7 +1,5 @@
 import fork from 'react-fork'
 
-import { wait } from './store.helpers'
-
 export type Note = {
   id: number
   title: string
@@ -11,9 +9,7 @@ export type Note = {
 export const { ForkProvider, useFork } = fork(
   { block: true, notes: [] as Note[] },
   (set) => ({
-    async unlock() {
-      await wait(1000)
-
+    unlock() {
       set({ block: false })
     },
   })

@@ -4,18 +4,21 @@ import { isPlainObject } from './utils'
 
 import type { PlainObject } from '../types/types'
 
-export const flatObject = <TObject extends PlainObject>(
+export const flatObject = <
+  TObject extends PlainObject,
+  TKey extends keyof TObject
+>(
   object: TObject,
-  ...keys: ReadonlyArray<keyof TObject>
-) =>
-  keys.reduce((collector, key) => {
-    const value = collector[key]
+  key: TKey
+) => {
+  const copy = cloneDeep(object)
+  const valueToFlat = copy[key]
 
-    if (isPlainObject(value)) {
-      delete collector[key]
+  if (isPlainObject(valueToFlat)) {
+    const { [key]: _, ...restCopy } = copy
 
-      return Object.assign(collector, value)
-    }
+    return Object.assign(restCopy, valueToFlat)
+  }
 
-    return collector
-  }, cloneDeep(object))
+  return copy
+}

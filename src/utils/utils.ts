@@ -1,10 +1,8 @@
-export * from './createSubject.utility'
+export { createSubject } from './createSubject.utility'
 export { resolve } from './resolve.utility'
 export { compose } from './compose.utility'
-export { merge } from './merge.utility'
 export { empty } from './empty.utility'
 export { flatObject } from './flatObject.utility'
-export { partition } from './partition.utility'
 export {
   entries,
   fromEntries,
@@ -14,6 +12,6 @@ export {
   objectKeys,
   keyInObject,
 } from './safeObject.utils'
-export { isAsyncFunction, isPlainObject } from './type.utils'
+export { isPlainObject } from './type.utils'
 
 export const noop = () => {}

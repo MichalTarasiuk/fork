@@ -7,7 +7,6 @@ import './app.css'
 
 const App = () => {
   const { state } = useFork()
-  const [unlock, status] = state.unlock
 
   return (
     <main className="main-content">
@@ -16,9 +15,7 @@ const App = () => {
       </section>
       <section className="notes-section">
         {state.block ? (
-          <button onClick={unlock}>
-            {status === 'idle' ? 'unlock' : status}
-          </button>
+          <button onClick={state.unlock}>unlock</button>
         ) : (
           <NotesList />
         )}
