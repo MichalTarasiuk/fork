@@ -1,5 +1,5 @@
-export type AddBy<TObject extends PlainObject, TValue, TNewValue> = {
-  readonly [key in keyof TObject]: TObject[key] extends TValue
+export type AddBy<TObject extends PlainObject, TBy, TNewValue> = {
+  readonly [key in keyof TObject]: TObject[key] extends TBy
     ? readonly [TObject[key], TNewValue]
     : TObject[key]
 }

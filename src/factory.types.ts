@@ -4,7 +4,7 @@ import type { PlainObject } from './types/types'
 
 export type GlobalConfig<
   TState extends PlainObject,
-  TContext extends PlainObject
+  TContext extends PlainObject | undefined
 > = {
   readonly context: TContext
   readonly resolver: (

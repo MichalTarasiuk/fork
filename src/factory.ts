@@ -12,7 +12,7 @@ import type { PlainFunction, PlainObject } from './types/types'
 const factory = <
   TState extends PlainObject,
   TActions extends Record<PropertyKey, PlainFunction>,
-  TContext extends PlainObject
+  TContext extends PlainObject | undefined = undefined
 >(
   initialState: TState,
   actionsCreator?: ActionsCreator<TState, TActions>,

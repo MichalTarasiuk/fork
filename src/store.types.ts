@@ -7,7 +7,7 @@ export type Selector<TState extends PlainObject> = (
 
 export type ActionsCreator<
   TState extends PlainObject,
-  TActions extends Record<PropertyKey, PlainFunction>
+  TActions extends Record<PropertyKey, PlainFunction> | undefined
 > = ((set: SetState<TState>, get: GetState<TState>) => TActions) | TActions
 
 export type SetConfig = { readonly replace?: boolean; readonly emitt?: boolean }

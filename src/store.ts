@@ -17,10 +17,14 @@ import type { PlainFunction, PlainObject } from './types/types'
 
 const createStore = <
   TState extends PlainObject,
-  TActions extends Record<PropertyKey, PlainFunction> | undefined = undefined
+  TActions extends Record<PropertyKey, PlainFunction> | undefined = undefined,
+  TActionsCreator extends ActionsCreator<TState, TActions> = ActionsCreator<
+    TState,
+    TActions
+  >
 >(
   initialState: TState,
-  actionsCreator?: ActionsCreator<TState, Exclude<TActions, undefined>>
+  actionsCreator?: ActionsCreator<TState, TActions>
 ) => {
   const state = createState(initialState)
   const subject = createSubject<TState>()
@@ -55,7 +59,9 @@ const createStore = <
     const customSetState = (patch: Patch<TState>, config?: SetConfig) => {
       setState(patch, config, subscriber.body)
     }
-    const actions = resolve(actionsCreator, customSetState, getState)
+
+    const unsafeActionsCreator = actionsCreator as TActionsCreator
+    const actions = resolve(unsafeActionsCreator, customSetState, getState)
 
     return { actions, ...subscriber }
   }

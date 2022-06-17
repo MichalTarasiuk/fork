@@ -78,7 +78,7 @@ const createLocalHookControl = <
 
 export const useListener = <
   TState extends PlainObject,
-  TActions extends Record<PropertyKey, Function>,
+  TActions extends Record<PropertyKey, PlainFunction>,
   TLifecycles extends Lifecycles<TState>
 >(
   initialState: TState,

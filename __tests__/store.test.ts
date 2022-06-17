@@ -46,7 +46,7 @@ describe('store', () => {
 
   it('should subscribe store', () => {
     // given
-    const store = createStore({ counter: 0 }, () => ({}))
+    const store = createStore({ counter: 0 })
 
     // when
     store.subscribe(() => ({}))
@@ -70,13 +70,11 @@ describe('store', () => {
     // then
     expect(store.listeners).toHaveLength(1)
 
-    if (actions) {
-      // when
-      actions.increase()
+    // when
+    actions.increase()
 
-      // then
-      expect(spy).toHaveBeenCalledWith({ counter: 0 }, { counter: 1 })
-    }
+    // then
+    expect(spy).toHaveBeenCalledWith({ counter: 0 }, { counter: 1 })
   })
 
   it('should update state after set state action', () => {
@@ -114,13 +112,11 @@ describe('store', () => {
     // then
     expect(store.listeners).toHaveLength(1)
 
-    if (actions) {
-      // when
-      actions.increase()
+    // when
+    actions.increase()
 
-      // then
-      expect(spy).toHaveBeenCalled()
-    }
+    // then
+    expect(spy).toHaveBeenCalled()
   })
 
   it('should not invoke subscriber when scope state is the same', () => {
@@ -138,13 +134,11 @@ describe('store', () => {
     // then
     expect(store.listeners).toHaveLength(1)
 
-    if (actions) {
-      // when
-      actions.increase()
+    // when
+    actions.increase()
 
-      // then
-      expect(spy).not.toHaveBeenCalled()
-    }
+    // then
+    expect(spy).not.toHaveBeenCalled()
   })
 
   it('should not invoke subscriber when scope state is not the same', () => {
@@ -162,18 +156,16 @@ describe('store', () => {
     // then
     expect(store.listeners).toHaveLength(1)
 
-    if (actions) {
-      // when
-      actions.increase()
+    // when
+    actions.increase()
 
-      // then
-      expect(spy).toHaveBeenCalled()
-    }
+    // then
+    expect(spy).toHaveBeenCalled()
   })
 
   it('should remove subscriber', () => {
     // given
-    const store = createStore({ counter: 0 }, () => ({}))
+    const store = createStore({ counter: 0 })
 
     // when
     const subscriber = store.subscribe(() => ({}))
@@ -209,13 +201,11 @@ describe('store', () => {
     // then
     expect(store.listeners).toHaveLength(1)
 
-    if (actions) {
-      // when
-      await actions.increase()
+    // when
+    await actions.increase()
 
-      // then
-      expect(spy).toHaveBeenCalledWith({ counter: 0 }, { counter: 1 })
-    }
+    // then
+    expect(spy).toHaveBeenCalledWith({ counter: 0 }, { counter: 1 })
   })
 
   it('should return true when counter is divisible', () => {
@@ -285,13 +275,10 @@ describe('store', () => {
 
   it('should replace state after set state action with replace option', () => {
     // given
-    const store = createStore(
-      {
-        counter: 0,
-        status: 'happy',
-      },
-      () => ({})
-    )
+    const store = createStore({
+      counter: 0,
+      status: 'happy',
+    })
 
     // when
     const spy = jest.fn()
@@ -337,13 +324,11 @@ describe('store', () => {
     // then
     expect(store.listeners).toHaveLength(1)
 
-    if (actions) {
-      // when
-      actions.increase()
+    // when
+    actions.increase()
 
-      // then
-      expect(spy).toHaveBeenCalledWith({ counter: 0 }, { counter: 1 })
-    }
+    // then
+    expect(spy).toHaveBeenCalledWith({ counter: 0 }, { counter: 1 })
   })
 
   it('should not invoke emitter', () => {
@@ -371,12 +356,10 @@ describe('store', () => {
     // then
     expect(store.listeners).toHaveLength(1)
 
-    if (actions) {
-      // when
-      actions.increase()
+    // when
+    actions.increase()
 
-      // then
-      expect(spy).not.toHaveBeenCalled()
-    }
+    // then
+    expect(spy).not.toHaveBeenCalled()
   })
 })
