@@ -2,29 +2,29 @@ import { cloneDeep } from 'lodash'
 import { useCallback, useMemo } from 'react'
 
 import { useHasMounted, useForce } from '../hooks/hooks'
-import { flatObject } from '../utils/utils'
 
 import type { PlainFunction, PlainObject } from '../types/types'
 
 type Actions = Record<PropertyKey, PlainFunction>
 
-type Lifecycles<TState extends PlainObject> = {
+type Lifecycles<TState extends PlainObject, TActions extends Actions> = {
   readonly beforeListen: (nextState: TState) => boolean
-  readonly onListen: (nextState: TState) => TState
+  readonly onListen: (nextState: TState & TActions) => TState
 }
+
 export const useListener = <
   TState extends PlainObject,
-  TActions extends Record<PropertyKey, PlainFunction>,
-  TLifecycles extends Lifecycles<TState>
+  TActions extends Actions,
+  TLifecycles extends Lifecycles<TState, TActions>
 >(
   initialState: TState,
   actions: TActions | undefined,
-  { onListen, beforeListen }: TLifecycles
+  lifecycles: TLifecycles
 ) => {
   type State = TState & TActions
 
   const hookControl = useMemo(
-    () => createLocalHookControl(initialState, actions, onListen),
+    () => createLocalHookControl(initialState, actions, lifecycles.onListen),
     []
   )
 
@@ -32,7 +32,7 @@ export const useListener = <
   const force = useForce()
 
   const listener = useCallback((_: TState, nextState: TState) => {
-    if (hasMounted.current && beforeListen(nextState)) {
+    if (hasMounted.current && lifecycles.beforeListen(nextState)) {
       hookControl.setState(nextState)
 
       force()
@@ -48,30 +48,18 @@ const createLocalHookControl = <
 >(
   initialState: TState,
   actions: TActions | undefined,
-  fn: (state: TState) => TState
+  fn: (state: TState & TActions) => TState
 ) => {
-  const actionsSymbol = Symbol('actions')
-
-  type State = TState & {
-    // eslint-disable-next-line functional/prefer-readonly-type -- sync symbol is mutable
-    [actionsSymbol]?: TActions
-  }
-
-  let state: State = cloneDeep(initialState)
-  state[actionsSymbol] = actions
+  let state = cloneDeep(initialState)
 
   const setState = (nextState: TState) => {
-    const stateToSaved: State = cloneDeep(nextState)
-
-    stateToSaved[actionsSymbol] = state[actionsSymbol]
+    const stateToSaved = cloneDeep(nextState)
 
     state = stateToSaved
   }
 
-  const setPlugins = (state: State) => {
-    const flatten = flatObject(state, actionsSymbol) as TState
-
-    return fn(flatten)
+  const setPlugins = (state: TState) => {
+    return fn(Object.assign({}, state, actions))
   }
 
   return {
